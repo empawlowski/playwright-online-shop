@@ -24,7 +24,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://automationexercise.com',
+    baseURL: 'https://automationexercise.com',
 
     // Set the test id to use a custom data attribute.
     testIdAttribute: 'data-qa',
