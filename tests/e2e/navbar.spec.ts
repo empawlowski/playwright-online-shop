@@ -48,3 +48,35 @@ test('Contact Us Form', async ({ page }) => {
   // 10. Verify success message 'Success! Your details have been submitted successfully.' is visible
   // 11. Click 'Home' button and verify that landed to home page successfully
 });
+
+test('Verify Test Cases Page', async ({ page }) => {
+  await chromium.launch();
+
+  await page.route('**/*', (route) => {
+    if (route.request().url().startsWith('https://googleads.')) {
+      route.abort();
+    } else if (route.request().url().startsWith('https://fonts.googleapis.')) {
+      route.abort();
+    } else {
+      route.continue();
+    }
+  });
+
+  await page.goto('/');
+
+  await expect(page).toHaveURL('/');
+  await expect(page).toHaveTitle('Automation Exercise');
+  await page.getByRole('link', { name: ' Test Cases' }).click();
+  // await page.getByRole('button', { name: 'Test Cases' }).click();
+
+  await expect(page).toHaveURL('/test_cases');
+  await expect(page).toHaveTitle('Automation Practice Website for UI Testing - Test Cases');
+  await expect(page.getByRole('heading', { name: 'Test Cases', exact: true })).toBeVisible();
+
+  // Test Case 7: Verify Test Cases Page
+  // 1. Launch browser
+  // 2. Navigate to url 'http://automationexercise.com'
+  // 3. Verify that home page is visible successfully
+  // 4. Click on 'Test Cases' button
+  // 5. Verify user is navigated to test cases page successfully
+});
