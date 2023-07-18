@@ -20,3 +20,8 @@ i obsługa alerta? await expect(page.locator('#success-subscribe')).toContainTex
 
 hover?
 zliczenie rekordów .count();
+
+regex
+Logged in as ${username}
+https://regex101.com/
+/^Logged in as \w+$/
