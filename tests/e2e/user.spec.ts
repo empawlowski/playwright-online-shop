@@ -16,7 +16,8 @@ test.describe('User actions', () => {
     console.log(`Running ${testInfo.title}`);
 
     //Act
-    // await chromium.launch(); //*Commented because using all browsers for tests
+    // await chromium.launch(); //* Commented because using all browsers for tests
+
     //* Advertisements blocker
     await page.route('**/*', (route) => {
       if (route.request().url().startsWith('https://googleads.')) {
@@ -33,7 +34,7 @@ test.describe('User actions', () => {
     //Assert
     await homePage.expectPage();
   });
-  test('Register User', async ({ page }) => {
+  test('Test Case 1: Register User', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
     signLogin = new SignLogin(page);
@@ -100,7 +101,7 @@ test.describe('User actions', () => {
     // 18. Verify that 'ACCOUNT DELETED!' is visible and click 'Continue' button
     // 19. Verify that home page is visible successfully
   });
-  test('Login User with correct data', async ({ page }) => {
+  test('Test Case 2: Login User with correct data', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
     signLogin = new SignLogin(page);
@@ -165,7 +166,7 @@ test.describe('User actions', () => {
     // 11. Verify that home page is visible successfully
   });
 
-  test('Login User with incorrect data', async ({ page }) => {
+  test('Test Case 3: Login User with incorrect data', async ({ page }) => {
     //Arrange
     signLogin = new SignLogin(page);
     const email = userData.incorrectEmail;
@@ -188,7 +189,7 @@ test.describe('User actions', () => {
     // 8. Verify error 'Your email or password is incorrect!' is visible
   });
 
-  test('Logout User', async ({ page }) => {
+  test('Test Case 4: Logout User', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
     signLogin = new SignLogin(page);
@@ -218,7 +219,7 @@ test.describe('User actions', () => {
     // 10. Verify that user is navigated to login page
   });
 
-  test('Register User with existing email', async ({ page }) => {
+  test('Test Case 5: Register User with existing email', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
     signLogin = new SignLogin(page);
