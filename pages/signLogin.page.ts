@@ -1,6 +1,5 @@
-import { expect, type Page, type Locator } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { HomePage } from '../components/home.component';
-import { userData } from '../test-data/user.data';
 import { homeData } from '../test-data/home.data';
 
 export class SignLogin {
@@ -50,7 +49,7 @@ export class SignLogin {
   hIncorrectEmail = this.page.getByText(homeData.incorrectEmail);
   hEmailExist = this.page.getByText(homeData.emailExist);
 
-  async signUp(username: string, email: string) {
+  async signUp(username: string, email: string): Promise<void> {
     await this.homePage.signLogin.click();
     await expect(this.hSignup).toBeVisible();
     await this.fillSignupName.fill(username);
@@ -106,7 +105,7 @@ export class SignLogin {
     // await expect(this.page.getByText(`Logged in as ${username}`)).toBeVisible();
   }
 
-  async loginUser(email: string, password: string) {
+  async loginUser(email: string, password: string): Promise<void> {
     await this.homePage.signLogin.click();
     await expect(this.hLogin).toBeVisible();
     await this.fillLoginEmail.fill(email);

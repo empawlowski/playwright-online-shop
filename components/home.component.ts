@@ -4,7 +4,21 @@ import { homeData } from '../test-data/home.data';
 export class HomePage {
   constructor(private page: Page) {}
 
-  //* Methods for open page and expect page (#openPage) (#expectPage) (#expectLoginPage)
+  //* POM for Navbar menu
+  //   home;
+  products = this.page.getByRole('link', { name: 'Products' });
+  cart = this.page.getByRole('link', { name: 'Cart' });
+  signLogin = this.page.getByRole('link', { name: 'Signup / Login' });
+  deleteAccount = this.page.getByRole('link', { name: 'Delete Account' });
+  testCases = this.page.getByRole('link', { name: ' Test Cases' });
+  //   apiTesting;
+  //   videoTUtorials;
+  contactUs = this.page.getByRole('link', { name: 'Contact us' });
+  logout = this.page.getByRole('link', { name: 'Logout' });
+
+  //* POM for open page and expect page (#openPage) (#expectPage) (#expectLoginPage) (#expectProductsPage) (#expectTestCasePage)
+  hTestCase = this.page.getByRole('heading', { name: 'Test Cases', exact: true });
+  hAllProducts = this.page.getByRole('heading', { name: 'All Products', exact: true });
 
   async openPage(): Promise<void> {
     await this.page.goto('/');
@@ -20,15 +34,15 @@ export class HomePage {
     await expect(this.page).toHaveTitle(homeData.titleLogin);
   }
 
-  //* POM for Navbar menu
-  //   home;
-  products = this.page.getByRole('link', { name: 'Products' });
-  cart = this.page.getByRole('link', { name: 'Cart' });
-  signLogin = this.page.getByRole('link', { name: 'Signup / Login' });
-  deleteAccount = this.page.getByRole('link', { name: 'Delete Account' });
-  //   testCases;
-  //   apiTesting;
-  //   videoTUtorials;
-  //   contactUs;
-  logout = this.page.getByRole('link', { name: 'Logout' });
+  async expectProductsPage(): Promise<void> {
+    await expect(this.page).toHaveURL('/products');
+    await expect(this.page).toHaveTitle(homeData.titleProducts);
+    await expect(this.hAllProducts).toBeVisible();
+  }
+
+  async expectTestCasePage(): Promise<void> {
+    await expect(this.page).toHaveURL('/test_cases');
+    await expect(this.page).toHaveTitle(homeData.titleTestCase);
+    await expect(this.hTestCase).toBeVisible();
+  }
 }
