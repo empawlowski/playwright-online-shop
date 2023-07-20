@@ -3,6 +3,8 @@ import { userData } from './user.data';
 export const homeData = {
   titleHome: 'Automation Exercise',
   titleProducts: 'Automation Exercise - All Products',
+  titleProductDetails: 'Automation Exercise - Product Details',
+  titleCart: 'Automation Exercise - Checkout',
   titleLogin: 'Automation Exercise - Signup / Login',
   titleTestCase: 'Automation Practice Website for UI Testing - Test Cases',
   // loggedUser: /^Logged in as w+$/,

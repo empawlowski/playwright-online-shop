@@ -34,10 +34,20 @@ export class HomePage {
     await expect(this.page).toHaveTitle(homeData.titleLogin);
   }
 
+  async expectCartPage(): Promise<void> {
+    await expect(this.page).toHaveURL('/view_cart');
+    await expect(this.page).toHaveTitle(homeData.titleCart);
+  }
+
   async expectProductsPage(): Promise<void> {
     await expect(this.page).toHaveURL('/products');
     await expect(this.page).toHaveTitle(homeData.titleProducts);
     await expect(this.hAllProducts).toBeVisible();
+  }
+
+  async expectFirstProductsPage(): Promise<void> {
+    await expect(this.page).toHaveURL('/product_details/1');
+    await expect(this.page).toHaveTitle(homeData.titleProductDetails);
   }
 
   async expectTestCasePage(): Promise<void> {
