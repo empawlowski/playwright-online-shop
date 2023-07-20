@@ -15,69 +15,69 @@
 
 - advertisements blocker
 
-```javascript
-await page.route('**/*', (route) => {
-  if (route.request().url().startsWith('https://googleads.')) {
-    route.abort();
-  } else if (route.request().url().startsWith('https://fonts.googleapis.')) {
-    route.abort();
-  } else {
-    route.continue();
-  }
-});
-```
+  ```javascript
+  await page.route('**/*', (route) => {
+    if (route.request().url().startsWith('https://googleads.')) {
+      route.abort();
+    } else if (route.request().url().startsWith('https://fonts.googleapis.')) {
+      route.abort();
+    } else {
+      route.continue();
+    }
+  });
+  ```
 
 - interact with the web page `dialogs` [ `navbar.spec.ts` > `Test Case 6: Contact Us Form` ]
 
-```javascript
-page.on('dialog', (dialog) => dialog.accept());
-await page.locator('#dialog').click();
-```
+  ```javascript
+  page.on('dialog', (dialog) => dialog.accept());
+  await page.locator('#dialog').click();
+  ```
 
 - `scroll down` the page [ `navbar.spec.ts` > `Test Case 10: Verify Subscription in home page` ]
 
-```javascript
-// Scroll Down
-await page.evaluate(() => {
-  window.scrollTo(0, document.body.scrollHeight);
-});
+  ```javascript
+  // Scroll Down
+  await page.evaluate(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+  });
 
-// Scroll Up
-await page.evaluate(() => {
-  window.scrollTo(0, 0);
-});
-```
+  // Scroll Up
+  await page.evaluate(() => {
+    window.scrollTo(0, 0);
+  });
+  ```
 
 - `catch` success alert [ `navbar.spec.ts` > `Test Case 10: Verify Subscription in home page` ]
 
-```javascript
-await expect(page.locator('#alert')).toContainText('Success!');
-```
+  ```javascript
+  await expect(page.locator('#alert')).toContainText('Success!');
+  ```
 
 - `count` all rows in table [ `navbar.spec.ts` > `Test Case 12: Add Products in Cart` ]
 
-```javascript
-const rowCount = await page.locator('tr').count();
-await expect(rowCount).toBe(number);
-```
+  ```javascript
+  const rowCount = await page.locator('tr').count();
+  await expect(rowCount).toBe(number);
+  ```
 
 - use `regex` to check changing link "Logged in as `userName`"
 
-```javascript
-/^Logged in as \w+$/;
-```
+  ```javascript
+  /^Logged in as \w+$/;
+  ```
 
 - edit
 
-```javascript
+  ```javascript
 
-```
+  ```
 
 - edit
 
-```javascript
+  ```javascript
 
-```
+  ```
 
 ## Playwright Config modifications
 
@@ -111,12 +111,12 @@ await expect(rowCount).toBe(number);
 ## Installation
 
 - ### `Project installation`
-- edit
+- install commands
 
-```javascript
-npm install
-npm init playwright@latest
-```
+  ```javascript
+  npm install
+  npm init playwright@latest
+  ```
 
 - ### `Prettier`
 - install

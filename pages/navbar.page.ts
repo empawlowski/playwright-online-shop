@@ -73,6 +73,13 @@ export class NavbarPage {
   cartQuantityP2 = this.page.locator('#product-2').locator('.cart_quantity');
   cartTotalPriceP2 = this.page.locator('#product-2').locator('.cart_total_price');
 
+  //Test case 13: Verify Product quantity in Cart
+  fillQuantity = this.page.locator('#quantity');
+  tableProductName = this.page.locator('.cart_description').getByRole('link', { name: productData.firstProduct });
+  tableCartQuantity = this.page.locator('.cart_quantity');
+
+  //* POM for page Subscription (#sendSubscribe)
+
   hSubscription = this.page.getByRole('heading', { name: 'Subscription', exact: true });
   fillSubsEmail = this.page.locator('#susbscribe_email');
   bSubscribe = this.page.locator('#subscribe');
@@ -119,6 +126,19 @@ export class NavbarPage {
     await expect(this.cartPriceP2).toHaveText(productData.cartPriceP2);
     await expect(this.cartQuantityP2).toHaveText(productData.cartQuantity);
     await expect(this.cartTotalPriceP2).toHaveText(productData.cartPriceP2);
+  }
+
+  async addProductQuantity(quantity: string): Promise<void> {
+    await this.linkViewProduct.first().click();
+    await this.homePage.expectFirstProductsPage();
+    await this.fillQuantity.fill(quantity);
+    await this.addToCartFirstProduct.click();
+    await this.viewCart.click();
+  }
+
+  async expectAddProductQuantity(): Promise<void> {
+    await expect(this.tableProductName).toBeVisible();
+    await expect(this.tableCartQuantity).toHaveText(productData.productQuantity);
   }
 
   async sendSubscribe(email: string): Promise<void> {
