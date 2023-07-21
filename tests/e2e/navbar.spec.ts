@@ -6,10 +6,12 @@ import { NavbarPage } from '../../pages/navbar.page';
 import { userData } from '../../test-data/user.data';
 import { productData } from '../../test-data/product.data';
 import { homeData } from '../../test-data/home.data';
+import { SignLogin } from '../../pages/signLogin.page';
+import { cartData } from '../../test-data/cart.data';
 
 test.describe('Navigation for Navbar pages', () => {
   let homePage: HomePage;
-  // let signLogin: SignLogin;
+  let signLogin: SignLogin;
   let navbar: NavbarPage;
 
   test.beforeEach(async ({ page }, testInfo) => {
@@ -230,16 +232,86 @@ test.describe('Navigation for Navbar pages', () => {
 
   test('Test Case 14: Place Order: Register while Checkout', async ({ page }) => {
     //Arrange
+    homePage = new HomePage(page);
     navbar = new NavbarPage(page);
+    signLogin = new SignLogin(page);
+
     const quantity = productData.productQuantity;
+
+    const username = faker.internet.userName();
+    const email = faker.internet.email({ provider: 'fakerjs.dev' });
+    const password = faker.internet.password();
+    const days = userData.days;
+    const months = userData.months;
+    const years = userData.years;
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    const company = faker.company.name();
+    const address1 = faker.location.streetAddress({ useFullAddress: true });
+    const address2 = faker.location.secondaryAddress();
+    const country = userData.country;
+    const state = faker.location.state();
+    const city = faker.location.city();
+    const zipCode = faker.location.zipCode();
+    const phoneNumber = faker.phone.number('###-###-###');
+
+    const description = faker.lorem.text();
+    const cardNumber = faker.finance.creditCardNumber({ issuer: '448#-#[5-7]##-####-###L' }); // '4480-0500-0000-0000;
+    const cvc = faker.finance.creditCardCVV();
+    const expiryMonth = cartData.expiryMonth;
+    const expiryYear = cartData.expiryYear;
+
     //Act
     await navbar.addProductQuantity(quantity);
     await homePage.expectCartPage();
-    await page.getByRole('link', { name: 'Proceed To Checkout' }).click();
-    await page.getByRole('generic', { name: 'Register / Login' }).click();
+    // await page.getByRole('link', { name: 'Proceed To Checkout' }).click();
+    // await page.getByRole('button', { name: 'Proceed To Checkout' }).click();
+    await page.getByText('Proceed To Checkout').click();
+    // await page.locator('.btn btn-default check_out').click();
+    // await page.getByRole('generic', { name: 'Register / Login' }).click();
+    await page.getByRole('link', { name: 'Register / Login' }).click();
     //----------- 9. SIGN UP
+    await signLogin.registerUser(
+      username,
+      email,
+      password,
+      days,
+      months,
+      years,
+      firstName,
+      lastName,
+      country,
+      company,
+      address1,
+      address2,
+      state,
+      city,
+      zipCode,
+      phoneNumber,
+    );
+    // Step: 11
+    // await expect(page.getByText(homeData.loggedUserRegEx)).toBeVisible();
+    await expect(page.getByText(`${homeData.loggedInAs} ${username}`)).toBeVisible();
+
+    await homePage.cart.click();
+    // await page.getByRole('link', { name: 'Proceed To Checkout' }).click();
+    await page.getByText('Proceed To Checkout').click();
+    // 14. Verify Address Details and Review Your Order
+    //! Missing step
+    await navbar.expectAddProductQuantity();
+
+    await page.locator('#ordermsg').locator('.form-control').fill(description);
+    await page.getByRole('link', { name: 'Place Order' }).click();
+    await page.getByTestId('name-on-card').fill(firstName + lastName);
+    await page.getByTestId('card-number').fill(cardNumber);
+    await page.getByTestId('cvc').fill(cvc);
+    await page.getByTestId('expiry-month').fill(expiryMonth);
+    await page.getByTestId('expiry-year').fill(expiryYear);
+    await page.getByTestId('pay-button').click();
+    await page.locator('#success_message').isVisible();
+
     //Assert
-    // await navbar.expectAddProductQuantity();
+    await signLogin.deleteUser();
 
     // Test Case 14: Place Order: Register while Checkout
     // 1. Launch browser (//)

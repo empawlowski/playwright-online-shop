@@ -57,6 +57,7 @@ test.describe('User actions', () => {
     const phoneNumber = faker.phone.number('###-###-###');
 
     //Act
+    await homePage.signLogin.click(); // add Test Case 14
     await signLogin.registerUser(
       username,
       email,
@@ -124,6 +125,7 @@ test.describe('User actions', () => {
     const phoneNumber = faker.phone.number('###-###-###');
 
     //Act
+    await homePage.signLogin.click(); // Test Case 14
     await signLogin.registerUser(
       username,
       email,

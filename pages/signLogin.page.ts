@@ -75,7 +75,7 @@ export class SignLogin {
     zipCode: string,
     phoneNumber: string,
   ): Promise<void> {
-    await this.homePage.signLogin.click();
+    // await this.homePage.signLogin.click();
     await expect(this.hSignup).toBeVisible();
     await this.fillSignupName.fill(username);
     await this.fillSignupEmail.fill(email);
