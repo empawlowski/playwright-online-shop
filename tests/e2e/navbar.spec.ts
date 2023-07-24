@@ -8,11 +8,13 @@ import { productData } from '../../test-data/product.data';
 import { homeData } from '../../test-data/home.data';
 import { SignLogin } from '../../pages/signLogin.page';
 import { cartData } from '../../test-data/cart.data';
+import { CartPage } from '../../pages/cart.page';
 
 test.describe('Navigation for Navbar pages', () => {
   let homePage: HomePage;
   let signLogin: SignLogin;
   let navbar: NavbarPage;
+  let cart: CartPage;
 
   test.beforeEach(async ({ page }, testInfo) => {
     //Arrange
@@ -235,6 +237,7 @@ test.describe('Navigation for Navbar pages', () => {
     homePage = new HomePage(page);
     navbar = new NavbarPage(page);
     signLogin = new SignLogin(page);
+    cart = new CartPage(page);
 
     const quantity = productData.productQuantity;
 
@@ -254,6 +257,31 @@ test.describe('Navigation for Navbar pages', () => {
     const city = faker.location.city();
     const zipCode = faker.location.zipCode();
     const phoneNumber = faker.phone.number('###-###-###');
+
+    const yourDeliveryAddress = cartData.yourDeliveryAddress;
+    const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
+
+    const deliveryAddress = `
+    ${yourDeliveryAddress}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state}
+    ${zipCode}
+    ${country}
+    ${phoneNumber}`;
+
+    const deliveryInvoice = `
+    ${yourDeliveryInvoice}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state} 
+    ${zipCode} 
+    ${country} 
+    ${phoneNumber}`;
 
     const description = faker.lorem.text();
     const cardNumber = faker.finance.creditCardNumber({ issuer: '448#-#[5-7]##-####-###L' }); // '4480-0500-0000-0000;
@@ -297,18 +325,44 @@ test.describe('Navigation for Navbar pages', () => {
     // await page.getByRole('link', { name: 'Proceed To Checkout' }).click();
     await page.getByText('Proceed To Checkout').click();
     // 14. Verify Address Details and Review Your Order
-    //! Missing step
-    await navbar.expectAddProductQuantity();
 
-    await page.locator('#ordermsg').locator('.form-control').fill(description);
-    await page.getByRole('link', { name: 'Place Order' }).click();
-    await page.getByTestId('name-on-card').fill(firstName + lastName);
-    await page.getByTestId('card-number').fill(cardNumber);
-    await page.getByTestId('cvc').fill(cvc);
-    await page.getByTestId('expiry-month').fill(expiryMonth);
-    await page.getByTestId('expiry-year').fill(expiryYear);
-    await page.getByTestId('pay-button').click();
-    await page.locator('#success_message').isVisible();
+    await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
+
+    // await expect(page.locator('#address_delivery')).toHaveText(deliveryAddress);
+
+    // await expect(page.locator('#address_delivery').getByText(`Mrs. ${firstName} ${lastName}`)).toBeVisible();
+    // await expect(page.locator('#address_delivery').getByText(`${company}`)).toBeVisible();
+    // await expect(page.locator('#address_delivery').getByText(`${address1}`)).toBeVisible();
+    // await expect(page.locator('#address_delivery').getByText(`${address2}`)).toBeVisible();
+    // await expect(page.locator('#address_delivery').getByText(`${city} ${state}`)).toBeVisible();
+    // await expect(page.locator('#address_delivery').getByText(`${zipCode}`)).toBeVisible();
+    // await expect(page.locator('#address_delivery').getByText(`${country}`)).toBeVisible();
+    // await expect(page.locator('#address_delivery').getByText(`${phoneNumber}`)).toBeVisible();
+
+    // YOUR BILLING ADDRESS
+    // await expect(page.locator('#address_invoice').getByText(`Mrs. ${firstName} ${lastName}`)).toBeVisible();
+    // await expect(page.locator('#address_invoice').getByText(`${company}`)).toBeVisible();
+    // await expect(page.locator('#address_invoice').getByText(`${address1}`)).toBeVisible();
+    // await expect(page.locator('#address_invoice').getByText(`${address2}`)).toBeVisible();
+    // await expect(page.locator('#address_invoice').getByText(`${city} ${state}`)).toBeVisible();
+    // await expect(page.locator('#address_invoice').getByText(`${zipCode}`)).toBeVisible();
+    // await expect(page.locator('#address_invoice').getByText(`${country}`)).toBeVisible();
+    // await expect(page.locator('#address_invoice').getByText(`${phoneNumber}`)).toBeVisible();
+
+    // await navbar.expectAddProductQuantity();
+
+    // await page.locator('#ordermsg').locator('.form-control').fill(description);
+    // await page.getByRole('link', { name: 'Place Order' }).click();
+
+    await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
+
+    // await page.getByTestId('name-on-card').fill(firstName + lastName);
+    // await page.getByTestId('card-number').fill(cardNumber);
+    // await page.getByTestId('cvc').fill(cvc);
+    // await page.getByTestId('expiry-month').fill(expiryMonth);
+    // await page.getByTestId('expiry-year').fill(expiryYear);
+    // await page.getByTestId('pay-button').click();
+    // await page.locator('#success_message').isVisible();
 
     //Assert
     await signLogin.deleteUser();
