@@ -258,6 +258,8 @@ test.describe('Navigation for Navbar pages', () => {
     const zipCode = faker.location.zipCode();
     const phoneNumber = faker.phone.number('###-###-###');
 
+    const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
+
     const yourDeliveryAddress = cartData.yourDeliveryAddress;
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
 
@@ -291,14 +293,8 @@ test.describe('Navigation for Navbar pages', () => {
 
     //Act
     await navbar.addProductQuantity(quantity);
-    await homePage.expectCartPage();
-    // await page.getByRole('link', { name: 'Proceed To Checkout' }).click();
-    // await page.getByRole('button', { name: 'Proceed To Checkout' }).click();
-    await page.getByText('Proceed To Checkout').click();
-    // await page.locator('.btn btn-default check_out').click();
-    // await page.getByRole('generic', { name: 'Register / Login' }).click();
-    await page.getByRole('link', { name: 'Register / Login' }).click();
-    //----------- 9. SIGN UP
+    await cart.checkoutFromCartPage();
+
     await signLogin.registerUser(
       username,
       email,
@@ -317,52 +313,11 @@ test.describe('Navigation for Navbar pages', () => {
       zipCode,
       phoneNumber,
     );
-    // Step: 11
-    // await expect(page.getByText(homeData.loggedUserRegEx)).toBeVisible();
-    await expect(page.getByText(`${homeData.loggedInAs} ${username}`)).toBeVisible();
-
-    await homePage.cart.click();
-    // await page.getByRole('link', { name: 'Proceed To Checkout' }).click();
-    await page.getByText('Proceed To Checkout').click();
-    // 14. Verify Address Details and Review Your Order
+    await expect(loggedUser).toBeVisible();
 
     await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
 
-    // await expect(page.locator('#address_delivery')).toHaveText(deliveryAddress);
-
-    // await expect(page.locator('#address_delivery').getByText(`Mrs. ${firstName} ${lastName}`)).toBeVisible();
-    // await expect(page.locator('#address_delivery').getByText(`${company}`)).toBeVisible();
-    // await expect(page.locator('#address_delivery').getByText(`${address1}`)).toBeVisible();
-    // await expect(page.locator('#address_delivery').getByText(`${address2}`)).toBeVisible();
-    // await expect(page.locator('#address_delivery').getByText(`${city} ${state}`)).toBeVisible();
-    // await expect(page.locator('#address_delivery').getByText(`${zipCode}`)).toBeVisible();
-    // await expect(page.locator('#address_delivery').getByText(`${country}`)).toBeVisible();
-    // await expect(page.locator('#address_delivery').getByText(`${phoneNumber}`)).toBeVisible();
-
-    // YOUR BILLING ADDRESS
-    // await expect(page.locator('#address_invoice').getByText(`Mrs. ${firstName} ${lastName}`)).toBeVisible();
-    // await expect(page.locator('#address_invoice').getByText(`${company}`)).toBeVisible();
-    // await expect(page.locator('#address_invoice').getByText(`${address1}`)).toBeVisible();
-    // await expect(page.locator('#address_invoice').getByText(`${address2}`)).toBeVisible();
-    // await expect(page.locator('#address_invoice').getByText(`${city} ${state}`)).toBeVisible();
-    // await expect(page.locator('#address_invoice').getByText(`${zipCode}`)).toBeVisible();
-    // await expect(page.locator('#address_invoice').getByText(`${country}`)).toBeVisible();
-    // await expect(page.locator('#address_invoice').getByText(`${phoneNumber}`)).toBeVisible();
-
-    // await navbar.expectAddProductQuantity();
-
-    // await page.locator('#ordermsg').locator('.form-control').fill(description);
-    // await page.getByRole('link', { name: 'Place Order' }).click();
-
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
-
-    // await page.getByTestId('name-on-card').fill(firstName + lastName);
-    // await page.getByTestId('card-number').fill(cardNumber);
-    // await page.getByTestId('cvc').fill(cvc);
-    // await page.getByTestId('expiry-month').fill(expiryMonth);
-    // await page.getByTestId('expiry-year').fill(expiryYear);
-    // await page.getByTestId('pay-button').click();
-    // await page.locator('#success_message').isVisible();
 
     //Assert
     await signLogin.deleteUser();
@@ -388,5 +343,117 @@ test.describe('Navigation for Navbar pages', () => {
     // 18. Verify success message 'Your order has been placed successfully!'
     // 19. Click 'Delete Account' button
     // 20. Verify 'ACCOUNT DELETED!' and click 'Continue' button
+  });
+
+  test('Test Case 15: Place Order: Register before Checkout', async ({ page }) => {
+    //Arrange
+    homePage = new HomePage(page);
+    navbar = new NavbarPage(page);
+    signLogin = new SignLogin(page);
+    cart = new CartPage(page);
+
+    const quantity = productData.productQuantity;
+
+    const username = faker.internet.userName();
+    const email = faker.internet.email({ provider: 'fakerjs.dev' });
+    const password = faker.internet.password();
+    const days = userData.days;
+    const months = userData.months;
+    const years = userData.years;
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    const company = faker.company.name();
+    const address1 = faker.location.streetAddress({ useFullAddress: true });
+    const address2 = faker.location.secondaryAddress();
+    const country = userData.country;
+    const state = faker.location.state();
+    const city = faker.location.city();
+    const zipCode = faker.location.zipCode();
+    const phoneNumber = faker.phone.number('###-###-###');
+
+    const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
+
+    const yourDeliveryAddress = cartData.yourDeliveryAddress;
+    const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
+
+    const deliveryAddress = `
+    ${yourDeliveryAddress}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state}
+    ${zipCode}
+    ${country}
+    ${phoneNumber}`;
+
+    const deliveryInvoice = `
+    ${yourDeliveryInvoice}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state} 
+    ${zipCode} 
+    ${country} 
+    ${phoneNumber}`;
+
+    const description = faker.lorem.text();
+    const cardNumber = faker.finance.creditCardNumber({ issuer: '448#-#[5-7]##-####-###L' }); // '4480-0500-0000-0000;
+    const cvc = faker.finance.creditCardCVV();
+    const expiryMonth = cartData.expiryMonth;
+    const expiryYear = cartData.expiryYear;
+
+    //Act
+    await homePage.signLogin.click();
+    await signLogin.registerUser(
+      username,
+      email,
+      password,
+      days,
+      months,
+      years,
+      firstName,
+      lastName,
+      country,
+      company,
+      address1,
+      address2,
+      state,
+      city,
+      zipCode,
+      phoneNumber,
+    );
+
+    await expect(loggedUser).toBeVisible();
+
+    await navbar.addProductQuantity(quantity);
+    await homePage.expectCartPage();
+    await cart.bProceedToCheckout.click();
+    await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
+    await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
+
+    //Assert
+    await signLogin.deleteUser();
+
+    // Test Case 15: Place Order: Register before Checkout
+    // 1. Launch browser (//)
+    // 2. Navigate to url 'http://automationexercise.com'
+    // 3. Verify that home page is visible successfully
+    // 4. Click 'Signup / Login' button
+    // 5. Fill all details in Signup and create account
+    // 6. Verify 'ACCOUNT CREATED!' and click 'Continue' button
+    // 7. Verify ' Logged in as username' at top
+    // 8. Add products to cart
+    // 9. Click 'Cart' button
+    // 10. Verify that cart page is displayed
+    // 11. Click Proceed To Checkout
+    // 12. Verify Address Details and Review Your Order
+    // 13. Enter description in comment text area and click 'Place Order'
+    // 14. Enter payment details: Name on Card, Card Number, CVC, Expiration date
+    // 15. Click 'Pay and Confirm Order' button
+    // 16. Verify success message 'Your order has been placed successfully!'
+    // 17. Click 'Delete Account' button
+    // 18. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 });

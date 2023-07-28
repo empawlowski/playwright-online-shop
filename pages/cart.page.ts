@@ -7,7 +7,7 @@ export class CartPage {
   homePage = new HomePage(this.page);
   navbar = new NavbarPage(this.page);
 
-  //* POM for Cart page  (#proceedToCheckout) (#fillCartInformation)
+  //* POM for Cart page  (#checkoutFromCartPage) (#proceedToCheckout) (#fillCartInformation)
   //Test Case 14: Place Order: Register while Checkout
   addressDelivery = this.page.locator('#address_delivery');
   addressInvoice = this.page.locator('#address_invoice');
@@ -22,9 +22,19 @@ export class CartPage {
   bPay = this.page.getByTestId('pay-button');
   toastMessage = this.page.locator('#success_message');
 
-  //   Proceed To Checkout
+  bProceedToCheckout = this.page.getByText('Proceed To Checkout');
+  bRegisterLogin = this.page.getByRole('link', { name: 'Register / Login' });
+
+  async checkoutFromCartPage(): Promise<void> {
+    await this.homePage.expectCartPage();
+    await this.bProceedToCheckout.click();
+    await this.bRegisterLogin.click();
+  }
 
   async proceedToCheckout(deliveryAddress: string, deliveryInvoice: string, description: string): Promise<void> {
+    await this.homePage.cart.click();
+    await this.homePage.expectCartPage();
+    await this.bProceedToCheckout.click();
     await expect(this.addressDelivery).toHaveText(deliveryAddress);
     await expect(this.addressInvoice).toHaveText(deliveryInvoice);
     await this.navbar.expectAddProductQuantity();
@@ -48,8 +58,4 @@ export class CartPage {
     await this.bPay.click();
     await this.toastMessage.isVisible();
   }
-
-  //   async checkout(): Promise<void> {
-  //     await this.proceedToCheckout();
-  //   }
 }
