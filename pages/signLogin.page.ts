@@ -118,5 +118,6 @@ export class SignLogin {
     await this.homePage.deleteAccount.click();
     await expect(this.hAccountDeleted).toBeVisible();
     await this.bContinue.click();
+    await this.homePage.expectPage();
   }
 }
