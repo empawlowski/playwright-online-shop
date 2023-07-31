@@ -67,10 +67,10 @@
   /^Logged in as \w+$/;
   ```
 
-- edit
+- locating by using href link
 
   ```javascript
-
+  page.locator('[href*="/pageName"]', { hasText: 'Page Name' });
   ```
 
 - edit
@@ -111,47 +111,52 @@
 ## Installation
 
 - ### `Project installation`
-- install commands
 
-  ```javascript
-  npm install
-  npm init playwright@latest
-  ```
-
-- ### `Prettier`
-- install
-  ```javascript
-   npm install --save-dev --save-exact prettier
-  ```
-- configure
-
-  - exclude files in `.prettierignore`
-
-    ```
-    package - lock.json
-    playwright - report
-    test - download
-    test - upload
-    test - results
-    ```
-
-  - set rules in `.prettierrc.json`
+  - install commands
 
     ```javascript
-    {
-    "singleQuote": true,
-    "endOfLine": "auto",
-    "printWidth": 150
-    }
+    npm install
+    npm init playwright@latest
     ```
 
+- ### `Prettier`
+
+  - install
+    ```javascript
+    npm install --save-dev --save-exact prettier
+    ```
+  - configure
+
+    - exclude files in `.prettierignore`
+
+      ```
+      package-lock.json
+      playwright-report
+      test-download
+      test-upload
+      test-results
+      ```
+
+    - set rules in `.prettierrc.json`
+
+      ```javascript
+      {
+      "singleQuote": true,
+      "endOfLine": "auto",
+      "printWidth": 150
+      }
+      ```
+
 - ### `Faker`
-- install
-  ```javascript
-  npm install --save-dev @faker-js/faker
-  ```
-- usage
-  ```javascript
-  import { faker } from '@faker-js/faker';
-  const email = faker.internet.email();
-  ```
+
+  - install
+    ```javascript
+    npm install --save-dev @faker-js/faker
+    ```
+  - usage
+
+    ```javascript
+    import { faker } from '@faker-js/faker';
+
+    const email = faker.internet.email();
+    ```
