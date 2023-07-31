@@ -8,7 +8,7 @@ import { homeData } from '../../test-data/home.data';
 
 test.describe('User actions', () => {
   let homePage: HomePage;
-  let signLogin: SignLogin;
+  let user: SignLogin;
 
   test.beforeEach(async ({ page }, testInfo) => {
     //Arrange
@@ -37,7 +37,7 @@ test.describe('User actions', () => {
   test('Test Case 1: Register User', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
-    signLogin = new SignLogin(page);
+    user = new SignLogin(page);
 
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -58,7 +58,7 @@ test.describe('User actions', () => {
 
     //Act
     await homePage.signLogin.click(); // add Test Case 14
-    await signLogin.registerUser(
+    await user.registerUser(
       username,
       email,
       password,
@@ -76,7 +76,7 @@ test.describe('User actions', () => {
       zipCode,
       phoneNumber,
     );
-    await signLogin.deleteUser();
+    await user.deleteUser();
 
     //Assert
     await homePage.expectPage();
@@ -105,7 +105,7 @@ test.describe('User actions', () => {
   test('Test Case 2: Login User with correct data', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
-    signLogin = new SignLogin(page);
+    user = new SignLogin(page);
 
     const username = userData.fakeUsername;
     const email = userData.fakeEmail;
@@ -126,7 +126,7 @@ test.describe('User actions', () => {
 
     //Act
     await homePage.signLogin.click(); // Test Case 14
-    await signLogin.registerUser(
+    await user.registerUser(
       username,
       email,
       password,
@@ -147,9 +147,9 @@ test.describe('User actions', () => {
     await homePage.logout.click();
     await homePage.openPage();
     await homePage.expectPage();
-    await signLogin.loginUser(email, password);
-    await expect(signLogin.loggedUser).toBeVisible();
-    await signLogin.deleteUser();
+    await user.loginUser(email, password);
+    await expect(user.loggedUser).toBeVisible();
+    await user.deleteUser();
 
     //Assert
     await homePage.expectPage();
@@ -170,15 +170,15 @@ test.describe('User actions', () => {
 
   test('Test Case 3: Login User with incorrect data', async ({ page }) => {
     //Arrange
-    signLogin = new SignLogin(page);
+    user = new SignLogin(page);
     const email = userData.incorrectEmail;
     const password = userData.incorrectPassword;
 
     //Act
-    await signLogin.loginUser(email, password);
+    await user.loginUser(email, password);
 
     //Assert
-    await expect(signLogin.hIncorrectEmail).toBeVisible();
+    await expect(user.hIncorrectEmail).toBeVisible();
 
     // Test Case 3: Login User with incorrect email and password
     // 1. Launch browser (//)
@@ -194,14 +194,14 @@ test.describe('User actions', () => {
   test('Test Case 4: Logout User', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
-    signLogin = new SignLogin(page);
+    user = new SignLogin(page);
 
     const username = userData.logoutUser;
     const email = userData.logoutEmail;
     const password = userData.fakePassword;
 
     //Act
-    await signLogin.loginUser(email, password);
+    await user.loginUser(email, password);
     await expect(page.getByText(`${homeData.loggedInAs} ${username}`)).toBeVisible();
     await homePage.logout.click();
 
@@ -224,16 +224,16 @@ test.describe('User actions', () => {
   test('Test Case 5: Register User with existing email', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
-    signLogin = new SignLogin(page);
+    user = new SignLogin(page);
 
     const username = userData.logoutUser;
     const email = userData.logoutEmail;
 
     //Act
-    await signLogin.signUp(username, email);
+    await user.signUp(username, email);
 
     //Assert
-    await expect(signLogin.hEmailExist).toBeVisible();
+    await expect(user.hEmailExist).toBeVisible();
 
     // Test Case 5: Register User with existing email
     // 1. Launch browser (//)

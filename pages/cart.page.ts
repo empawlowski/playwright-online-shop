@@ -1,6 +1,7 @@
 import { Page, expect } from '@playwright/test';
 import { HomePage } from '../components/home.component';
 import { NavbarPage } from './navbar.page';
+import { cartData } from '../test-data/cart.data';
 
 export class CartPage {
   constructor(private page: Page) {}
@@ -24,6 +25,9 @@ export class CartPage {
 
   bProceedToCheckout = this.page.getByText('Proceed To Checkout');
   bRegisterLogin = this.page.getByRole('link', { name: 'Register / Login' });
+
+  bDeleteQuantity = this.page.locator('a.cart_quantity_delete');
+  divCartEmpty = this.page.locator('#empty_cart');
 
   async checkoutFromCartPage(): Promise<void> {
     await this.homePage.expectCartPage();
