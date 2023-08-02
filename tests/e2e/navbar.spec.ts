@@ -71,7 +71,7 @@ test.describe('Navigation for Navbar pages', () => {
     // 11. Click 'Home' button and verify that landed to home page successfully
   });
 
-  test('Test Case: 7: Verify Test Cases Page', async ({ page }) => {
+  test('Test Case 7: Verify Test Cases Page', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
     product = new NavbarPage(page);
@@ -117,7 +117,7 @@ test.describe('Navigation for Navbar pages', () => {
     //Act
     await product.searchProduct(search);
     //Assert
-    await expect(product.linkViewProductFirst).toBeVisible();
+    await expect(product.linkViewProductFirst.first()).toBeVisible();
 
     // Test Case 9: Search Product
     // 1. Launch browser (//)

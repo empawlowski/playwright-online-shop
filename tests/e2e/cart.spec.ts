@@ -1,5 +1,5 @@
 // import { test, expect, chromium } from '@playwright/test';
-import { test, expect } from '@playwright/test';
+import { test, expect, _baseTest } from '@playwright/test';
 import { HomePage } from '../../components/home.component';
 import { NavbarPage } from '../../pages/navbar.page';
 import { userData } from '../../test-data/user.data';
@@ -39,6 +39,14 @@ test.describe('Function for Cart pages', () => {
 
     //Assert
     await homePage.expectPage();
+  });
+
+  test.afterEach(async ({ page }, testInfo) => {
+    console.log(`Finished ${testInfo.title} with status ${testInfo.status}`);
+
+    if (testInfo.status !== testInfo.expectedStatus) console.log(`Did not run as expected, ended up at ${page.url()}`);
+
+    // await page.close();
   });
 
   test('Test Case 12: Add Products in Cart', async ({ page }) => {
@@ -453,20 +461,64 @@ test.describe('Function for Cart pages', () => {
 
   test('Test Case 20: Search Products and Verify Cart After Login', async ({ page }) => {
     //Arrange
+    test.slow();
+    // test.setTimeout(120000);
+
     homePage = new HomePage(page);
     product = new NavbarPage(page);
     cart = new CartPage(page);
+    user = new SignLogin(page);
+
+    const search = productData.searchProduct;
+    const expectProductNumber = Number(14);
+
+    const email = userData.logoutEmail; //'fake@email.cc',
+    const password = userData.fakePassword; //'fake!Password00',
 
     //Act
-    // await product.addProductQuantity(quantity);
-    // await homePage.expectCartPage();
-    // await cart.bDeleteQuantity.click();
+    await product.searchProduct(search);
+    const searchResults = await page.locator('div.single-products').count();
+    await expect(searchResults).toBe(expectProductNumber);
 
+    //* Catching by $$ selector
+    const addToCarts = await page.$$('div.productinfo.text-center > a.btn.btn-default.add-to-cart');
+
+    for (const addToCart of addToCarts) {
+      await addToCart.click();
+      await product.bContinueShopping.click();
+    }
+    //* -----------------------------
+
+    //* Catching by text and method .all()
+    // for (const addToCart of await page.locator('.productinfo.text-center').getByText('Add to cart').all()) {
+    //   await addToCart.click();
+    //   await product.bContinueShopping.click();
+    // }
+    //* -----------------------------
+
+    //* Catching by text and method .count()
+    // const addToCart = page.locator('.productinfo.text-center').getByText('Add to cart');
+    //
+    // for (let i = 0; i < (await addToCart.count()); i++) {
+    //   await addToCart.nth(i).click();
+    //   await product.bContinueShopping.click();
+    // }
+    //* -----------------------------
+
+    await homePage.cart.click();
+
+    const cartProductNumber = await page.locator('#cart_info_table').locator('tbody > tr').count();
+    Number(cartProductNumber) == Number(searchResults);
+
+    await user.loginUser(email, password);
+
+    await homePage.cart.click();
+    const cartProductNumberAfterLogin = await page.locator('#cart_info_table').locator('tbody > tr').count();
     //Assert
-    // await expect(cart.divCartEmpty).toBeVisible();
+    Number(cartProductNumberAfterLogin) == Number(searchResults);
 
     // Test Case 20: Search Products and Verify Cart After Login
-    // 1. Launch browser
+    // 1. Launch browser (//)
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Click on 'Products' button
     // 4. Verify user is navigated to ALL PRODUCTS page successfully

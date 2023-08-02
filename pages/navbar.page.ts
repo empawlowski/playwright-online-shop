@@ -56,8 +56,9 @@ export class NavbarPage {
   bSearch = this.page.locator('#submit_search');
   hSearchedProducts = this.page.getByRole('heading', { name: 'Searched Products' });
 
-  linkViewProductFirst = this.page.getByRole('link', { name: 'View Product' }).first();
+  linkViewProductFirst = this.page.getByRole('link', { name: 'View Product' });
 
+  // await page.locator('div.product-image-wrapper').first().hover(); //! Fix please
   firstProduct = this.page.getByText(productData.firstProduct);
   addToCartFirstProduct = this.page.getByText('Add to cart');
   bContinueShopping = this.page.getByRole('button', { name: 'Continue Shopping' });
@@ -101,10 +102,10 @@ export class NavbarPage {
     await expect(this.brand).toBeVisible();
   }
 
-  async searchProduct(product: string): Promise<void> {
+  async searchProduct(search: string): Promise<void> {
     await this.homePage.products.click();
     await this.homePage.expectProductsPage();
-    await this.fillSearchProduct.fill(product);
+    await this.fillSearchProduct.fill(search);
     await this.bSearch.click();
     await expect(this.hSearchedProducts).toBeVisible();
   }
