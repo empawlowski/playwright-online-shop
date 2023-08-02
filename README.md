@@ -73,11 +73,31 @@
   page.locator('[href*="/pageName"]', { hasText: 'Page Name' });
   ```
 
-- edit
+- examples using loop `for` [`cart.spec.ts` > `Test Case 20: Search Products and Verify Cart After Login` ]
 
-  ```javascript
+  - catching by `$$ selector`
 
-  ```
+    ```javascript
+    const loops = await page.$$('selector');
+
+    for (const loop of loops) {
+      await loop.click();
+    }
+    ```
+
+  - catching by `text` and method `.all()`
+    ```javascript
+    for (const loop of await page.locator('.class').getByText('Text').all()) {
+      await loop.click();
+    }
+    ```
+  - catching by `text` and method `.count()`
+    ```javascript
+    const loop = page.locator('.class').getByText('Text');
+    for (let i = 0; i < (await loop.count()); i++) {
+      await loop.nth(i).click();
+    }
+    ```
 
 ## Playwright Config modifications
 

@@ -125,7 +125,7 @@ test.describe('User actions', () => {
     const phoneNumber = faker.phone.number('###-###-###');
 
     //Act
-    await homePage.signLogin.click(); // Test Case 14
+    await homePage.signLogin.click();
     await user.registerUser(
       username,
       email,
