@@ -117,7 +117,7 @@ test.describe('Navigation for Navbar pages', () => {
     //Act
     await product.searchProduct(search);
     //Assert
-    await expect(product.linkViewProductFirst.first()).toBeVisible();
+    await expect(product.linkViewProduct.first()).toBeVisible();
 
     // Test Case 9: Search Product
     // 1. Launch browser (//)
@@ -180,5 +180,32 @@ test.describe('Navigation for Navbar pages', () => {
     // 6. Verify text 'SUBSCRIPTION'
     // 7. Enter email address in input and click arrow button
     // 8. Verify success message 'You have been successfully subscribed!' is visible
+  });
+
+  test('Test Case 21: Add review on product', async ({ page }) => {
+    //Arrange
+    homePage = new HomePage(page);
+    product = new NavbarPage(page);
+
+    const username = faker.internet.userName();
+    const email = faker.internet.email({ provider: 'fakerjs.dev' });
+    const review = faker.lorem.text();
+
+    //Act
+    await product.addProductReview(username, email, review);
+
+    //Assert
+    await product.expectSuccessReviewMessage();
+
+    // Test Case 21: Add review on product
+    // 1. Launch browser
+    // 2. Navigate to url 'http://automationexercise.com'
+    // 3. Click on 'Products' button
+    // 4. Verify user is navigated to ALL PRODUCTS page successfully
+    // 5. Click on 'View Product' button
+    // 6. Verify 'Write Your Review' is visible
+    // 7. Enter name, email and review
+    // 8. Click 'Submit' button
+    // 9. Verify success message 'Thank you for your review.'
   });
 });

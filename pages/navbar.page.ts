@@ -56,7 +56,7 @@ export class NavbarPage {
   bSearch = this.page.locator('#submit_search');
   hSearchedProducts = this.page.getByRole('heading', { name: 'Searched Products' });
 
-  linkViewProductFirst = this.page.getByRole('link', { name: 'View Product' });
+  // linkViewProductFirst = this.page.getByRole('link', { name: 'View Product' });
 
   // await page.locator('div.product-image-wrapper').first().hover(); //! Fix please
   firstProduct = this.page.getByText(productData.firstProduct);
@@ -74,17 +74,26 @@ export class NavbarPage {
   cartQuantityP2 = this.page.locator('#product-2').locator('.cart_quantity');
   cartTotalPriceP2 = this.page.locator('#product-2').locator('.cart_total_price');
 
-  //Test case 13: Verify Product quantity in Cart
+  //Test Case 13: Verify Product quantity in Cart
   fillQuantity = this.page.locator('#quantity');
   tableProductName = this.page.locator('.cart_description').getByRole('link', { name: productData.firstProduct });
   tableCartQuantity = this.page.locator('.cart_quantity');
 
   //* POM for page Subscription (#sendSubscribe)
-
   hSubscription = this.page.getByRole('heading', { name: 'Subscription', exact: true });
   fillSubsEmail = this.page.locator('#susbscribe_email');
   bSubscribe = this.page.locator('#subscribe');
   successSubs = this.page.locator('#success-subscribe');
+
+  //*POM for review (#addProductReview) (#expectSuccessReviewMessage)
+  //Test Case 21: Add review on product
+  hWriteYourReview = this.page.getByText(productData.productReview);
+  fieldName = this.page.locator('#name');
+  fieldEmail = this.page.locator('#email');
+  fieldReview = this.page.locator('#review');
+  bReview = this.page.locator('#button-review');
+  divSuccessReview = this.page.locator('#review-section');
+  hSuccessReview = this.page.getByText(productData.divSuccessReview);
 
   async selectFirstProduct(): Promise<void> {
     await this.homePage.products.click();
@@ -146,5 +155,21 @@ export class NavbarPage {
     await expect(this.hSubscription).toBeVisible();
     await this.fillSubsEmail.fill(email);
     await this.bSubscribe.click();
+  }
+  async addProductReview(username: string, email: string, review: string): Promise<void> {
+    await this.homePage.products.click();
+    await this.homePage.expectProductsPage();
+    await this.linkViewProduct.first().click();
+    await this.hWriteYourReview.isVisible();
+    await this.fieldName.fill(username);
+    await this.fieldEmail.fill(email);
+    await this.fieldReview.fill(review);
+    await this.bReview.click();
+  }
+
+  async expectSuccessReviewMessage(): Promise<void> {
+    await this.divSuccessReview.isVisible();
+    await expect(this.divSuccessReview).toContainText(productData.divSuccessReview);
+    await this.hSuccessReview.isVisible();
   }
 }
