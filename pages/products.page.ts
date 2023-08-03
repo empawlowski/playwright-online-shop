@@ -2,7 +2,7 @@ import { Page, expect } from '@playwright/test';
 import { HomePage } from '../components/home.component';
 import { productData } from '../test-data/product.data';
 
-export class NavbarPage {
+export class ProductPage {
   constructor(private page: Page) {}
   homePage = new HomePage(this.page);
 

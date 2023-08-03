@@ -1,14 +1,14 @@
 // import { test, expect, chromium } from '@playwright/test';
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../../components/home.component';
-import { NavbarPage } from '../../pages/navbar.page';
+import { ProductPage } from '../../pages/products.page';
 import { homeData } from '../../test-data/home.data';
 import { productData } from '../../test-data/product.data';
 import { faker } from '@faker-js/faker';
 
-test.describe('Navigation for Navbar pages', () => {
+test.describe('Functionality with products on Product page', () => {
   let homePage: HomePage;
-  let product: NavbarPage;
+  let product: ProductPage;
 
   test.beforeEach(async ({ page }, testInfo) => {
     //Arrange
@@ -37,7 +37,7 @@ test.describe('Navigation for Navbar pages', () => {
 
   test('Test Case 6: Contact Us Form', async ({ page }) => {
     //Arrange
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     const name = faker.person.fullName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
     const subject = faker.word.words({ count: { min: 3, max: 5 } });
@@ -74,7 +74,7 @@ test.describe('Navigation for Navbar pages', () => {
   test('Test Case 7: Verify Test Cases Page', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
 
     //Act
     await product.openTestCase();
@@ -92,7 +92,7 @@ test.describe('Navigation for Navbar pages', () => {
 
   test('Test Case 8: Verify All Products and product detail page', async ({ page }) => {
     //Arrange
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     //Act
     await product.selectFirstProduct();
     //Assert
@@ -112,7 +112,7 @@ test.describe('Navigation for Navbar pages', () => {
 
   test('Test Case 9: Search Product', async ({ page }) => {
     //Arrange
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     const search = productData.searchProduct;
     //Act
     await product.searchProduct(search);
@@ -132,7 +132,7 @@ test.describe('Navigation for Navbar pages', () => {
 
   test('Test Case 10: Verify Subscription in home page', async ({ page }) => {
     //Arrange
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
 
     //Act
@@ -157,7 +157,7 @@ test.describe('Navigation for Navbar pages', () => {
   test('Test Case 11: Verify Subscription in Cart page', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
     //Act
     await homePage.cart.click();
@@ -185,7 +185,7 @@ test.describe('Navigation for Navbar pages', () => {
   test('Test Case 21: Add review on product', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
 
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -198,7 +198,7 @@ test.describe('Navigation for Navbar pages', () => {
     await product.expectSuccessReviewMessage();
 
     // Test Case 21: Add review on product
-    // 1. Launch browser
+    // 1. Launch browser (//)
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Click on 'Products' button
     // 4. Verify user is navigated to ALL PRODUCTS page successfully
@@ -207,5 +207,36 @@ test.describe('Navigation for Navbar pages', () => {
     // 7. Enter name, email and review
     // 8. Click 'Submit' button
     // 9. Verify success message 'Thank you for your review.'
+  });
+
+  test('Test Case 22: Add to cart from Recommended items', async ({ page }) => {
+    //Arrange
+    homePage = new HomePage(page);
+    product = new ProductPage(page);
+
+    const username = faker.internet.userName();
+    const email = faker.internet.email({ provider: 'fakerjs.dev' });
+    const review = faker.lorem.text();
+
+    //Act
+    await page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    //verify
+    //addtocart
+    await homePage.cart.click();
+
+    //Assert
+    //product on page
+
+    // Test Case 22: Add to cart from Recommended items
+    // 1. Launch browser (//)
+    // 2. Navigate to url 'http://automationexercise.com'
+    // 3. Scroll to bottom of page
+    // 4. Verify 'RECOMMENDED ITEMS' are visible
+    // 5. Click on 'Add To Cart' on Recommended product
+    // 6. Click on 'View Cart' button
+    // 7. Verify that product is displayed in cart page
   });
 });
