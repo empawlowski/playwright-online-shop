@@ -1,12 +1,11 @@
 import { Page, expect } from '@playwright/test';
 import { HomePage } from '../components/home.component';
-import { NavbarPage } from './navbar.page';
-import { cartData } from '../test-data/cart.data';
+import { ProductPage } from './product.page';
 
 export class CartPage {
   constructor(private page: Page) {}
   homePage = new HomePage(this.page);
-  navbar = new NavbarPage(this.page);
+  product = new ProductPage(this.page);
 
   //* POM for Cart page  (#checkoutFromCartPage) (#proceedToCheckout) (#fillCartInformation)
   //Test Case 14: Place Order: Register while Checkout
@@ -41,9 +40,17 @@ export class CartPage {
     await this.bProceedToCheckout.click();
     await expect(this.addressDelivery).toHaveText(deliveryAddress);
     await expect(this.addressInvoice).toHaveText(deliveryInvoice);
-    await this.navbar.expectAddProductQuantity();
+    await this.product.expectAddProductQuantity();
     await this.fillDescription.fill(description);
     await this.bPlaceOrder.click();
+  }
+
+  async proceedToCheckoutWithAddressVerification(deliveryAddress: string, deliveryInvoice: string): Promise<void> {
+    await this.homePage.cart.click();
+    await this.homePage.expectCartPage();
+    await this.bProceedToCheckout.click();
+    await expect(this.addressDelivery).toHaveText(deliveryAddress);
+    await expect(this.addressInvoice).toHaveText(deliveryInvoice);
   }
 
   async fillCartInformation(

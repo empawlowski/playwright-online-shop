@@ -2,7 +2,7 @@ import { Page, expect } from '@playwright/test';
 import { HomePage } from '../components/home.component';
 import { productData } from '../test-data/product.data';
 
-export class NavbarPage {
+export class ProductPage {
   constructor(private page: Page) {}
   homePage = new HomePage(this.page);
 
@@ -56,14 +56,9 @@ export class NavbarPage {
   bSearch = this.page.locator('#submit_search');
   hSearchedProducts = this.page.getByRole('heading', { name: 'Searched Products' });
 
-  // linkViewProductFirst = this.page.getByRole('link', { name: 'View Product' });
-
-  // await page.locator('div.product-image-wrapper').first().hover(); //! Fix please
-  firstProduct = this.page.getByText(productData.firstProduct);
-  addToCartFirstProduct = this.page.getByText('Add to cart');
+  bAddToCart = this.page.locator('.productinfo.text-center').getByText('Add to cart');
+  bProductViewAddToCart = this.page.getByRole('button', { name: 'Add to cart' });
   bContinueShopping = this.page.getByRole('button', { name: 'Continue Shopping' });
-  secondProduct = this.page.getByText(productData.secondProduct, { exact: true });
-  addToCartSecondProduct = this.page.getByText('Add to cart');
   viewCart = this.page.getByRole('link', { name: 'View Cart' });
 
   tableRow = this.page.locator('#cart_info_table').locator('tbody').locator('tr');
@@ -121,11 +116,9 @@ export class NavbarPage {
 
   async addProducts(): Promise<void> {
     await this.homePage.products.click();
-    await this.firstProduct.first().hover();
-    await this.addToCartFirstProduct.first().click();
+    await this.bAddToCart.first().click();
     await this.bContinueShopping.click();
-    await this.secondProduct.first().hover();
-    await this.addToCartSecondProduct.nth(3).click();
+    await this.bAddToCart.nth(1).click();
     await this.viewCart.click();
   }
 
@@ -142,7 +135,7 @@ export class NavbarPage {
     await this.linkViewProduct.first().click();
     await this.homePage.expectFirstProductsPage();
     await this.fillQuantity.fill(quantity);
-    await this.addToCartFirstProduct.click();
+    await this.bProductViewAddToCart.click();
     await this.viewCart.click();
   }
 
