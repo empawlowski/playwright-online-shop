@@ -27,14 +27,14 @@
   });
   ```
 
-- interact with the web page `dialogs` [ `navbar.spec.ts` > `Test Case 6: Contact Us Form` ]
+- interact with the web page `dialogs` [ `products.spec.ts` > `Test Case 6: Contact Us Form` ]
 
   ```javascript
   page.on('dialog', (dialog) => dialog.accept());
   await page.locator('#dialog').click();
   ```
 
-- `scroll down` the page [ `navbar.spec.ts` > `Test Case 10: Verify Subscription in home page` ]
+- `scroll down` the page [ `products.spec.ts` > `Test Case 10: Verify Subscription in home page` ]
 
   ```javascript
   // Scroll Down
@@ -48,7 +48,7 @@
   });
   ```
 
-- `catch` success alert [ `navbar.spec.ts` > `Test Case 10: Verify Subscription in home page` ]
+- `catch` success alert [ `products.spec.ts` > `Test Case 10: Verify Subscription in home page` ]
 
   ```javascript
   await expect(page.locator('#alert')).toContainText('Success!');

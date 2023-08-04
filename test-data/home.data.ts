@@ -26,4 +26,6 @@ export const homeData = {
   hMenDressProducts: 'Men - Jeans Products',
   hBrandMastHarbour: 'Brand - Mast & Harbour Products',
   hBrandPolo: 'Brand - Polo',
+
+  hRecommendedItems: 'Recommended items',
 };
