@@ -534,4 +534,105 @@ test.describe('Function for Cart pages', () => {
     // 11. Again, go to Cart page
     // 12. Verify that those products are visible in cart after login as well
   });
+
+  test('Test Case 23: Verify address details in checkout page', async ({ page }) => {
+    //Arrange
+
+    homePage = new HomePage(page);
+    product = new ProductPage(page);
+    cart = new CartPage(page);
+    user = new SignLogin(page);
+
+    const username = faker.internet.userName();
+    const email = faker.internet.email({ provider: 'fakerjs.dev' });
+    const password = faker.internet.password();
+    const days = userData.days;
+    const months = userData.months;
+    const years = userData.years;
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    const company = faker.company.name();
+    const address1 = faker.location.streetAddress({ useFullAddress: true });
+    const address2 = faker.location.secondaryAddress();
+    const country = userData.country;
+    const state = faker.location.state();
+    const city = faker.location.city();
+    const zipCode = faker.location.zipCode();
+    const phoneNumber = faker.phone.number('###-###-###');
+
+    const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
+
+    const yourDeliveryAddress = cartData.yourDeliveryAddress;
+    const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
+
+    const deliveryAddress = `
+    ${yourDeliveryAddress}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state}
+    ${zipCode}
+    ${country}
+    ${phoneNumber}`;
+
+    const deliveryInvoice = `
+    ${yourDeliveryInvoice}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state} 
+    ${zipCode} 
+    ${country} 
+    ${phoneNumber}`;
+
+    // Act
+    await homePage.signLogin.click();
+    await user.registerUser(
+      username,
+      email,
+      password,
+      days,
+      months,
+      years,
+      firstName,
+      lastName,
+      country,
+      company,
+      address1,
+      address2,
+      state,
+      city,
+      zipCode,
+      phoneNumber,
+    );
+
+    await expect(loggedUser).toBeVisible();
+
+    await product.bAddToCart.first().click();
+    await product.bContinueShopping.click();
+
+    await cart.proceedToCheckoutWithAddressVerification(deliveryAddress, deliveryInvoice);
+
+    //Assert
+    await user.deleteUser();
+
+    // Test Case 23: Verify address details in checkout page
+    // 1. Launch browser (//)
+    // 2. Navigate to url 'http://automationexercise.com'
+    // 3. Verify that home page is visible successfully
+    // 4. Click 'Signup / Login' button
+    // 5. Fill all details in Signup and create account
+    // 6. Verify 'ACCOUNT CREATED!' and click 'Continue' button
+    // 7. Verify ' Logged in as username' at top
+    // 8. Add products to cart
+    // 9. Click 'Cart' button
+    // 10. Verify that cart page is displayed
+    // 11. Click Proceed To Checkout
+    // 12. Verify that the delivery address is same address filled at the time registration of account
+    // 13. Verify that the billing address is same address filled at the time registration of account
+    // 14. Click 'Delete Account' button
+    // 15. Verify 'ACCOUNT DELETED!' and click 'Continue' button
+  });
 });
