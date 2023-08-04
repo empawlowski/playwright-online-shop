@@ -1,7 +1,7 @@
 // import { test, expect, chromium } from '@playwright/test';
 import { test, expect, _baseTest } from '@playwright/test';
 import { HomePage } from '../../components/home.component';
-import { NavbarPage } from '../../pages/navbar.page';
+import { ProductPage } from '../../pages/product.page';
 import { userData } from '../../test-data/user.data';
 import { productData } from '../../test-data/product.data';
 import { homeData } from '../../test-data/home.data';
@@ -13,7 +13,7 @@ import { faker } from '@faker-js/faker';
 test.describe('Function for Cart pages', () => {
   let homePage: HomePage;
   let user: SignLogin;
-  let product: NavbarPage;
+  let product: ProductPage;
   let cart: CartPage;
 
   test.beforeEach(async ({ page }, testInfo) => {
@@ -51,7 +51,7 @@ test.describe('Function for Cart pages', () => {
 
   test('Test Case 12: Add Products in Cart', async ({ page }) => {
     //Arrange
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     //Act
     await product.addProducts();
     //Assert
@@ -74,7 +74,7 @@ test.describe('Function for Cart pages', () => {
 
   test('Test Case 13: Verify Product quantity in Cart', async ({ page }) => {
     //Arrange
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     const quantity = productData.productQuantity;
     //Act
     await product.addProductQuantity(quantity);
@@ -96,7 +96,7 @@ test.describe('Function for Cart pages', () => {
   test('Test Case 14: Place Order: Register while Checkout', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     user = new SignLogin(page);
     cart = new CartPage(page);
 
@@ -209,7 +209,7 @@ test.describe('Function for Cart pages', () => {
   test('Test Case 15: Place Order: Register before Checkout', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     user = new SignLogin(page);
     cart = new CartPage(page);
 
@@ -321,7 +321,7 @@ test.describe('Function for Cart pages', () => {
   test('Test Case 16: Place Order: Login before Checkout', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     user = new SignLogin(page);
     cart = new CartPage(page);
 
@@ -435,7 +435,7 @@ test.describe('Function for Cart pages', () => {
   test('Test Case 17: Remove Products From Cart', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     cart = new CartPage(page);
 
     const quantity = productData.productQuantity;
@@ -465,7 +465,7 @@ test.describe('Function for Cart pages', () => {
     // test.setTimeout(120000);
 
     homePage = new HomePage(page);
-    product = new NavbarPage(page);
+    product = new ProductPage(page);
     cart = new CartPage(page);
     user = new SignLogin(page);
 
@@ -479,6 +479,7 @@ test.describe('Function for Cart pages', () => {
     await product.searchProduct(search);
     const searchResults = await page.locator('div.single-products').count();
     await expect(searchResults).toBe(expectProductNumber);
+    console.log('Results on page: ', searchResults);
 
     //* Catching by $$ selector
     const addToCarts = await page.$$('div.productinfo.text-center > a.btn.btn-default.add-to-cart');
@@ -509,6 +510,7 @@ test.describe('Function for Cart pages', () => {
 
     const cartProductNumber = await page.locator('#cart_info_table').locator('tbody > tr').count();
     Number(cartProductNumber) == Number(searchResults);
+    console.log('Are the values is correct: ', cartProductNumber === searchResults);
 
     await user.loginUser(email, password);
 
@@ -516,6 +518,7 @@ test.describe('Function for Cart pages', () => {
     const cartProductNumberAfterLogin = await page.locator('#cart_info_table').locator('tbody > tr').count();
     //Assert
     Number(cartProductNumberAfterLogin) == Number(searchResults);
+    console.log('Are the values is correct: ', cartProductNumberAfterLogin === searchResults);
 
     // Test Case 20: Search Products and Verify Cart After Login
     // 1. Launch browser (//)

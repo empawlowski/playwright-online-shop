@@ -1,10 +1,11 @@
 // import { test, expect, chromium } from '@playwright/test';
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../../components/home.component';
-import { ProductPage } from '../../pages/products.page';
 import { homeData } from '../../test-data/home.data';
 import { productData } from '../../test-data/product.data';
 import { faker } from '@faker-js/faker';
+import { ProductPage } from '../../pages/product.page';
+import { CartPage } from '../../pages/cart.page';
 
 test.describe('Functionality with products on Product page', () => {
   let homePage: HomePage;
@@ -214,21 +215,16 @@ test.describe('Functionality with products on Product page', () => {
     homePage = new HomePage(page);
     product = new ProductPage(page);
 
-    const username = faker.internet.userName();
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    const review = faker.lorem.text();
-
     //Act
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
     });
 
-    //verify
-    //addtocart
-    await homePage.cart.click();
+    await homePage.addFromRecommendedItems();
 
     //Assert
     //product on page
+    await expect(product.tableRow).toBeVisible();
 
     // Test Case 22: Add to cart from Recommended items
     // 1. Launch browser (//)

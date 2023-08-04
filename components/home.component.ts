@@ -39,6 +39,15 @@ export class HomePage {
   hBrandMastHarbour = this.page.getByRole('heading', { name: homeData.hBrandMastHarbour });
   hBrandPolo = this.page.getByRole('heading', { name: homeData.hBrandPolo });
 
+  //* POM for Recommended items - page bottom ()
+  //Test Case 22: Add to cart from Recommended items
+  hRecommendedItems = this.page.getByRole('heading', { name: homeData.hRecommendedItems });
+  // bAddToCartFromRecommendedItems = this.page
+  //   .locator('#recommended-item-carousel')
+  //   .locator('.item active > .product-image-wrapper > .single-products > .productinfo > .btn');
+  bAddToCartFromRecommendedItems = this.page.locator('div:nth-child(2) > div > .product-image-wrapper > .single-products > .productinfo > .btn');
+  viewCart = this.page.getByRole('link', { name: 'View Cart' });
+
   async openPage(): Promise<void> {
     await this.page.goto('/');
   }
@@ -105,23 +114,28 @@ export class HomePage {
     await expect(this.hTestCase).toBeVisible();
   }
 
-  async openWomenCategory() {
+  async openWomenCategory(): Promise<void> {
     await this.categoryWomen.click();
     await this.womenCategoryDress.click();
   }
 
-  async openMenCategory() {
+  async openMenCategory(): Promise<void> {
     await this.categoryMen.click();
     await this.menCategoryJeans.click();
   }
 
-  async openBrandMastHarbour() {
+  async openBrandMastHarbour(): Promise<void> {
     await this.brandMastHarbour.click();
     await this.expectBrandMastHarbourPage();
   }
 
-  async openBrandPolo() {
+  async openBrandPolo(): Promise<void> {
     await this.brandPolo.click();
     await this.expectBrandPolo();
+  }
+  async addFromRecommendedItems(): Promise<void> {
+    await expect(this.hRecommendedItems).toBeVisible();
+    await this.bAddToCartFromRecommendedItems.first().click();
+    await this.viewCart.click();
   }
 }
