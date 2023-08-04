@@ -45,6 +45,14 @@ export class CartPage {
     await this.bPlaceOrder.click();
   }
 
+  async proceedToCheckoutWithAddressVerification(deliveryAddress: string, deliveryInvoice: string): Promise<void> {
+    await this.homePage.cart.click();
+    await this.homePage.expectCartPage();
+    await this.bProceedToCheckout.click();
+    await expect(this.addressDelivery).toHaveText(deliveryAddress);
+    await expect(this.addressInvoice).toHaveText(deliveryInvoice);
+  }
+
   async fillCartInformation(
     firstName: string,
     lastName: string,
