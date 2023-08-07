@@ -28,6 +28,9 @@ export class CartPage {
   bDeleteQuantity = this.page.locator('a.cart_quantity_delete');
   divCartEmpty = this.page.locator('#empty_cart');
 
+  //Test Case 24: Download Invoice after purchase order
+  bDownloadInvoice = this.page.locator('div').filter({ hasText: /^OK$/ }).locator('div').getByRole('button');
+
   async checkoutFromCartPage(): Promise<void> {
     await this.homePage.expectCartPage();
     await this.bProceedToCheckout.click();
@@ -41,6 +44,16 @@ export class CartPage {
     await expect(this.addressDelivery).toHaveText(deliveryAddress);
     await expect(this.addressInvoice).toHaveText(deliveryInvoice);
     await this.product.expectAddProductQuantity();
+    await this.fillDescription.fill(description);
+    await this.bPlaceOrder.click();
+  }
+
+  async proceedToCheckoutWithoutExpectProductQuantity(deliveryAddress: string, deliveryInvoice: string, description: string): Promise<void> {
+    await this.homePage.cart.click();
+    await this.homePage.expectCartPage();
+    await this.bProceedToCheckout.click();
+    await expect(this.addressDelivery).toHaveText(deliveryAddress);
+    await expect(this.addressInvoice).toHaveText(deliveryInvoice);
     await this.fillDescription.fill(description);
     await this.bPlaceOrder.click();
   }

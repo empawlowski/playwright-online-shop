@@ -5,8 +5,9 @@ export class HomePage {
   constructor(private page: Page) {}
 
   //* POM for Navbar menu
-  //   home;
-  products = this.page.getByRole('link', { name: 'Products' });
+  home = this.page.locator('[href*="/"]', { hasText: 'Home' });
+  // products = this.page.getByRole('link', { name: ' Products' });
+  products = this.page.locator('[href*="/products"]', { hasText: 'Products' });
   cart = this.page.getByRole('link', { name: 'Cart' });
   signLogin = this.page.getByRole('link', { name: 'Signup / Login' });
   deleteAccount = this.page.getByRole('link', { name: 'Delete Account' });
@@ -20,7 +21,8 @@ export class HomePage {
   hTestCase = this.page.getByRole('heading', { name: 'Test Cases', exact: true });
   hAllProducts = this.page.getByRole('heading', { name: 'All Products', exact: true });
 
-  //* POM for left Menu/ Sidebar - Test Case: 18, 19 (#expectLeftSidebar) (#expectWomenDressProductsPage) (#expectMenJeansProductsPage) (#openWomenCategory) (#openMenCategory)
+  //* POM for left Menu/ Sidebar - Test Case: 18, 19
+  // (#expectLeftSidebar) (#expectWomenDressProductsPage) (#expectMenJeansProductsPage) (#openWomenCategory) (#openMenCategory)
   sidebar = this.page.locator('#accordian');
   sidebarCategory = this.page.locator('.left-sidebar').getByRole('heading', { name: homeData.leftSidebarCategory });
   sidebarBrands = this.page.locator('.left-sidebar').getByRole('heading', { name: homeData.leftSidebarBrands });
