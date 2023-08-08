@@ -73,7 +73,7 @@
   page.locator('[href*="/pageName"]', { hasText: 'Page Name' });
   ```
 
-- examples using loop `for` [`cart.spec.ts` > `Test Case 20: Search Products and Verify Cart After Login` ]
+- examples using loop `for` [ `cart.spec.ts` > `Test Case 20: Search Products and Verify Cart After Login` ]
 
   - catching by `$$ selector`
 
@@ -99,7 +99,7 @@
     }
     ```
 
-- `download` method with `console.log` [`cart.spec.ts` > `Test Case 24: Download Invoice after purchase order` ]
+- `download` method with `console.log` [ `cart.spec.ts` > `Test Case 24: Download Invoice after purchase order` ]
 
   ```javascript
   const downloadPromise = page.waitForEvent('download');
@@ -111,6 +111,12 @@
   } else {
     console.log('File download failed.');
   }
+  ```
+
+- `catch` element by `screen` [ `home.spec.ts` > `Test Case 25/26: Verify Scroll Up using/without 'Arrow' button and Scroll Down functionality` ]
+
+  ```javascript
+  await page.screenshot({ path: './screenshot.png' });
   ```
 
 ## Playwright Config modifications

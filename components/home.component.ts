@@ -140,4 +140,25 @@ export class HomePage {
     await this.bAddToCartFromRecommendedItems.first().click();
     await this.viewCart.click();
   }
+
+  async scrollUpConfirmByScreen() {
+    await this.page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+    await this.page.screenshot({ path: './test-download/e2e/home/hSubscription.png' });
+    await this.page.locator('#scrollUp').click();
+    await this.page.waitForTimeout(1000);
+    await this.page.screenshot({ path: './test-download/e2e/home/hAutomationExercise.png' });
+  }
+
+  async noScrollUpConfirmByScreen() {
+    await this.page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+    await this.page.screenshot({ path: './test-download/e2e/home/noScrollUpHSubscription.png' });
+    await this.page.evaluate(() => {
+      window.scrollTo(0, 0);
+    });
+    await this.page.screenshot({ path: './test-download/e2e/home/noScrollUpHAutomationExercise.png' });
+  }
 }
