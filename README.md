@@ -99,6 +99,20 @@
     }
     ```
 
+- `download` method with `console.log` [`cart.spec.ts` > `Test Case 24: Download Invoice after purchase order` ]
+
+  ```javascript
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('#download').click();
+  const download = await downloadPromise;
+  if (download) {
+    console.log('File downloaded successfully.');
+    await download.saveAs('./test-download/e2e/cart/Invoice.txt');
+  } else {
+    console.log('File download failed.');
+  }
+  ```
+
 ## Playwright Config modifications
 
 - add `timeout` and `expect timeout`

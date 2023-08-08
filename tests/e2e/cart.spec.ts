@@ -693,7 +693,9 @@ test.describe('Function for Cart pages', () => {
     const expiryYear = cartData.expiryYear;
 
     // Act
-    await product.addProductWithRegisterLogin();
+    await product.addProductGoCartPage();
+    await cart.bProceedToCheckout.click();
+    await cart.bRegisterLogin.click();
 
     await user.registerUser(
       username,
@@ -716,24 +718,24 @@ test.describe('Function for Cart pages', () => {
 
     await expect(loggedUser).toBeVisible();
 
-    await cart.proceedToCheckoutWithoutExpectProductQuantity(deliveryAddress, deliveryInvoice, description);
+    await cart.checkoutWithoutExpectProductQuantity(deliveryAddress, deliveryInvoice, description);
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
-
     //* Download method
-    const downloadPromiseExport = page.waitForEvent('download');
+    const downloadPromise = page.waitForEvent('download');
     await cart.bDownloadInvoice.click();
-    const downloadExport = await downloadPromiseExport;
-    if (downloadExport) {
+    const download = await downloadPromise;
+    if (download) {
       console.log('File downloaded successfully.');
-      await downloadExport.saveAs('./test-download/e2e/cart/Invoice.pdf');
+      await download.saveAs('./test-download/e2e/cart/Invoice.txt');
     } else {
       console.log('File download failed.');
     }
+    //*--------------
 
-    // await cart.bContinue//
+    await cart.bContinue.click();
 
     //Assert
-    // await user.deleteUser();
+    await user.deleteUser();
 
     // Test Case 24: Download Invoice after purchase order
     // 1. Launch browser (//)
@@ -754,7 +756,7 @@ test.describe('Function for Cart pages', () => {
     // 16. Enter payment details: Name on Card, Card Number, CVC, Expiration date
     // 17. Click 'Pay and Confirm Order' button
     // 18. Verify success message 'Your order has been placed successfully!'
-    // 19. Click 'Download Invoice' button and verify invoice is downloaded successfully. //!
+    // 19. Click 'Download Invoice' button and verify invoice is downloaded successfully.
     // 20. Click 'Continue' button
     // 21. Click 'Delete Account' button
     // 22. Verify 'ACCOUNT DELETED!' and click 'Continue' button

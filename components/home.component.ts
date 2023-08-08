@@ -12,8 +12,8 @@ export class HomePage {
   signLogin = this.page.getByRole('link', { name: 'Signup / Login' });
   deleteAccount = this.page.getByRole('link', { name: 'Delete Account' });
   testCases = this.page.getByRole('link', { name: ' Test Cases' });
-  //   apiTesting;
-  //   videoTutorials;
+  apiTesting = this.page.getByRole('link', { name: 'API Testing' });
+  videoTutorials = this.page.getByRole('link', { name: 'Video Tutorials' });
   contactUs = this.page.getByRole('link', { name: 'Contact us' });
   logout = this.page.getByRole('link', { name: 'Logout' });
 
