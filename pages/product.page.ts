@@ -1,6 +1,7 @@
 import { Page, expect } from '@playwright/test';
 import { HomePage } from '../components/home.component';
 import { productData } from '../test-data/product.data';
+import { CartPage } from './cart.page';
 
 export class ProductPage {
   constructor(private page: Page) {}
@@ -112,6 +113,14 @@ export class ProductPage {
     await this.fillSearchProduct.fill(search);
     await this.bSearch.click();
     await expect(this.hSearchedProducts).toBeVisible();
+  }
+
+  async addProductGoCartPage(): Promise<void> {
+    await this.homePage.products.click();
+    await this.bAddToCart.first().click();
+    await this.bContinueShopping.click();
+    await this.homePage.cart.click();
+    await this.homePage.expectCartPage();
   }
 
   async addProducts(): Promise<void> {
