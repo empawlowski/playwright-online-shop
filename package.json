@@ -1,11 +1,19 @@
 {
-  "name": "e2e-online-shop",
+  "name": "playwright-online-shop",
   "version": "1.0.0",
-  "description": "",
+  "description": "Automation tests for online shop by using framework Playwright.",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --ui",
+    "test:smoke": "npx playwright test -g @smoke",
+    "test:home": "npm run test tests/e2e/home.spec.ts",
+    "test:home:headed": "npm run test tests/e2e/home.spec.ts -- --headed",
+    "test:api": "npx playwright test tests/api/api.spec.ts --project=Chromium",
+    "record": "npx playwright codegen https://automationexercise.com"
+  },
   "keywords": [],
-  "author": "Marcin P",
+  "author": "Marcin Pawłowski",
   "license": "ISC",
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
