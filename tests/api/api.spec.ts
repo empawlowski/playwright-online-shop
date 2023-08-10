@@ -1,17 +1,15 @@
 import { test, expect } from '@playwright/test';
 
-// reqres.in;
-
 test.describe('APIs List for practice', () => {
   test('API 0: 404 Page', async ({ request }) => {
     //Assert
     const response = await request.get('/api/notExistEndpoint');
     //Act
-    //Assert
     expect(response.status()).toBe(404);
+    //Assert
 
     // API 0: 404 Page
-    // API URL: https://automationexercise.com//api/notExistEndpoint
+    // API URL: https://automationexercise.com/api/notExistEndpoint
     // Request Method: GET
     // Response Code: 404
   });
@@ -19,23 +17,26 @@ test.describe('APIs List for practice', () => {
     //Assert
     test.fail(); //! Test is fail so is true ;-)
     const response = await request.get('/api/productsList');
+    const responseBody = JSON.parse(await response.text());
     //Act
-    //Assert
     expect(response.status()).toBe(400);
+    //Assert
+    console.log(responseBody);
 
-    // API 0: Bad status code //!
+    // API 0: Bad status code
     // API URL: https://automationexercise.com/api/productsList
     // Request Method: GET
     // Response Code: 400
   });
-  test('API 1: Get All Products List', async ({ request }) => {
+  test('API 1: GET All Products List', async ({ request }) => {
     //Assert
     const response = await request.get('/api/productsList');
     const responseBody = JSON.parse(await response.text());
     //Act
     expect(response.status()).toBe(200);
     //Assert
-    console.log(responseBody); //! ? //TODO:
+    console.log(responseBody);
+    expect(responseBody.responseCode).toBe(200);
 
     // API 1: Get All Products List
     // API URL: https://automationexercise.com/api/productsList
@@ -44,7 +45,7 @@ test.describe('APIs List for practice', () => {
     // Response JSON: All products list
   });
 
-  test('API 1.1: Get Details Product', async ({ request }) => {
+  test('API 1.1: GET Details Product', async ({ request }) => {
     //Assert
     const response = await request.get('/api/productsList/1'); //! id for 1?
     const responseBody = JSON.parse(await response.text());
@@ -193,5 +194,185 @@ test.describe('APIs List for practice', () => {
     // Request Parameters: email, password
     // Response Code: 200
     // Response Message: User exists!
+  });
+
+  test('API 8: POST To Verify Login without email parameter', async ({ request }) => {
+    //Arrange
+    const response = await request.post('api/verifyLogin', {
+      data: {
+        password: 'fake!Password00',
+      },
+    });
+    const responseBody = JSON.parse(await response.text());
+    //Act
+    expect(response.status()).toBe(200);
+    //Assert
+    console.log(responseBody);
+    expect(responseBody.responseCode).toBe(400);
+    expect(responseBody.message).toBe('Bad request, email or password parameter is missing in POST request.');
+
+    // API 8: POST To Verify Login without email parameter
+    // API URL: https://automationexercise.com/api/verifyLogin
+    // Request Method: POST
+    // Request Parameter: password
+    // Response Code: 400
+    // Response Message: Bad request, email or password parameter is missing in POST request.
+  });
+  test('API 9: DELETE To Verify Login', async ({ request }) => {
+    //Arrange
+    const response = await request.delete('api/verifyLogin');
+    const responseBody = JSON.parse(await response.text());
+    //Act
+    expect(response.status()).toBe(200);
+    //Assert
+    console.log(responseBody);
+    expect(responseBody.responseCode).toBe(405);
+    expect(responseBody.message).toBe('This request method is not supported.');
+
+    // API 9: DELETE To Verify Login
+    // API URL: https://automationexercise.com/api/verifyLogin
+    // Request Method: DELETE
+    // Response Code: 405
+    // Response Message: This request method is not supported.
+  });
+  test('API 10: POST To Verify Login with invalid details', async ({ request }) => {
+    //Arrange
+    const response = await request.post('api/verifyLogin', {
+      data: {
+        email: 'email@email.email',
+        password: 'invalid!Password',
+      },
+    });
+    const responseBody = JSON.parse(await response.text());
+    //Act
+    expect(response.status()).toBe(200);
+    //Assert
+    console.log(responseBody);
+    expect(responseBody.responseCode).toBe(400);
+    // expect(responseBody.message).toBe('User not found!');
+    expect(responseBody.message).toBe('Bad request, email or password parameter is missing in POST request.');
+
+    // API 10: POST To Verify Login with invalid details
+    // API URL: https://automationexercise.com/api/verifyLogin
+    // Request Method: POST
+    // Request Parameters: email, password (invalid values)
+    // Response Code: 404
+    // Response Message: User not found!
+  });
+  test.fixme('API 11: POST To Create/Register User Account', async ({ request }) => {
+    //Arrange
+    const response = await request.post('api/createAccount', {
+      data: {
+        name: 'newNameForUsername',
+        email: 'email00@email.pw',
+        password: 'password',
+        title: 'Mr',
+        birth_date: '23',
+        birth_month: 'May',
+        birth_year: '1988',
+        firstname: 'FirstName',
+        lastname: 'LastName',
+        company: 'Company',
+        address1: 'Address 1',
+        address2: 'Address 2',
+        country: 'Australia',
+        zipcode: '56-121-78',
+        state: 'California',
+        city: 'Portland',
+        mobile_number: '561-121-121',
+      },
+    });
+    const responseBody = JSON.parse(await response.text());
+
+    //Act
+    expect(response.status()).toBe(200);
+    //Assert
+    console.log(responseBody);
+
+    // API 11: POST To Create/Register User Account
+    // API URL: https://automationexercise.com/api/createAccount
+    // Request Method: POST
+    // Request Parameters: name, email, password, title (for example: Mr, Mrs, Miss), birth_date, birth_month, birth_year, firstname,
+    // lastname, company, address1, address2, country, zipcode, state, city, mobile_number
+    // Response Code: 201
+    // Response Message: User created!
+  });
+  test('API 12: DELETE METHOD To Delete User Account', async ({ request }) => {
+    //Arrange
+    // const response = await request.delete('api/deleteAccount', {
+    //   data: {
+    //     email: 'API@api.io',
+    //     password: 'api!Password00',
+    //   },
+    // });
+    const response = await request.delete('api/deleteAccount');
+    const responseBody = JSON.parse(await response.text());
+
+    //Act
+    expect(response.status()).toBe(200);
+    //Assert
+    console.log(responseBody);
+
+    // API 12: DELETE METHOD To Delete User Account
+    // API URL: https://automationexercise.com/api/deleteAccount
+    // Request Method: DELETE
+    // Request Parameters: email, password
+    // Response Code: 200
+    // Response Message: Account deleted!
+  });
+  test.fixme('API 13: PUT METHOD To Update User Account', async ({ request }) => {
+    //Arrange
+    const response = await request.put('api/updateAccount', {
+      data: {
+        name: 'newNameForUsername',
+        email: 'email00@email.pw',
+        password: 'password',
+        title: 'Mr',
+        birth_date: '23',
+        birth_month: 'May',
+        birth_year: '1988',
+        firstname: 'FirstName',
+        lastname: 'LastName',
+        company: 'Company',
+        address1: 'Address 1',
+        address2: 'Address 2',
+        country: 'Australia',
+        zipcode: '56-121-78',
+        state: 'California',
+        city: 'Portland',
+        mobile_number: '561-121-121',
+      },
+    });
+    const responseBody = JSON.parse(await response.text());
+
+    //Act
+    expect(response.status()).toBe(200);
+    //Assert
+    console.log(responseBody);
+
+    // API 13: PUT METHOD To Update User Account
+    // API URL: https://automationexercise.com/api/updateAccount
+    // Request Method: PUT
+    // Request Parameters: name, email, password, title (for example: Mr, Mrs, Miss), birth_date, birth_month, birth_year, firstname,
+    // lastname, company, address1, address2, country, zipcode, state, city, mobile_number;
+    // Response Code: 200
+    // Response Message: User updated!
+  });
+  test.fixme('API 14: GET user account detail by email', async ({ request }) => {
+    //Arrange
+    const response = await request.get('api/getUserDetailByEmail');
+    const responseBody = JSON.parse(await response.text());
+
+    //Act
+    expect(response.status()).toBe(200);
+    //Assert
+    console.log(responseBody);
+
+    // API 14: GET user account detail by email
+    // API URL: https://automationexercise.com/api/getUserDetailByEmail
+    // Request Method: GET
+    // Request Parameters: email
+    // Response Code: 200
+    // Response JSON: User Detail
   });
 });
