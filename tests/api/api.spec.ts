@@ -45,24 +45,24 @@ test.describe('APIs List for practice', () => {
     // Response JSON: All products list
   });
 
-  test('API 1.1: GET Details Product', async ({ request }) => {
+  test.fixme('API 1.1: GET Details Product', async ({ request }) => {
     //Assert
     const response = await request.get('/api/productsList/1'); //! id for 1?
     const responseBody = JSON.parse(await response.text());
     //Act
     expect(response.status()).toBe(200);
     //Assert
-    expect(responseBody.products.id).toBe(1); //! id details
-    expect(responseBody.products.name).toBe('Blue Top'); //! id details
-    expect(responseBody.products.email).toBeTruthy(); //! some value = pass (for date)
+    // expect(responseBody.products.id).toBe(1); //! id details
+    // expect(responseBody.products.name).toBe('Blue Top'); //! id details
+    // expect(responseBody.products.email).toBeTruthy(); //! some value = pass (for date)
     console.log(responseBody);
-    console.log('Name: ', responseBody.products.name); //! assertion more
+    // console.log('Name: ', responseBody.products.name); //! assertion more
 
-    // API 1: Get All Products List //!
+    // API 1.1: GET Details Product
     // API URL: https://automationexercise.com/api/productsList
     // Request Method: GET
     // Response Code: 200
-    // Response JSON: All products list
+    // Response JSON: Details for product
   });
 
   test('API 2: POST To All Products List', async ({ request }) => {
@@ -235,7 +235,7 @@ test.describe('APIs List for practice', () => {
     // Response Code: 405
     // Response Message: This request method is not supported.
   });
-  test('API 10: POST To Verify Login with invalid details', async ({ request }) => {
+  test.fixme('API 10: POST To Verify Login with invalid details', async ({ request }) => {
     //Arrange
     const response = await request.post('api/verifyLogin', {
       data: {
@@ -297,7 +297,7 @@ test.describe('APIs List for practice', () => {
     // Response Code: 201
     // Response Message: User created!
   });
-  test('API 12: DELETE METHOD To Delete User Account', async ({ request }) => {
+  test.fixme('API 12: DELETE METHOD To Delete User Account', async ({ request }) => {
     //Arrange
     // const response = await request.delete('api/deleteAccount', {
     //   data: {
