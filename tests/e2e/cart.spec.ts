@@ -72,7 +72,7 @@ test.describe('Function for Cart pages', () => {
     // 10. Verify their prices, quantity and total price
   });
 
-  test('Test Case 13: Verify Product quantity in Cart', async ({ page }) => {
+  test('Test Case 13: Verify Product quantity in Cart @smoke', async ({ page }) => {
     //Arrange
     product = new ProductPage(page);
     const quantity = productData.productQuantity;
