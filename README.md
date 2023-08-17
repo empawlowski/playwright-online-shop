@@ -1,15 +1,29 @@
-# Test Automation for page: `https://automationexercise.com`
+<p align="center">
+<img src=https://skillicons.dev/icons?i=vscode,nodejs,js,ts,github />
+</p>
+
+# [E2E, API] Automation tests for page: `https://automationexercise.com`
+
+## Hyperlinks for contents
+
+- [Extension](#used-extensions-and-library-in-project)
+- [Playwright snippets](#playwright-snippets)
+- [Config modifications](#playwright-config-modifications)
+- [Installation](#installation)
+  - [Project installation](#project-installation)
+  - [Prettier](#prettier)
+  - [Faker.js](#faker)
 
 ## Used extensions and library in project
 
-- ### Playwright Test for VSCode
+- ### 🎭 Playwright Test for VSCode
 - ### GitHub Actions/ GitLens Inspect
-- ### Prettier (installation below)
+- ### Prettier ([installation bellow](#prettier))
 - ### Better Comments
 - ### Code Spell Checker
 - ### Auto-Open Markdown Preview
 - ### VSCode-icons
-- ### Faker (installation bellow) (`library`)
+- ### Faker.js ([installation bellow](#faker)) (`library`)
 
 ## Playwright snippets
 
