@@ -47,7 +47,7 @@ test.describe('Function on Home page', () => {
     //Assert
     //* Check files in ./test-download/e2e/home/
     // first assertion: hSubscription.png
-    // second assertion: hAutomationExercise.png;
+    // second assertion: hAutomationExercise.png
 
     // Test Case 25: Verify Scroll Up using 'Arrow' button and Scroll Down functionality
     // 1. Launch browser (//)
@@ -69,7 +69,7 @@ test.describe('Function on Home page', () => {
     //Assert
     //* Check files in ./test-download/e2e/home/
     // first assertion: noScrollUpHSubscription.png
-    // second assertion: noScrollUpHAutomationExercise.png;
+    // second assertion: noScrollUpHAutomationExercise.png
 
     // Test Case 26: Verify Scroll Up without 'Arrow' button and Scroll Down functionality
     // 1. Launch browser (//)
