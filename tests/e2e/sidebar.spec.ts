@@ -54,7 +54,7 @@ test.describe('Navigation for left sidebar', () => {
     // 8. Verify that user is navigated to that category page
   });
 
-  test('Test Case 19: View & Cart Brand Products', async ({ page }) => {
+  test('Test Case 19: View & Cart Brand Products @smoke', async ({ page }) => {
     //Arrange
     homePage = new HomePage(page);
 
