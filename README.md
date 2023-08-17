@@ -214,15 +214,3 @@
 
     const email = faker.internet.email();
     ```
-
-//TODO:
-![image description](relative/path/in/repository/to/image.svg)
-OR
-<img src="relative/path/in/repository/to/image.svg" width="128"/>
-
-## Resources
-
-- [Documentation](https://playwright.dev/docs/intro)
-- [API reference](https://playwright.dev/docs/api/class-playwright/)
-- [Contribution guide](CONTRIBUTING.md)
-- [Changelog](https://github.com/microsoft/playwright/releases)
