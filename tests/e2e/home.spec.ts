@@ -37,7 +37,7 @@ test.describe('Function on Home page', () => {
     // await page.close();
   });
 
-  test('Test Case 25: Verify Scroll Up using "Arrow" button and Scroll Down functionality', async ({ page }) => {
+  test('Test Case 25: Verify Scroll Up using "Arrow" button and Scroll Down functionality @smoke', async ({ page }) => {
     //Assert
     homePage = new HomePage(page);
 
@@ -59,7 +59,7 @@ test.describe('Function on Home page', () => {
     // 7. Verify that page is scrolled up and 'Full-Fledged practice website for Automation Engineers' text is visible on screen
   });
 
-  test('Test Case 26: Verify Scroll Up without "Arrow" button and Scroll Down functionality', async ({ page }) => {
+  test('Test Case 26: Verify Scroll Up without "Arrow" button and Scroll Down functionality @smoke', async ({ page }) => {
     //Assert
     homePage = new HomePage(page);
 
