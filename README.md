@@ -209,8 +209,8 @@
     ```
   - usage
 
-    ```javascript
-    import { faker } from '@faker-js/faker';
+        ```javascript
+        import { faker } from '@faker-js/faker';
 
-    const email = faker.internet.email();
-    ```
+        const email = faker.internet.email();
+        ```
