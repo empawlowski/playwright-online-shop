@@ -1,20 +1,30 @@
-name: Playwright Online Shop Tests
+name: Playwright Tests
 on:
   push:
     branches: -main
   pull_request:
     branches: -main
+
 jobs:
   test:
     runs-on: ubuntu-latest #macos-latest, windows-latest
+    strategy:
+      matrix:
+        browser: [chromium]
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - uses: microsoft/playwright-github-action@v1
+      - uses: actions/cache@v2
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run Playwright Tests
-        run: npx playwright test
+        run: npm run test:smoke
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
