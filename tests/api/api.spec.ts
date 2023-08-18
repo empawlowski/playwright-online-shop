@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { userData } from '../../test-data/user.data';
 
 test.describe('APIs List for practice', () => {
   test('API 0: 404 Page', async ({ request }) => {
@@ -128,11 +129,10 @@ test.describe('APIs List for practice', () => {
     // Response Message: This request method is not supported.
   });
 
-  test.fixme('API 5: POST To Search Product', async ({ request }) => {
+  test('API 5: POST To Search Product', async ({ request }) => {
     //Assert
-    test.fail();
     const response = await request.post('/api/searchProduct', {
-      data: {
+      form: {
         search_product: 'top',
       },
     });
@@ -142,7 +142,7 @@ test.describe('APIs List for practice', () => {
     //Arrange
     console.log(responseBody);
     expect(responseBody.responseCode).toBe(200);
-    // expect(responseBody.message).toBe('Searched products list');
+    expect(responseBody.products).toBeTruthy();
 
     // API 5: POST To Search Product
     // API URL: https://automationexercise.com/api/searchProduct
@@ -171,18 +171,19 @@ test.describe('APIs List for practice', () => {
     // Response Code: 400
     // Response Message: Bad request, search_product parameter is missing in POST request.
   });
-  test.fixme('API 7: POST To Verify Login with valid details', async ({ request }) => {
+  test('API 7: POST To Verify Login with valid details', async ({ request }) => {
     //Assert
-    test.fail();
     const response = await request.post('/api/verifyLogin', {
-      data: {
+      form: {
         email: 'fake@email.cc',
         password: 'fake!Password00',
       },
     });
+    console.log(await response.json());
     const responseBody = JSON.parse(await response.text());
     //Act
     expect(response.status()).toBe(200);
+    // const responseBody = await response.json();
     //Arrange
     console.log(responseBody);
     expect(responseBody.responseCode).toBe(200);
@@ -235,22 +236,23 @@ test.describe('APIs List for practice', () => {
     // Response Code: 405
     // Response Message: This request method is not supported.
   });
-  test.fixme('API 10: POST To Verify Login with invalid details', async ({ request }) => {
+  test('API 10: POST To Verify Login with invalid details', async ({ request }) => {
     //Arrange
     const response = await request.post('api/verifyLogin', {
-      data: {
+      form: {
         email: 'email@email.email',
         password: 'invalid!Password',
       },
     });
     const responseBody = JSON.parse(await response.text());
+
     //Act
     expect(response.status()).toBe(200);
+
     //Assert
     console.log(responseBody);
-    expect(responseBody.responseCode).toBe(400);
-    // expect(responseBody.message).toBe('User not found!');
-    expect(responseBody.message).toBe('Bad request, email or password parameter is missing in POST request.');
+    expect(responseBody.responseCode).toBe(404);
+    expect(responseBody.message).toBe('User not found!');
 
     // API 10: POST To Verify Login with invalid details
     // API URL: https://automationexercise.com/api/verifyLogin
@@ -259,13 +261,17 @@ test.describe('APIs List for practice', () => {
     // Response Code: 404
     // Response Message: User not found!
   });
-  test.fixme('API 11: POST To Create/Register User Account', async ({ request }) => {
+  test('API 11: POST To Create/Register User Account', async ({ request }) => {
     //Arrange
     const response = await request.post('api/createAccount', {
-      data: {
-        name: 'newNameForUsername',
-        email: 'email00@email.pw',
-        password: 'password',
+      headers: {
+        Accept: '*/*',
+        ContentType: 'application/json',
+      },
+      form: {
+        name: 'fakeAPIName',
+        email: 'fake@api.io',
+        password: 'fake!Password00',
         title: 'Mr',
         birth_date: '23',
         birth_month: 'May',
@@ -288,6 +294,8 @@ test.describe('APIs List for practice', () => {
     expect(response.status()).toBe(200);
     //Assert
     console.log(responseBody);
+    expect(responseBody.responseCode).toBe(201);
+    expect(responseBody.message).toBe('User created!');
 
     // API 11: POST To Create/Register User Account
     // API URL: https://automationexercise.com/api/createAccount
@@ -297,21 +305,38 @@ test.describe('APIs List for practice', () => {
     // Response Code: 201
     // Response Message: User created!
   });
-  test.fixme('API 12: DELETE METHOD To Delete User Account', async ({ request }) => {
+  test('API 12: DELETE METHOD To Delete User Account', async ({ request }) => {
     //Arrange
-    // const response = await request.delete('api/deleteAccount', {
-    //   data: {
-    //     email: 'API@api.io',
-    //     password: 'api!Password00',
-    //   },
-    // });
-    const response = await request.delete('api/deleteAccount');
+    const response = await request.delete('api/deleteAccount', {
+      form: {
+        name: 'fakeAPIName',
+        email: 'fake@api.io',
+        password: 'fake!Password00',
+        title: 'Mr',
+        birth_date: '23',
+        birth_month: 'May',
+        birth_year: '1988',
+        firstname: 'FirstName',
+        lastname: 'LastName',
+        company: 'Company',
+        address1: 'Address 1',
+        address2: 'Address 2',
+        country: 'Australia',
+        zipcode: '56-121-78',
+        state: 'California',
+        city: 'Portland',
+        mobile_number: '561-121-121',
+      },
+    });
+
     const responseBody = JSON.parse(await response.text());
 
     //Act
     expect(response.status()).toBe(200);
     //Assert
     console.log(responseBody);
+    expect(responseBody.responseCode).toBe(200);
+    expect(responseBody.message).toBe('Account deleted!');
 
     // API 12: DELETE METHOD To Delete User Account
     // API URL: https://automationexercise.com/api/deleteAccount
@@ -320,10 +345,51 @@ test.describe('APIs List for practice', () => {
     // Response Code: 200
     // Response Message: Account deleted!
   });
-  test.fixme('API 13: PUT METHOD To Update User Account', async ({ request }) => {
+  test('API 13: PUT METHOD To Update User Account', async ({ request }) => {
     //Arrange
     const response = await request.put('api/updateAccount', {
-      data: {
+      form: {
+        name: userData.logoutUser, // 'fakeUserName'
+        email: userData.logoutEmail, //'fake@email.cc',
+        password: userData.fakePassword, //'fake!Password00',
+        title: 'Mr',
+        birth_date: '23',
+        birth_month: 'May',
+        birth_year: '1988',
+        firstname: 'FirstName',
+        lastname: 'LastName',
+        company: 'Company',
+        address1: 'Address 1',
+        address2: 'Address 2',
+        country: 'Australia',
+        zipcode: '56-121-78',
+        state: 'California',
+        city: 'Portland',
+        mobile_number: '561-121-121',
+      },
+    });
+    const responseBody = JSON.parse(await response.text());
+
+    //Act
+    expect(response.status()).toBe(200);
+    //Assert
+    console.log(responseBody);
+    expect(responseBody.responseCode).toBe(200);
+    expect(responseBody.message).toBe('User updated!');
+
+    // API 13: PUT METHOD To Update User Account
+    // API URL: https://automationexercise.com/api/updateAccount
+    // Request Method: PUT
+    // Request Parameters: name, email, password, title (for example: Mr, Mrs, Miss), birth_date, birth_month, birth_year, firstname,
+    // lastname, company, address1, address2, country, zipcode, state, city, mobile_number;
+    // Response Code: 200
+    // Response Message: User updated!
+  });
+
+  test('API 13.1: PUT METHOD To Update User Account with invalid details ', async ({ request }) => {
+    //Arrange
+    const response = await request.put('api/updateAccount', {
+      form: {
         name: 'newNameForUsername',
         email: 'email00@email.pw',
         password: 'password',
@@ -349,24 +415,54 @@ test.describe('APIs List for practice', () => {
     expect(response.status()).toBe(200);
     //Assert
     console.log(responseBody);
+    expect(responseBody.responseCode).toBe(404);
+    expect(responseBody.message).toBe('Account not found!');
 
     // API 13: PUT METHOD To Update User Account
     // API URL: https://automationexercise.com/api/updateAccount
     // Request Method: PUT
     // Request Parameters: name, email, password, title (for example: Mr, Mrs, Miss), birth_date, birth_month, birth_year, firstname,
     // lastname, company, address1, address2, country, zipcode, state, city, mobile_number;
-    // Response Code: 200
-    // Response Message: User updated!
+    // Response Code: 404
+    // Response Message: Account not found!
   });
+
   test.fixme('API 14: GET user account detail by email', async ({ request }) => {
     //Arrange
-    const response = await request.get('api/getUserDetailByEmail');
+    const response = await request.get('api/getUserDetailByEmail', {
+      form: {
+        email: 'fake@email.cc', //'fake@api.io'
+      },
+    });
+    // const response = await request.get('api/getUserDetailByEmail', {
+    //   form: {
+    //     name: userData.logoutUser, // 'fakeUserName'
+    //     email: userData.logoutEmail, //'fake@email.cc',
+    //     password: userData.fakePassword, //'fake!Password00',
+    //     title: 'Mr',
+    //     birth_date: '23',
+    //     birth_month: 'May',
+    //     birth_year: '1988',
+    //     firstname: 'FirstName',
+    //     lastname: 'LastName',
+    //     company: 'Company',
+    //     address1: 'Address 1',
+    //     address2: 'Address 2',
+    //     country: 'Australia',
+    //     zipcode: '56-121-78',
+    //     state: 'California',
+    //     city: 'Portland',
+    //     mobile_number: '561-121-121',
+    //   },
+    // });
     const responseBody = JSON.parse(await response.text());
 
     //Act
     expect(response.status()).toBe(200);
     //Assert
     console.log(responseBody);
+    expect(responseBody.responseCode).toBe(400);
+    expect(responseBody.message).toBeTruthy();
 
     // API 14: GET user account detail by email
     // API URL: https://automationexercise.com/api/getUserDetailByEmail
