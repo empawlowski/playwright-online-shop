@@ -131,7 +131,7 @@ test.describe('APIs List for practice', () => {
 
   test('API 5: POST To Search Product', async ({ request }) => {
     //Assert
-    const response = await request.post('/api/searchProduct', {
+    const response = await request.post('api/searchProduct', {
       form: {
         search_product: 'top',
       },
@@ -153,7 +153,7 @@ test.describe('APIs List for practice', () => {
   });
   test('API 6: POST To Search Product without search_product parameter', async ({ request }) => {
     //Assert
-    const response = await request.post('/api/searchProduct');
+    const response = await request.post('api/searchProduct');
     const responseBody = JSON.parse(await response.text());
     //Act
     expect(response.status()).toBe(200);
@@ -173,17 +173,15 @@ test.describe('APIs List for practice', () => {
   });
   test('API 7: POST To Verify Login with valid details', async ({ request }) => {
     //Assert
-    const response = await request.post('/api/verifyLogin', {
+    const response = await request.post('api/verifyLogin', {
       form: {
         email: 'fake@email.cc',
         password: 'fake!Password00',
       },
     });
-    console.log(await response.json());
     const responseBody = JSON.parse(await response.text());
     //Act
     expect(response.status()).toBe(200);
-    // const responseBody = await response.json();
     //Arrange
     console.log(responseBody);
     expect(responseBody.responseCode).toBe(200);
@@ -304,6 +302,50 @@ test.describe('APIs List for practice', () => {
     // lastname, company, address1, address2, country, zipcode, state, city, mobile_number
     // Response Code: 201
     // Response Message: User created!
+  });
+  test('API 11.1: POST To Create/Register User Account - email exists', async ({ request }) => {
+    //Arrange
+    const response = await request.post('api/createAccount', {
+      headers: {
+        Accept: '*/*',
+        ContentType: 'application/json',
+      },
+      form: {
+        name: 'fakeAPIName',
+        email: 'fake@api.io',
+        password: 'fake!Password00',
+        title: 'Mr',
+        birth_date: '23',
+        birth_month: 'May',
+        birth_year: '1988',
+        firstname: 'FirstName',
+        lastname: 'LastName',
+        company: 'Company',
+        address1: 'Address 1',
+        address2: 'Address 2',
+        country: 'Australia',
+        zipcode: '56-121-78',
+        state: 'California',
+        city: 'Portland',
+        mobile_number: '561-121-121',
+      },
+    });
+    const responseBody = JSON.parse(await response.text());
+
+    //Act
+    expect(response.status()).toBe(200);
+    //Assert
+    console.log(responseBody);
+    expect(responseBody.responseCode).toBe(400);
+    expect(responseBody.message).toBe('Email already exists!');
+
+    // API 11.1: POST To Create/Register User Account - email exists
+    // API URL: https://automationexercise.com/api/createAccount
+    // Request Method: POST
+    // Request Parameters: name, email, password, title (for example: Mr, Mrs, Miss), birth_date, birth_month, birth_year, firstname,
+    // lastname, company, address1, address2, country, zipcode, state, city, mobile_number
+    // Response Code: 400
+    // Response Message: Email already exists!
   });
   test('API 12: DELETE METHOD To Delete User Account', async ({ request }) => {
     //Arrange
@@ -429,11 +471,6 @@ test.describe('APIs List for practice', () => {
 
   test.fixme('API 14: GET user account detail by email', async ({ request }) => {
     //Arrange
-    const response = await request.get('api/getUserDetailByEmail', {
-      form: {
-        email: 'fake@email.cc', //'fake@api.io'
-      },
-    });
     // const response = await request.get('api/getUserDetailByEmail', {
     //   form: {
     //     name: userData.logoutUser, // 'fakeUserName'
@@ -455,6 +492,11 @@ test.describe('APIs List for practice', () => {
     //     mobile_number: '561-121-121',
     //   },
     // });
+    const response = await request.get('api/getUserDetailByEmail', {
+      form: {
+        email: 'fake@email.cc', //'fake@api.io'
+      },
+    });
     const responseBody = JSON.parse(await response.text());
 
     //Act
