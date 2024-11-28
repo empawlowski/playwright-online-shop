@@ -127,11 +127,25 @@
   }
   ```
 
-- `catch` element by `screen` [ `home.spec.ts` > `Test Case 25/26: Verify Scroll Up using/without 'Arrow' button and Scroll Down functionality` ]
+- `catch` page by `screen` [ `home.spec.ts` > `Test Case 25/26: Verify Scroll Up using/without 'Arrow' button and Scroll Down functionality` ]
 
-  ```javascript
-  await page.screenshot({ path: './screenshot.png' });
-  ```
+  - full page
+
+    ```javascript
+    await page.screenshot({ path: './screenshot.png', fullPage: true });
+    ```
+
+  - actually visible elements of page
+
+    ```javascript
+    await page.screenshot({ path: './screenshot.png' });
+    ```
+
+  - element on page
+
+    ```javascript
+    await page.locator('.class').screenshot({ path: './screenshot.png' });
+    ```
 
 ## Playwright Config modifications
 
