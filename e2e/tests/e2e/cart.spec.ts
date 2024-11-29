@@ -1,27 +1,28 @@
-import { expect, test } from '@playwright/test';
+// import { test, expect, chromium } from '@playwright/test';
+import { test, expect, _baseTest } from '@playwright/test';
 import { HomePage } from '../../components/home.component';
-import { SignLogin } from '../../pages/signLogin.page';
-import { userData } from '../../test-data/user.data';
-import { faker } from '@faker-js/faker';
-import { homeData } from '../../test-data/home.data';
-import { productData } from '../../test-data/product.data';
 import { ProductPage } from '../../pages/product.page';
-import { cartData } from '../../test-data/cart.data';
+import { SignLogin } from '../../pages/signLogin.page';
 import { CartPage } from '../../pages/cart.page';
+import { faker } from '@faker-js/faker';
+import { productData } from '../../assets/data/e2e/product.data';
+import { userData } from '../../assets/data/e2e/user.data';
+import { homeData } from '../../assets/data/e2e/home.data';
+import { cartData } from '../../assets/data/e2e/cart.data';
 
-test.describe('User actions', () => {
-  let home: HomePage;
+test.describe('Function for Cart pages', () => {
+  let homePage: HomePage;
   let user: SignLogin;
   let product: ProductPage;
   let cart: CartPage;
 
   test.beforeEach(async ({ page }, testInfo) => {
     //Arrange
-    home = new HomePage(page);
+    homePage = new HomePage(page);
     console.log(`Running ${testInfo.title}`);
 
     //Act
-    // await chromium.launch(); //* Commented because using all browsers for tests
+    // await chromium.launch(); //*Commented because using all browsers for tests
 
     //* Advertisements blocker
     await page.route('**/*', (route) => {
@@ -34,10 +35,10 @@ test.describe('User actions', () => {
       }
     });
 
-    await home.openPage();
+    await homePage.openPage();
 
     //Assert
-    await home.expectPage();
+    await homePage.expectPage();
   });
 
   test.afterEach(async ({ page }, testInfo) => {
@@ -46,359 +47,6 @@ test.describe('User actions', () => {
     if (testInfo.status !== testInfo.expectedStatus) console.log(`Did not run as expected, ended up at ${page.url()}`);
 
     // await page.close();
-  });
-
-  test('Test Case 1: Register User', async ({ page }) => {
-    //Arrange
-    home = new HomePage(page);
-    user = new SignLogin(page);
-
-    const username = faker.internet.userName();
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    const password = faker.internet.password();
-    const days = faker.string.numeric(1);
-    const months = faker.string.numeric(1);
-    const years = userData.years;
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-    const company = faker.company.name();
-    const address1 = faker.location.streetAddress({ useFullAddress: true });
-    const address2 = faker.location.secondaryAddress();
-    const country = userData.country;
-    const state = faker.location.state();
-    const city = faker.location.city();
-    const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number('###-###-###');
-
-    //Act
-    await home.signLogin.click(); // add Test Case 14
-    await user.registerUser(
-      username,
-      email,
-      password,
-      days,
-      months,
-      years,
-      firstName,
-      lastName,
-      country,
-      company,
-      address1,
-      address2,
-      state,
-      city,
-      zipCode,
-      phoneNumber,
-    );
-    await user.deleteUser();
-
-    //Assert
-    await home.expectPage();
-
-    // Test Case 1: Register User
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Click on 'Signup / Login' button
-    // 5. Verify 'New User Signup!' is visible
-    // 6. Enter name and email address
-    // 7. Click 'Signup' button
-    // 8. Verify that 'ENTER ACCOUNT INFORMATION' is visible
-    // 9. Fill details: Title, Name, Email, Password, Date of birth
-    // 10. Select checkbox 'Sign up for our newsletter!'
-    // 11. Select checkbox 'Receive special offers from our partners!'
-    // 12. Fill details: First name, Last name, Company, Address, Address2, Country, State, City, Zipcode, Mobile Number
-    // 13. Click 'Create Account button'
-    // 14. Verify that 'ACCOUNT CREATED!' is visible
-    // 15. Click 'Continue' button
-    // 16. Verify that 'Logged in as username' is visible
-    // 17. Click 'Delete Account' button
-    // 18. Verify that 'ACCOUNT DELETED!' is visible and click 'Continue' button
-    // 19. Verify that home page is visible successfully
-  });
-
-  test('Test Case 2: Login User with correct data', async ({ page }) => {
-    //Arrange
-    home = new HomePage(page);
-    user = new SignLogin(page);
-
-    const username = userData.fakeUsername;
-    const email = userData.fakeEmail;
-    const password = userData.fakePassword;
-    const days = userData.days;
-    const months = userData.months;
-    const years = userData.years;
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-    const company = faker.company.name();
-    const address1 = faker.location.streetAddress({ useFullAddress: true });
-    const address2 = faker.location.secondaryAddress();
-    const country = userData.country;
-    const state = faker.location.state();
-    const city = faker.location.city();
-    const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number('###-###-###');
-
-    //Act
-    await home.signLogin.click();
-    await user.registerUser(
-      username,
-      email,
-      password,
-      days,
-      months,
-      years,
-      firstName,
-      lastName,
-      country,
-      company,
-      address1,
-      address2,
-      state,
-      city,
-      zipCode,
-      phoneNumber,
-    );
-    await home.logout.click();
-    await home.openPage();
-    await home.expectPage();
-    await user.loginUser(email, password);
-    await expect(user.loggedUser).toBeVisible();
-    await user.deleteUser();
-
-    //Assert
-    await home.expectPage();
-
-    // Test Case 2: Login User with correct email and password
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Click on 'Signup / Login' button
-    // 5. Verify 'Login to your account' is visible
-    // 6. Enter correct email address and password
-    // 7. Click 'login' button
-    // 8. Verify that 'Logged in as username' is visible
-    // 9. Click 'Delete Account' button
-    // 10. Verify that 'ACCOUNT DELETED!' is visible
-    // 11. Verify that home page is visible successfully
-  });
-
-  test('Test Case 3: Login User with incorrect data', async ({ page }) => {
-    //Arrange
-    user = new SignLogin(page);
-    const email = userData.incorrectEmail;
-    const password = userData.incorrectPassword;
-
-    //Act
-    await user.loginUser(email, password);
-
-    //Assert
-    await expect(user.hIncorrectEmail).toBeVisible();
-
-    // Test Case 3: Login User with incorrect email and password
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Click on 'Signup / Login' button
-    // 5. Verify 'Login to your account' is visible
-    // 6. Enter incorrect email address and password
-    // 7. Click 'login' button
-    // 8. Verify error 'Your email or password is incorrect!' is visible
-  });
-
-  test('Test Case 4: Logout User', async ({ page }) => {
-    //Arrange
-    home = new HomePage(page);
-    user = new SignLogin(page);
-
-    const username = userData.logoutUser;
-    const email = userData.logoutEmail;
-    const password = userData.fakePassword;
-
-    //Act
-    await user.loginUser(email, password);
-    await expect(page.getByText(`${homeData.loggedInAs} ${username}`)).toBeVisible();
-    await home.logout.click();
-
-    //Assert
-    await home.expectLoginPage();
-
-    // Test Case 4: Logout User
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Click on 'Signup / Login' button
-    // 5. Verify 'Login to your account' is visible
-    // 6. Enter correct email address and password
-    // 7. Click 'login' button
-    // 8. Verify that 'Logged in as username' is visible
-    // 9. Click 'Logout' button
-    // 10. Verify that user is navigated to login page
-  });
-
-  test('Test Case 5: Register User with existing email', async ({ page }) => {
-    //Arrange
-    home = new HomePage(page);
-    user = new SignLogin(page);
-
-    const username = userData.logoutUser;
-    const email = userData.logoutEmail;
-
-    //Act
-    await user.signUp(username, email);
-
-    //Assert
-    await expect(user.hEmailExist).toBeVisible();
-
-    // Test Case 5: Register User with existing email
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Click on 'Signup / Login' button
-    // 5. Verify 'New User Signup!' is visible
-    // 6. Enter name and already registered email address
-    // 7. Click 'Signup' button
-    // 8. Verify error 'Email Address already exist!' is visible
-  });
-
-  test('Test Case 6: Contact Us Form', async ({ page, home, product }) => {
-    //Arrange
-    const name = faker.person.fullName();
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    const subject = faker.word.words({ count: { min: 3, max: 5 } });
-    const message = faker.word.words({ count: { min: 15, max: 25 } });
-
-    //Act
-    await product.fillContactUs(name, email, subject, message);
-
-    page.on('dialog', (dialog) => {
-      dialog.accept();
-      console.log('Alert dialog submitted');
-    });
-    await product.bDialogSubmit.click();
-
-    await product.confirmationContactUs();
-
-    //Assert
-    await home.expectPage();
-
-    // Test Case 6: Contact Us Form
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'await page.goto('https://automationexercise.com/');
-    // 3. Verify that home page is visible successfully
-    // 4. Click on 'Contact Us' button
-    // 5. Verify 'GET IN TOUCH' is visible
-    // 6. Enter name, email, subject and message
-    // 7. Upload file
-    // 8. Click 'Submit' button
-    // 9. Click OK button
-    // 10. Verify success message 'Success! Your details have been submitted successfully.' is visible
-    // 11. Click 'Home' button and verify that landed to home page successfully
-  });
-
-  test('Test Case 7: Verify Test Cases Page', async ({ home, product }) => {
-    //Arrange
-
-    //Act
-    await product.openTestCase();
-
-    //Assert
-    await home.expectTestCasePage();
-
-    // Test Case 7: Verify Test Cases Page
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Click on 'Test Cases' button
-    // 5. Verify user is navigated to test cases page successfully
-  });
-
-  test('Test Case 8: Verify All Products and product detail page', async ({ product }) => {
-    //Arrange
-    //Act
-    await product.selectFirstProduct();
-    //Assert
-    await product.expectFirstProductDetails();
-
-    // Test Case 8: Verify All Products and product detail page
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Click on 'Products' button
-    // 5. Verify user is navigated to ALL PRODUCTS page successfully
-    // 6. The products list is visible
-    // 7. Click on 'View Product' of first product
-    // 8. User is landed to product detail page
-    // 9. Verify that detail detail is visible: product name, category, price, availability, condition, brand
-  });
-
-  test('Test Case 9: Search Product', async ({ product }) => {
-    //Arrange
-    const search: string = productData.searchProduct;
-    //Act
-    await product.searchProduct(search);
-    //Assert
-    await expect(product.linkViewProduct.first()).toBeVisible();
-
-    // Test Case 9: Search Product
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Click on 'Products' button
-    // 5. Verify user is navigated to ALL PRODUCTS page successfully
-    // 6. Enter product name in search input and click search button
-    // 7. Verify 'SEARCHED PRODUCTS' is visible
-    // 8. Verify all the products related to search are visible
-  });
-
-  test('Test Case 10: Verify Subscription in home page', async ({ page, product }) => {
-    //Arrange
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-
-    //Act
-    await page.evaluate(() => {
-      window.scrollTo(0, document.body.scrollHeight);
-    });
-    await product.sendSubscribe(email);
-
-    //Assert
-    await expect(product.successSubs).toContainText(homeData.confirmationSubscribe);
-
-    // Test Case 10: Verify Subscription in home page
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Scroll down to footer
-    // 5. Verify text 'SUBSCRIPTION'
-    // 6. Enter email address in input and click arrow button
-    // 7. Verify success message 'You have been successfully subscribed!' is visible
-  });
-
-  test('Test Case 11: Verify Subscription in Cart page', async ({ page, home, product }) => {
-    //Arrange
-
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    //Act
-    await home.cart.click();
-
-    await page.evaluate(() => {
-      window.scrollTo(0, document.body.scrollHeight);
-    });
-
-    await product.sendSubscribe(email);
-
-    //Assert
-    await expect(product.successSubs).toContainText(homeData.confirmationSubscribe);
-
-    // Test Case 11: Verify Subscription in Cart page
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Click 'Cart' button
-    // 5. Scroll down to footer
-    // 6. Verify text 'SUBSCRIPTION'
-    // 7. Enter email address in input and click arrow button
-    // 8. Verify success message 'You have been successfully subscribed!' is visible
   });
 
   test('Test Case 12: Add Products in Cart', async ({ page }) => {
@@ -447,6 +95,10 @@ test.describe('User actions', () => {
 
   test('Test Case 14: Place Order: Register while Checkout', async ({ page }) => {
     //Arrange
+    homePage = new HomePage(page);
+    product = new ProductPage(page);
+    user = new SignLogin(page);
+    cart = new CartPage(page);
 
     const quantity = productData.productQuantity;
 
@@ -473,26 +125,26 @@ test.describe('User actions', () => {
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
 
     const deliveryAddress = `
-      ${yourDeliveryAddress}
-      Mrs. ${firstName} ${lastName}
-      ${company}
-      ${address1}
-      ${address2}
-      ${city} ${state}
-      ${zipCode}
-      ${country}
-      ${phoneNumber}`;
+    ${yourDeliveryAddress}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state}
+    ${zipCode}
+    ${country}
+    ${phoneNumber}`;
 
     const deliveryInvoice = `
-      ${yourDeliveryInvoice}
-      Mrs. ${firstName} ${lastName}
-      ${company}
-      ${address1}
-      ${address2}
-      ${city} ${state} 
-      ${zipCode} 
-      ${country} 
-      ${phoneNumber}`;
+    ${yourDeliveryInvoice}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state} 
+    ${zipCode} 
+    ${country} 
+    ${phoneNumber}`;
 
     const description = faker.lorem.text();
     const cardNumber = faker.finance.creditCardNumber({ issuer: '448#-#[5-7]##-####-###L' }); // '4480-0500-0000-0000;
@@ -556,6 +208,10 @@ test.describe('User actions', () => {
 
   test('Test Case 15: Place Order: Register before Checkout', async ({ page }) => {
     //Arrange
+    homePage = new HomePage(page);
+    product = new ProductPage(page);
+    user = new SignLogin(page);
+    cart = new CartPage(page);
 
     const quantity = productData.productQuantity;
 
@@ -582,26 +238,26 @@ test.describe('User actions', () => {
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
 
     const deliveryAddress = `
-      ${yourDeliveryAddress}
-      Mrs. ${firstName} ${lastName}
-      ${company}
-      ${address1}
-      ${address2}
-      ${city} ${state}
-      ${zipCode}
-      ${country}
-      ${phoneNumber}`;
+    ${yourDeliveryAddress}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state}
+    ${zipCode}
+    ${country}
+    ${phoneNumber}`;
 
     const deliveryInvoice = `
-      ${yourDeliveryInvoice}
-      Mrs. ${firstName} ${lastName}
-      ${company}
-      ${address1}
-      ${address2}
-      ${city} ${state} 
-      ${zipCode} 
-      ${country} 
-      ${phoneNumber}`;
+    ${yourDeliveryInvoice}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state} 
+    ${zipCode} 
+    ${country} 
+    ${phoneNumber}`;
 
     const description = faker.lorem.text();
     const cardNumber = faker.finance.creditCardNumber({ issuer: '448#-#[5-7]##-####-###L' }); // '4480-0500-0000-0000;
@@ -610,7 +266,7 @@ test.describe('User actions', () => {
     const expiryYear = cartData.expiryYear;
 
     //Act
-    await home.signLogin.click();
+    await homePage.signLogin.click();
     await user.registerUser(
       username,
       email,
@@ -633,7 +289,7 @@ test.describe('User actions', () => {
     await expect(loggedUser).toBeVisible();
 
     await product.addProductQuantity(quantity);
-    await home.expectCartPage();
+    await homePage.expectCartPage();
     await cart.bProceedToCheckout.click();
     await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
@@ -664,7 +320,7 @@ test.describe('User actions', () => {
 
   test('Test Case 16: Place Order: Login before Checkout', async ({ page }) => {
     //Arrange
-    home = new HomePage(page);
+    homePage = new HomePage(page);
     product = new ProductPage(page);
     user = new SignLogin(page);
     cart = new CartPage(page);
@@ -694,26 +350,26 @@ test.describe('User actions', () => {
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
 
     const deliveryAddress = `
-      ${yourDeliveryAddress}
-      Mrs. ${firstName} ${lastName}
-      ${company}
-      ${address1}
-      ${address2}
-      ${city} ${state}
-      ${zipCode}
-      ${country}
-      ${phoneNumber}`;
+    ${yourDeliveryAddress}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state}
+    ${zipCode}
+    ${country}
+    ${phoneNumber}`;
 
     const deliveryInvoice = `
-      ${yourDeliveryInvoice}
-      Mrs. ${firstName} ${lastName}
-      ${company}
-      ${address1}
-      ${address2}
-      ${city} ${state} 
-      ${zipCode} 
-      ${country} 
-      ${phoneNumber}`;
+    ${yourDeliveryInvoice}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state} 
+    ${zipCode} 
+    ${country} 
+    ${phoneNumber}`;
 
     const description = faker.lorem.text();
     const cardNumber = faker.finance.creditCardNumber({ issuer: '448#-#[5-7]##-####-###L' }); // '4480-0500-0000-0000;
@@ -722,7 +378,7 @@ test.describe('User actions', () => {
     const expiryYear = cartData.expiryYear;
 
     //Act
-    await home.signLogin.click();
+    await homePage.signLogin.click();
     await user.registerUser(
       username,
       email,
@@ -743,12 +399,12 @@ test.describe('User actions', () => {
     );
 
     await expect(loggedUser).toBeVisible();
-    await home.logout.click();
+    await homePage.logout.click();
     await user.loginUser(email, password);
     await expect(loggedUser).toBeVisible();
 
     await product.addProductQuantity(quantity);
-    await home.expectCartPage();
+    await homePage.expectCartPage();
     await cart.bProceedToCheckout.click();
     await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
@@ -778,7 +434,7 @@ test.describe('User actions', () => {
 
   test('Test Case 17: Remove Products From Cart', async ({ page }) => {
     //Arrange
-    home = new HomePage(page);
+    homePage = new HomePage(page);
     product = new ProductPage(page);
     cart = new CartPage(page);
 
@@ -786,7 +442,7 @@ test.describe('User actions', () => {
 
     //Act
     await product.addProductQuantity(quantity);
-    await home.expectCartPage();
+    await homePage.expectCartPage();
     await cart.bDeleteQuantity.click();
 
     //Assert
@@ -803,58 +459,12 @@ test.describe('User actions', () => {
     // 8. Verify that product is removed from the cart
   });
 
-  test('Test Case 18: View Category Products', async ({ home }) => {
-    //Arrange
-
-    //Act
-    await home.expectLeftSidebar();
-
-    await home.openWomenCategory();
-    await home.expectWomenDressProductsPage();
-
-    await home.openMenCategory();
-    //Assert
-    await home.expectMenJeansProductsPage();
-
-    // Test Case 18: View Category Products
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that categories are visible on left side bar
-    // 4. Click on 'Women' category
-    // 5. Click on any category link under 'Women' category, for example: Dress
-    // 6. Verify that category page is displayed and confirm text 'WOMEN - TOPS PRODUCTS'
-    // 7. On left side bar, click on any sub-category link of 'Men' category
-    // 8. Verify that user is navigated to that category page
-  });
-
-  test('Test Case 19: View & Cart Brand Products @smoke', async ({ home }) => {
-    //Arrange
-
-    //Act
-    await home.products.click();
-    await home.expectLeftSidebar();
-    await home.openBrandMastHarbour();
-
-    //Assert
-    await home.openBrandPolo();
-
-    // Test Case 19: View & Cart Brand Products
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Click on 'Products' button
-    // 4. Verify that Brands are visible on left side bar
-    // 5. Click on any brand name
-    // 6. Verify that user is navigated to brand page and brand products are displayed
-    // 7. On left side bar, click on any other brand link
-    // 8. Verify that user is navigated to that brand page and can see products
-  });
-
   test('Test Case 20: Search Products and Verify Cart After Login', async ({ page }) => {
     //Arrange
     test.slow();
     // test.setTimeout(120000);
 
-    home = new HomePage(page);
+    homePage = new HomePage(page);
     product = new ProductPage(page);
     cart = new CartPage(page);
     user = new SignLogin(page);
@@ -896,7 +506,7 @@ test.describe('User actions', () => {
     // }
     //* -----------------------------
 
-    await home.cart.click();
+    await homePage.cart.click();
 
     const cartProductNumber = await page.locator('#cart_info_table').locator('tbody > tr').count();
     Number(cartProductNumber) == Number(searchResults);
@@ -904,7 +514,7 @@ test.describe('User actions', () => {
 
     await user.loginUser(email, password);
 
-    await home.cart.click();
+    await homePage.cart.click();
     const cartProductNumberAfterLogin = await page.locator('#cart_info_table').locator('tbody > tr').count();
     //Assert
     Number(cartProductNumberAfterLogin) == Number(searchResults);
@@ -925,58 +535,10 @@ test.describe('User actions', () => {
     // 12. Verify that those products are visible in cart after login as well
   });
 
-  test('Test Case 21: Add review on product', async ({ product }) => {
-    //Arrange
-    const username = faker.internet.userName();
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    const review = faker.lorem.text();
-
-    //Act
-    await product.addProductReview(username, email, review);
-
-    //Assert
-    await product.expectSuccessReviewMessage();
-
-    // Test Case 21: Add review on product
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Click on 'Products' button
-    // 4. Verify user is navigated to ALL PRODUCTS page successfully
-    // 5. Click on 'View Product' button
-    // 6. Verify 'Write Your Review' is visible
-    // 7. Enter name, email and review
-    // 8. Click 'Submit' button
-    // 9. Verify success message 'Thank you for your review.'
-  });
-
-  test('Test Case 22: Add to cart from Recommended items', async ({ page, home, product }) => {
-    //Arrange
-
-    //Act
-    await page.evaluate(() => {
-      window.scrollTo(0, document.body.scrollHeight);
-    });
-
-    await home.addFromRecommendedItems();
-
-    //Assert
-    //product on page
-    await expect(product.tableRow).toBeVisible();
-
-    // Test Case 22: Add to cart from Recommended items
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Scroll to bottom of page
-    // 4. Verify 'RECOMMENDED ITEMS' are visible
-    // 5. Click on 'Add To Cart' on Recommended product
-    // 6. Click on 'View Cart' button
-    // 7. Verify that product is displayed in cart page
-  });
-
   test('Test Case 23: Verify address details in checkout page', async ({ page }) => {
     //Arrange
 
-    home = new HomePage(page);
+    homePage = new HomePage(page);
     product = new ProductPage(page);
     cart = new CartPage(page);
     user = new SignLogin(page);
@@ -1004,29 +566,29 @@ test.describe('User actions', () => {
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
 
     const deliveryAddress = `
-      ${yourDeliveryAddress}
-      Mrs. ${firstName} ${lastName}
-      ${company}
-      ${address1}
-      ${address2}
-      ${city} ${state}
-      ${zipCode}
-      ${country}
-      ${phoneNumber}`;
+    ${yourDeliveryAddress}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state}
+    ${zipCode}
+    ${country}
+    ${phoneNumber}`;
 
     const deliveryInvoice = `
-      ${yourDeliveryInvoice}
-      Mrs. ${firstName} ${lastName}
-      ${company}
-      ${address1}
-      ${address2}
-      ${city} ${state} 
-      ${zipCode} 
-      ${country} 
-      ${phoneNumber}`;
+    ${yourDeliveryInvoice}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state} 
+    ${zipCode} 
+    ${country} 
+    ${phoneNumber}`;
 
     // Act
-    await home.signLogin.click();
+    await homePage.signLogin.click();
     await user.registerUser(
       username,
       email,
@@ -1103,26 +665,26 @@ test.describe('User actions', () => {
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
 
     const deliveryAddress = `
-      ${yourDeliveryAddress}
-      Mrs. ${firstName} ${lastName}
-      ${company}
-      ${address1}
-      ${address2}
-      ${city} ${state}
-      ${zipCode}
-      ${country}
-      ${phoneNumber}`;
+    ${yourDeliveryAddress}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state}
+    ${zipCode}
+    ${country}
+    ${phoneNumber}`;
 
     const deliveryInvoice = `
-      ${yourDeliveryInvoice}
-      Mrs. ${firstName} ${lastName}
-      ${company}
-      ${address1}
-      ${address2}
-      ${city} ${state} 
-      ${zipCode} 
-      ${country} 
-      ${phoneNumber}`;
+    ${yourDeliveryInvoice}
+    Mrs. ${firstName} ${lastName}
+    ${company}
+    ${address1}
+    ${address2}
+    ${city} ${state} 
+    ${zipCode} 
+    ${country} 
+    ${phoneNumber}`;
 
     const description = faker.lorem.text();
     const cardNumber = faker.finance.creditCardNumber({ issuer: '448#-#[5-7]##-####-###L' }); // '4480-0500-0000-0000;
@@ -1198,45 +760,5 @@ test.describe('User actions', () => {
     // 20. Click 'Continue' button
     // 21. Click 'Delete Account' button
     // 22. Verify 'ACCOUNT DELETED!' and click 'Continue' button
-  });
-
-  test('Test Case 25: Verify Scroll Up using "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
-    //Assert
-    //Act
-    await home.scrollUpConfirmByScreen();
-
-    //Assert
-    //* Check files in ./test-download/e2e/home/
-    // first assertion: hSubscription.png
-    // second assertion: hAutomationExercise.png
-
-    // Test Case 25: Verify Scroll Up using 'Arrow' button and Scroll Down functionality
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Scroll down page to bottom
-    // 5. Verify 'SUBSCRIPTION' is visible
-    // 6. Click on arrow at bottom right side to move upward
-    // 7. Verify that page is scrolled up and 'Full-Fledged practice website for Automation Engineers' text is visible on screen
-  });
-
-  test('Test Case 26: Verify Scroll Up without "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
-    //Assert
-    //Act
-    await home.noScrollUpConfirmByScreen();
-
-    //Assert
-    //* Check files in ./test-download/e2e/home/
-    // first assertion: noScrollUpHSubscription.png
-    // second assertion: noScrollUpHAutomationExercise.png
-
-    // Test Case 26: Verify Scroll Up without 'Arrow' button and Scroll Down functionality
-    // 1. Launch browser (//)
-    // 2. Navigate to url 'http://automationexercise.com'
-    // 3. Verify that home page is visible successfully
-    // 4. Scroll down page to bottom
-    // 5. Verify 'SUBSCRIPTION' is visible
-    // 6. Scroll up page to top
-    // 7. Verify that page is scrolled up and 'Full-Fledged practice website for Automation Engineers' text is visible on screen
   });
 });

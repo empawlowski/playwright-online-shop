@@ -1,11 +1,10 @@
 // import { test, expect, chromium } from '@playwright/test';
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../../components/home.component';
-import { homeData } from '../../test-data/home.data';
-import { productData } from '../../test-data/product.data';
+import { homeData } from '../../assets/data/e2e/home.data';
+import { productData } from '../../assets/data/e2e/product.data';
 import { faker } from '@faker-js/faker';
 import { ProductPage } from '../../pages/product.page';
-import { CartPage } from '../../pages/cart.page';
 
 test.describe('Functionality with products on Product page', () => {
   let homePage: HomePage;
