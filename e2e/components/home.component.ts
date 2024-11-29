@@ -1,5 +1,5 @@
 import { Page, expect } from '@playwright/test';
-import { homeData } from '../test-data/home.data';
+import { homeData } from '../assets/data/e2e/home.data';
 
 export class HomePage {
   constructor(private page: Page) {}

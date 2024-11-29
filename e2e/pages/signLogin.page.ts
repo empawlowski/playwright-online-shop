@@ -1,6 +1,6 @@
 import { expect, type Page } from '@playwright/test';
 import { HomePage } from '../components/home.component';
-import { homeData } from '../test-data/home.data';
+import { homeData } from '../assets/data/e2e/home.data';
 
 export class SignLogin {
   constructor(private page: Page) {}
