@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { userData } from '../../test-data/user.data';
+import { userData } from '../../assets/data/e2e/user.data';
 
 test.describe('APIs List for practice', () => {
   test('API 0: 404 Page', async ({ request }) => {

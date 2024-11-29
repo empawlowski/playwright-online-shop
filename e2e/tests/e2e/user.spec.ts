@@ -2,9 +2,9 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../../components/home.component';
 import { SignLogin } from '../../pages/signLogin.page';
-import { userData } from '../../test-data/user.data';
 import { faker } from '@faker-js/faker';
-import { homeData } from '../../test-data/home.data';
+import { userData } from '../../assets/data/e2e/user.data';
+import { homeData } from '../../assets/data/e2e/home.data';
 
 test.describe('User actions', () => {
   let homePage: HomePage;
