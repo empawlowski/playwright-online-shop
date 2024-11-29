@@ -1,7 +1,6 @@
 import { Page, expect } from '@playwright/test';
 import { HomePage } from '../components/home.component';
-import { productData } from '../test-data/product.data';
-import { CartPage } from './cart.page';
+import { productData } from '../assets/data/e2e/product.data';
 
 export class ProductPage {
   constructor(private page: Page) {}

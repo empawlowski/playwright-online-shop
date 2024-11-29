@@ -1,23 +1,14 @@
-import { expect, test } from '@playwright/test';
-import { HomePage } from '../../components/home.component';
-import { SignLogin } from '../../pages/signLogin.page';
 import { faker } from '@faker-js/faker';
-import { ProductPage } from '../../pages/product.page';
-import { CartPage } from '../../pages/cart.page';
 import { userData } from '../../assets/data/e2e/user.data';
 import { homeData } from '../../assets/data/e2e/home.data';
 import { productData } from '../../assets/data/e2e/product.data';
 import { cartData } from '../../assets/data/e2e/cart.data';
+import { test } from '../../fixtures/base.fixture';
+import { expect } from '@playwright/test';
 
 test.describe('User actions', () => {
-  let home: HomePage;
-  let user: SignLogin;
-  let product: ProductPage;
-  let cart: CartPage;
-
-  test.beforeEach(async ({ page }, testInfo) => {
+  test.beforeEach(async ({ page, home }, testInfo) => {
     //Arrange
-    home = new HomePage(page);
     console.log(`Running ${testInfo.title}`);
 
     //Act
@@ -45,13 +36,11 @@ test.describe('User actions', () => {
 
     if (testInfo.status !== testInfo.expectedStatus) console.log(`Did not run as expected, ended up at ${page.url()}`);
 
-    // await page.close();
+    await page.close();
   });
 
-  test('Test Case 1: Register User', async ({ page }) => {
+  test('Test Case 1: Register User', async ({ home, user }) => {
     //Arrange
-    home = new HomePage(page);
-    user = new SignLogin(page);
 
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -117,10 +106,8 @@ test.describe('User actions', () => {
     // 19. Verify that home page is visible successfully
   });
 
-  test('Test Case 2: Login User with correct data', async ({ page }) => {
+  test('Test Case 2: Login User with correct data', async ({ home, user }) => {
     //Arrange
-    home = new HomePage(page);
-    user = new SignLogin(page);
 
     const username = userData.fakeUsername;
     const email = userData.fakeEmail;
@@ -183,9 +170,8 @@ test.describe('User actions', () => {
     // 11. Verify that home page is visible successfully
   });
 
-  test('Test Case 3: Login User with incorrect data', async ({ page }) => {
+  test('Test Case 3: Login User with incorrect data', async ({ user }) => {
     //Arrange
-    user = new SignLogin(page);
     const email = userData.incorrectEmail;
     const password = userData.incorrectPassword;
 
@@ -206,10 +192,8 @@ test.describe('User actions', () => {
     // 8. Verify error 'Your email or password is incorrect!' is visible
   });
 
-  test('Test Case 4: Logout User', async ({ page }) => {
+  test('Test Case 4: Logout User', async ({ page, user, home }) => {
     //Arrange
-    home = new HomePage(page);
-    user = new SignLogin(page);
 
     const username = userData.logoutUser;
     const email = userData.logoutEmail;
@@ -236,10 +220,8 @@ test.describe('User actions', () => {
     // 10. Verify that user is navigated to login page
   });
 
-  test('Test Case 5: Register User with existing email', async ({ page }) => {
+  test('Test Case 5: Register User with existing email', async ({ user }) => {
     //Arrange
-    home = new HomePage(page);
-    user = new SignLogin(page);
 
     const username = userData.logoutUser;
     const email = userData.logoutEmail;
@@ -261,7 +243,7 @@ test.describe('User actions', () => {
     // 8. Verify error 'Email Address already exist!' is visible
   });
 
-  test('Test Case 6: Contact Us Form', async ({ page }) => {
+  test('Test Case 6: Contact Us Form', async ({ page, product, home }) => {
     //Arrange
     const name = faker.person.fullName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -296,7 +278,7 @@ test.describe('User actions', () => {
     // 11. Click 'Home' button and verify that landed to home page successfully
   });
 
-  test('Test Case 7: Verify Test Cases Page', async ({}) => {
+  test('Test Case 7: Verify Test Cases Page', async ({ product, home }) => {
     //Arrange
 
     //Act
@@ -313,7 +295,7 @@ test.describe('User actions', () => {
     // 5. Verify user is navigated to test cases page successfully
   });
 
-  test('Test Case 8: Verify All Products and product detail page', async ({}) => {
+  test('Test Case 8: Verify All Products and product detail page', async ({ product }) => {
     //Arrange
     //Act
     await product.selectFirstProduct();
@@ -332,7 +314,7 @@ test.describe('User actions', () => {
     // 9. Verify that detail detail is visible: product name, category, price, availability, condition, brand
   });
 
-  test('Test Case 9: Search Product', async ({}) => {
+  test('Test Case 9: Search Product', async ({ product }) => {
     //Arrange
     const search: string = productData.searchProduct;
     //Act
@@ -351,7 +333,7 @@ test.describe('User actions', () => {
     // 8. Verify all the products related to search are visible
   });
 
-  test('Test Case 10: Verify Subscription in home page', async ({ page }) => {
+  test('Test Case 10: Verify Subscription in home page', async ({ page, product }) => {
     //Arrange
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
 
@@ -374,7 +356,7 @@ test.describe('User actions', () => {
     // 7. Verify success message 'You have been successfully subscribed!' is visible
   });
 
-  test('Test Case 11: Verify Subscription in Cart page', async ({ page }) => {
+  test('Test Case 11: Verify Subscription in Cart page', async ({ page, home, product }) => {
     //Arrange
 
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -401,14 +383,13 @@ test.describe('User actions', () => {
     // 8. Verify success message 'You have been successfully subscribed!' is visible
   });
 
-  test('Test Case 12: Add Products in Cart', async ({ page }) => {
+  test('Test Case 12: Add Products in Cart', async ({ product }) => {
     //Arrange
-    product = new ProductPage(page);
     //Act
     await product.addProducts();
     //Assert
     const rowCount = await product.tableRow.count();
-    await expect(rowCount).toBe(2);
+    expect(rowCount).toBe(2);
     await product.expectAddProducts();
 
     // Test Case 12: Add Products in Cart
@@ -424,9 +405,8 @@ test.describe('User actions', () => {
     // 10. Verify their prices, quantity and total price
   });
 
-  test('Test Case 13: Verify Product quantity in Cart @smoke', async ({ page }) => {
+  test('Test Case 13: Verify Product quantity in Cart @smoke', async ({ product }) => {
     //Arrange
-    product = new ProductPage(page);
     const quantity = productData.productQuantity;
     //Act
     await product.addProductQuantity(quantity);
@@ -445,7 +425,7 @@ test.describe('User actions', () => {
     // 9. Verify that product is displayed in cart page with exact quantity
   });
 
-  test('Test Case 14: Place Order: Register while Checkout', async ({ page }) => {
+  test('Test Case 14: Place Order: Register while Checkout', async ({ page, product, cart, user }) => {
     //Arrange
 
     const quantity = productData.productQuantity;
@@ -554,7 +534,7 @@ test.describe('User actions', () => {
     // 20. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 15: Place Order: Register before Checkout', async ({ page }) => {
+  test('Test Case 15: Place Order: Register before Checkout', async ({ page, home, user, product, cart }) => {
     //Arrange
 
     const quantity = productData.productQuantity;
@@ -662,13 +642,8 @@ test.describe('User actions', () => {
     // 18. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 16: Place Order: Login before Checkout', async ({ page }) => {
+  test('Test Case 16: Place Order: Login before Checkout', async ({ page, home, user, product, cart }) => {
     //Arrange
-    home = new HomePage(page);
-    product = new ProductPage(page);
-    user = new SignLogin(page);
-    cart = new CartPage(page);
-
     const quantity = productData.productQuantity;
 
     const username = userData.fakeExistUsername;
@@ -776,12 +751,8 @@ test.describe('User actions', () => {
     // 17. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 17: Remove Products From Cart', async ({ page }) => {
+  test('Test Case 17: Remove Products From Cart', async ({ product, home, cart }) => {
     //Arrange
-    home = new HomePage(page);
-    product = new ProductPage(page);
-    cart = new CartPage(page);
-
     const quantity = productData.productQuantity;
 
     //Act
@@ -803,7 +774,7 @@ test.describe('User actions', () => {
     // 8. Verify that product is removed from the cart
   });
 
-  test('Test Case 18: View Category Products', async ({}) => {
+  test('Test Case 18: View Category Products', async ({ home }) => {
     //Arrange
 
     //Act
@@ -827,7 +798,7 @@ test.describe('User actions', () => {
     // 8. Verify that user is navigated to that category page
   });
 
-  test('Test Case 19: View & Cart Brand Products @smoke', async ({}) => {
+  test('Test Case 19: View & Cart Brand Products @smoke', async ({ home }) => {
     //Arrange
 
     //Act
@@ -849,15 +820,10 @@ test.describe('User actions', () => {
     // 8. Verify that user is navigated to that brand page and can see products
   });
 
-  test('Test Case 20: Search Products and Verify Cart After Login', async ({ page }) => {
+  test('Test Case 20: Search Products and Verify Cart After Login', async ({ page, product, home, user }) => {
     //Arrange
     test.slow();
     // test.setTimeout(120000);
-
-    home = new HomePage(page);
-    product = new ProductPage(page);
-    cart = new CartPage(page);
-    user = new SignLogin(page);
 
     const search = productData.searchProduct;
     const expectProductNumber = Number(14);
@@ -925,7 +891,7 @@ test.describe('User actions', () => {
     // 12. Verify that those products are visible in cart after login as well
   });
 
-  test('Test Case 21: Add review on product', async ({}) => {
+  test('Test Case 21: Add review on product', async ({ product }) => {
     //Arrange
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -949,7 +915,7 @@ test.describe('User actions', () => {
     // 9. Verify success message 'Thank you for your review.'
   });
 
-  test('Test Case 22: Add to cart from Recommended items', async ({ page }) => {
+  test('Test Case 22: Add to cart from Recommended items', async ({ page, home, product }) => {
     //Arrange
 
     //Act
@@ -973,14 +939,8 @@ test.describe('User actions', () => {
     // 7. Verify that product is displayed in cart page
   });
 
-  test('Test Case 23: Verify address details in checkout page', async ({ page }) => {
+  test('Test Case 23: Verify address details in checkout page', async ({ page, home, user, product, cart }) => {
     //Arrange
-
-    home = new HomePage(page);
-    product = new ProductPage(page);
-    cart = new CartPage(page);
-    user = new SignLogin(page);
-
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
     const password = faker.internet.password();
@@ -1074,12 +1034,8 @@ test.describe('User actions', () => {
     // 15. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 24: Download Invoice after purchase order', async ({ page }) => {
+  test('Test Case 24: Download Invoice after purchase order', async ({ page, product, cart, user }) => {
     //Arrange
-    product = new ProductPage(page);
-    user = new SignLogin(page);
-    cart = new CartPage(page);
-
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
     const password = faker.internet.password();
@@ -1200,7 +1156,7 @@ test.describe('User actions', () => {
     // 22. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 25: Verify Scroll Up using "Arrow" button and Scroll Down functionality @smoke', async ({}) => {
+  test('Test Case 25: Verify Scroll Up using "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
     //Assert
     //Act
     await home.scrollUpConfirmByScreen();
@@ -1220,7 +1176,7 @@ test.describe('User actions', () => {
     // 7. Verify that page is scrolled up and 'Full-Fledged practice website for Automation Engineers' text is visible on screen
   });
 
-  test('Test Case 26: Verify Scroll Up without "Arrow" button and Scroll Down functionality @smoke', async ({}) => {
+  test('Test Case 26: Verify Scroll Up without "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
     //Assert
     //Act
     await home.noScrollUpConfirmByScreen();
