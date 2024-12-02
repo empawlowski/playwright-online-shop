@@ -1,45 +1,40 @@
-import { Page, expect } from '@playwright/test';
+import { type Locator, type Page, expect } from '@playwright/test';
 import { HomePage } from '../components/home.component';
 import { productData } from '../assets/data/e2e/product.data';
+import { BasePage } from './base.page';
+import { HeaderComponent } from '../components/header.component';
 
-export class ProductPage {
-  constructor(private page: Page) {}
-  homePage = new HomePage(this.page);
+export class ProductPage extends BasePage {
+  readonly homePage: HomePage;
+  readonly headerComponent: HeaderComponent;
 
-  //* POM for Contact Us page form (#fillContactUs) (#confirmationContactUs)
-  hGetInTouch = this.page.getByRole('heading', { name: 'Get in Touch' });
+  readonly hGetInTouch: Locator;
 
-  fillName = this.page.getByTestId('name');
-  fillEmail = this.page.getByTestId('email');
-  fillSubject = this.page.getByTestId('subject');
-  fillMessage = this.page.locator('#message');
-  uploadFile = this.page.locator('input[name="upload_file"]');
-  bSubmit = this.page.getByTestId('submit-button');
+  readonly fillName: Locator;
+  readonly fillEmail: Locator;
+  readonly fillSubject: Locator;
+  readonly fillMessage: Locator;
+  readonly uploadFile: Locator;
+  readonly bSubmit: Locator;
 
-  bDialogSubmit = this.page.getByRole('button', { name: 'Submit' });
+  readonly bDialogSubmit: Locator;
 
-  hSuccessSubmitted = this.page.locator('#contact-page').getByText('Success! Your details have been submitted successfully.');
-  bContactUsHome = this.page.locator('#form-section').getByRole('link', { name: ' Home' });
+  readonly hSuccessSubmitted: Locator;
+  readonly hSuccessSubmittedLocator: Locator;
+  readonly bContactUsHome: Locator;
 
-  async fillContactUs(name: string, email: string, subject: string, message: string): Promise<void> {
-    await this.homePage.contactUs.click();
-    await expect(this.hGetInTouch).toBeVisible();
-    await this.fillName.fill(name);
-    await this.fillEmail.fill(email);
-    await this.fillSubject.fill(subject);
-    await this.fillMessage.fill(message);
-    await this.uploadFile.setInputFiles('./test-upload/image.jpg');
-    await this.bSubmit.click();
-  }
+  constructor(page: Page) {
+    super(page);
+    this.homePage = new HomePage(page);
+    this.headerComponent = new HeaderComponent(page);
 
-  async confirmationContactUs(): Promise<void> {
-    await expect(this.hSuccessSubmitted).toBeVisible();
-    await this.bContactUsHome.click();
-  }
+    this.hGetInTouch = page.getByRole('heading', { name: 'Get in Touch' }); //? used?
 
-  //* Method for page Test case
-  async openTestCase(): Promise<void> {
-    await this.homePage.testCases.click();
+    this.bDialogSubmit = page.getByRole('button', { name: 'Submit' }); //? used?
+
+    this.hSuccessSubmitted = page.locator('#contact-page').getByText('Success! Your details have been submitted successfully.');
+    this.hSuccessSubmittedLocator = page.locator('.alert-success');
+    this.bContactUsHome = page.locator('#form-section').getByRole('link', { name: ' Home' });
   }
 
   //* POM for page Products (#selectFirstProduct) (#expectFirstProductDetails) (#searchProduct) (#sendSubscribe)
@@ -91,7 +86,7 @@ export class ProductPage {
   hSuccessReview = this.page.getByText(productData.divSuccessReview);
 
   async selectFirstProduct(): Promise<void> {
-    await this.homePage.products.click();
+    // await this.homePage.products.click();
     await this.homePage.expectProductsPage();
     await this.linkViewProduct.first().click();
   }
@@ -107,7 +102,7 @@ export class ProductPage {
   }
 
   async searchProduct(search: string): Promise<void> {
-    await this.homePage.products.click();
+    await this.headerComponent.products.click();
     await this.homePage.expectProductsPage();
     await this.fillSearchProduct.fill(search);
     await this.bSearch.click();
@@ -115,15 +110,15 @@ export class ProductPage {
   }
 
   async addProductGoCartPage(): Promise<void> {
-    await this.homePage.products.click();
+    await this.headerComponent.products.click();
     await this.bAddToCart.first().click();
     await this.bContinueShopping.click();
-    await this.homePage.cart.click();
+    await this.headerComponent.cart.click();
     await this.homePage.expectCartPage();
   }
 
   async addProducts(): Promise<void> {
-    await this.homePage.products.click();
+    await this.headerComponent.products.click();
     await this.bAddToCart.first().click();
     await this.bContinueShopping.click();
     await this.bAddToCart.nth(1).click();
@@ -158,7 +153,7 @@ export class ProductPage {
     await this.bSubscribe.click();
   }
   async addProductReview(username: string, email: string, review: string): Promise<void> {
-    await this.homePage.products.click();
+    await this.headerComponent.products.click();
     await this.homePage.expectProductsPage();
     await this.linkViewProduct.first().click();
     await this.hWriteYourReview.isVisible();

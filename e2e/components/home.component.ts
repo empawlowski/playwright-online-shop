@@ -1,61 +1,74 @@
-import { Page, expect } from '@playwright/test';
+import { type Locator, type Page, expect } from '@playwright/test';
 import { homeData } from '../assets/data/e2e/home.data';
+import { BasePage } from '../pages/base.page';
 
-export class HomePage {
-  constructor(private page: Page) {}
+export class HomePage extends BasePage {
+  readonly hTestCase: Locator;
+  readonly hAllProducts: Locator;
 
-  //* POM for Navbar menu
-  home = this.page.locator('[href*="/"]', { hasText: 'Home' });
-  // products = this.page.getByRole('link', { name: ' Products' });
-  products = this.page.locator('[href*="/products"]', { hasText: 'Products' });
-  cart = this.page.getByRole('link', { name: 'Cart' });
-  signLogin = this.page.getByRole('link', { name: 'Signup / Login' });
-  deleteAccount = this.page.getByRole('link', { name: 'Delete Account' });
-  testCases = this.page.getByRole('link', { name: ' Test Cases' });
-  apiTesting = this.page.getByRole('link', { name: 'API Testing' });
-  videoTutorials = this.page.getByRole('link', { name: 'Video Tutorials' });
-  contactUs = this.page.getByRole('link', { name: 'Contact us' });
-  logout = this.page.getByRole('link', { name: 'Logout' });
+  readonly sidebar: Locator;
+  readonly sidebarCategory: Locator;
+  readonly sidebarBrands: Locator;
 
-  //* POM for open page and expect page (#openPage) (#expectPage) (#expectLoginPage) (#expectProductsPage) (#expectTestCasePage)
-  hTestCase = this.page.getByRole('heading', { name: 'Test Cases', exact: true });
-  hAllProducts = this.page.getByRole('heading', { name: 'All Products', exact: true });
+  readonly categoryWomen: Locator;
+  readonly womenCategoryDress: Locator;
 
-  //* POM for left Menu/ Sidebar - Test Case: 18, 19
-  // (#expectLeftSidebar) (#expectWomenDressProductsPage) (#expectMenJeansProductsPage) (#openWomenCategory) (#openMenCategory)
-  sidebar = this.page.locator('#accordian');
-  sidebarCategory = this.page.locator('.left-sidebar').getByRole('heading', { name: homeData.leftSidebarCategory });
-  sidebarBrands = this.page.locator('.left-sidebar').getByRole('heading', { name: homeData.leftSidebarBrands });
+  readonly categoryMen: Locator;
+  readonly menCategoryJeans: Locator;
+  readonly brandPolo: Locator;
+  readonly brandMastHarbour: Locator;
 
-  categoryWomen = this.page.locator('[href*="#Women"]', { hasText: 'Women' });
-  womenCategoryDress = this.page.locator('[href*="/category_products/1"]', { hasText: 'Dress' });
+  readonly hWomenDressProducts: Locator;
+  readonly hMenJeansProducts: Locator;
+  readonly hBrandMastHarbour: Locator;
+  readonly hBrandPolo: Locator;
 
-  categoryMen = this.page.locator('[href*="#Men"]', { hasText: 'Men' });
-  menCategoryJeans = this.page.locator('[href*="/category_products/6"]', { hasText: 'Jeans' });
+  readonly hRecommendedItems: Locator;
 
-  brandPolo = this.page.locator('[href*="/brand_products/Polo"]', { hasText: 'Polo' });
-  brandMastHarbour = this.page.locator('[href*="/brand_products/Mast & Harbour"]', { hasText: 'Mast & Harbour' });
+  readonly bAddToCartFromRecommendedItems: Locator;
+  readonly viewCart: Locator;
 
-  hWomenDressProducts = this.page.getByRole('heading', { name: homeData.hWomenDressProducts });
-  hMenJeansProducts = this.page.getByRole('heading', { name: homeData.hMenDressProducts });
-  hBrandMastHarbour = this.page.getByRole('heading', { name: homeData.hBrandMastHarbour });
-  hBrandPolo = this.page.getByRole('heading', { name: homeData.hBrandPolo });
+  constructor(page: Page) {
+    super(page);
+    //* POM for open page and expect page (#openPage) (#expectPage) (#expectLoginPage) (#expectProductsPage) (#expectTestCasePage)
+    this.hTestCase = page.getByRole('heading', { name: 'Test Cases', exact: true });
+    this.hAllProducts = page.getByRole('heading', { name: 'All Products', exact: true });
 
-  //* POM for Recommended items - page bottom ()
-  //Test Case 22: Add to cart from Recommended items
-  hRecommendedItems = this.page.getByRole('heading', { name: homeData.hRecommendedItems });
-  // bAddToCartFromRecommendedItems = this.page
-  //   .locator('#recommended-item-carousel')
-  //   .locator('.item active > .product-image-wrapper > .single-products > .productinfo > .btn');
-  bAddToCartFromRecommendedItems = this.page.locator('div:nth-child(2) > div > .product-image-wrapper > .single-products > .productinfo > .btn');
-  viewCart = this.page.getByRole('link', { name: 'View Cart' });
+    //* POM for left Menu/ Sidebar - Test Case: 18, 19
+    // (#expectLeftSidebar) (#expectWomenDressProductsPage) (#expectMenJeansProductsPage) (#openWomenCategory) (#openMenCategory)
+    this.sidebar = page.locator('#accordian');
+    this.sidebarCategory = page.locator('.left-sidebar').getByRole('heading', { name: homeData.leftSidebarCategory });
+    this.sidebarBrands = page.locator('.left-sidebar').getByRole('heading', { name: homeData.leftSidebarBrands });
 
-  async openPage(): Promise<void> {
-    await this.page.goto('/');
+    this.categoryWomen = page.locator('[href*="#Women"]', { hasText: 'Women' });
+    this.womenCategoryDress = page.locator('[href*="/category_products/1"]', { hasText: 'Dress' });
+
+    this.categoryMen = page.locator('[href*="#Men"]', { hasText: 'Men' });
+    this.menCategoryJeans = page.locator('[href*="/category_products/6"]', { hasText: 'Jeans' });
+    this.brandPolo = page.locator('[href*="/brand_products/Polo"]', { hasText: 'Polo' });
+    this.brandMastHarbour = page.locator('[href*="/brand_products/Mast & Harbour"]', { hasText: 'Mast & Harbour' });
+
+    this.hWomenDressProducts = page.getByRole('heading', { name: homeData.hWomenDressProducts });
+    this.hMenJeansProducts = page.getByRole('heading', { name: homeData.hMenDressProducts });
+    this.hBrandMastHarbour = page.getByRole('heading', { name: homeData.hBrandMastHarbour });
+    this.hBrandPolo = page.getByRole('heading', { name: homeData.hBrandPolo });
+
+    //* POM for Recommended items - page bottom ()
+    //Test Case 22: Add to cart from Recommended items
+    this.hRecommendedItems = page.getByRole('heading', { name: homeData.hRecommendedItems });
+    // bAddToCartFromRecommendedItems = page
+    //   .locator('#recommended-item-carousel')
+    //   .locator('.item active > .product-image-wrapper > .single-products > .productinfo > .btn');
+    this.bAddToCartFromRecommendedItems = page.locator('div:nth-child(2) > div > .product-image-wrapper > .single-products > .productinfo > .btn');
+    this.viewCart = page.getByRole('link', { name: 'View Cart' });
   }
 
+  // async openPage(): Promise<void> {
+  //   await this.page.goto('/');
+  // }
+
   async expectPage(): Promise<void> {
-    await expect(this.page).toHaveURL('/');
+    await expect.soft(this.page).toHaveURL('/');
     await expect(this.page).toHaveTitle(homeData.titleHome);
   }
 
