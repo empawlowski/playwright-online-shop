@@ -5,6 +5,7 @@ import { productData } from '../../assets/data/e2e/product.data';
 import { cartData } from '../../assets/data/e2e/cart.data';
 import { test } from '../../fixtures/base.fixture';
 import { expect } from '@playwright/test';
+import { contactUsData } from '../../assets/data/e2e/contact-us.data';
 
 test.describe('User actions', () => {
   test.beforeEach(async ({ page, home }, testInfo) => {
@@ -20,12 +21,27 @@ test.describe('User actions', () => {
         route.abort();
       } else if (route.request().url().startsWith('https://fonts.googleapis.')) {
         route.abort();
+      } else if (route.request().url().startsWith('https://pagead2.googlesyndication.com')) {
+        route.abort();
       } else {
         route.continue();
       }
     });
 
-    await home.openPage();
+    //* Another method
+    // const locator = page.getByText('This site asks for consent to use your data');
+    // await page.addLocatorHandler(
+    //   locator,
+    //   async (overlay) => {
+    //     await overlay.getByRole('button', { name: 'Consent' }).click();
+    //   },
+    //   { times: 3, noWaitAfter: true },
+    // );
+    // // Run your tests that can be interrupted by the overlay.
+    // // ...
+    // await page.removeLocatorHandler(locator);
+
+    await home.goTo();
 
     //Assert
     await home.expectPage();
@@ -39,7 +55,7 @@ test.describe('User actions', () => {
     await page.close();
   });
 
-  test('Test Case 1: Register User', async ({ home, user }) => {
+  test('Test Case 1: Register User', async ({ header, home, user }) => {
     //Arrange
 
     const username = faker.internet.userName();
@@ -60,7 +76,8 @@ test.describe('User actions', () => {
     const phoneNumber = faker.phone.number('###-###-###');
 
     //Act
-    await home.signLogin.click(); // add Test Case 14
+    // await home.signLogin.click(); // add Test Case 14
+    await header.openSignupLoginPage();
     await user.registerUser(
       username,
       email,
@@ -106,7 +123,7 @@ test.describe('User actions', () => {
     // 19. Verify that home page is visible successfully
   });
 
-  test('Test Case 2: Login User with correct data', async ({ home, user }) => {
+  test('Test Case 2: Login User with correct data', async ({ header, home, user }) => {
     //Arrange
 
     const username = userData.fakeUsername;
@@ -127,7 +144,8 @@ test.describe('User actions', () => {
     const phoneNumber = faker.phone.number('###-###-###');
 
     //Act
-    await home.signLogin.click();
+    // await home.signLogin.click();
+    await header.openSignupLoginPage();
     await user.registerUser(
       username,
       email,
@@ -146,8 +164,8 @@ test.describe('User actions', () => {
       zipCode,
       phoneNumber,
     );
-    await home.logout.click();
-    await home.openPage();
+    await header.logout.click();
+    await home.goTo();
     await home.expectPage();
     await user.loginUser(email, password);
     await expect(user.loggedUser).toBeVisible();
@@ -192,7 +210,7 @@ test.describe('User actions', () => {
     // 8. Verify error 'Your email or password is incorrect!' is visible
   });
 
-  test('Test Case 4: Logout User', async ({ page, user, home }) => {
+  test('Test Case 4: Logout User', async ({ header, page, user, home }) => {
     //Arrange
 
     const username = userData.logoutUser;
@@ -202,7 +220,7 @@ test.describe('User actions', () => {
     //Act
     await user.loginUser(email, password);
     await expect(page.getByText(`${homeData.loggedInAs} ${username}`)).toBeVisible();
-    await home.logout.click();
+    await header.logout.click();
 
     //Assert
     await home.expectLoginPage();
@@ -243,7 +261,7 @@ test.describe('User actions', () => {
     // 8. Verify error 'Email Address already exist!' is visible
   });
 
-  test('Test Case 6: Contact Us Form', async ({ page, product, home }) => {
+  test('Test Case 6: Contact Us Form', async ({ header, contactUs, home }) => {
     //Arrange
     const name = faker.person.fullName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -251,15 +269,15 @@ test.describe('User actions', () => {
     const message = faker.word.words({ count: { min: 15, max: 25 } });
 
     //Act
-    await product.fillContactUs(name, email, subject, message);
+    await header.openContactUsPage();
+    await expect.soft(contactUs.header).toBeVisible();
+    await contactUs.fillContactUs(name, email, subject, message);
 
-    page.on('dialog', (dialog) => {
-      dialog.accept();
-      console.log('Alert dialog submitted');
-    });
-    await product.bDialogSubmit.click();
+    await contactUs.catchDialog();
+    await contactUs.buttonAcceptDialog.click();
 
-    await product.confirmationContactUs();
+    await expect.soft(contactUs.alertMessage).toContainText(contactUsData.alertSuccess);
+    await contactUs.buttonBackHome.click();
 
     //Assert
     await home.expectPage();
@@ -278,11 +296,9 @@ test.describe('User actions', () => {
     // 11. Click 'Home' button and verify that landed to home page successfully
   });
 
-  test('Test Case 7: Verify Test Cases Page', async ({ product, home }) => {
-    //Arrange
-
+  test('Test Case 7: Verify Test Cases Page', async ({ slider, home }) => {
     //Act
-    await product.openTestCase();
+    await slider.openTestCasesFromSlider();
 
     //Assert
     await home.expectTestCasePage();
@@ -295,9 +311,10 @@ test.describe('User actions', () => {
     // 5. Verify user is navigated to test cases page successfully
   });
 
-  test('Test Case 8: Verify All Products and product detail page', async ({ product }) => {
+  test('Test Case 8: Verify All Products and product detail page', async ({ header, product }) => {
     //Arrange
     //Act
+    await header.openProductsPage();
     await product.selectFirstProduct();
     //Assert
     await product.expectFirstProductDetails();
@@ -356,12 +373,12 @@ test.describe('User actions', () => {
     // 7. Verify success message 'You have been successfully subscribed!' is visible
   });
 
-  test('Test Case 11: Verify Subscription in Cart page', async ({ page, home, product }) => {
+  test('Test Case 11: Verify Subscription in Cart page', async ({ header, page, home, product }) => {
     //Arrange
 
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
     //Act
-    await home.cart.click();
+    await header.openCartPage();
 
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
@@ -425,7 +442,7 @@ test.describe('User actions', () => {
     // 9. Verify that product is displayed in cart page with exact quantity
   });
 
-  test('Test Case 14: Place Order: Register while Checkout', async ({ page, product, cart, user }) => {
+  test('Test Case 14: Place Order: Register while Checkout', async ({ page, header, product, cart, user }) => {
     //Arrange
 
     const quantity = productData.productQuantity;
@@ -504,6 +521,8 @@ test.describe('User actions', () => {
     );
     await expect(loggedUser).toBeVisible();
 
+    await header.openCartPage();
+
     await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
 
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
@@ -534,7 +553,7 @@ test.describe('User actions', () => {
     // 20. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 15: Place Order: Register before Checkout', async ({ page, home, user, product, cart }) => {
+  test('Test Case 15: Place Order: Register before Checkout', async ({ page, header, home, user, product, cart }) => {
     //Arrange
 
     const quantity = productData.productQuantity;
@@ -590,7 +609,7 @@ test.describe('User actions', () => {
     const expiryYear = cartData.expiryYear;
 
     //Act
-    await home.signLogin.click();
+    await header.openSignupLoginPage();
     await user.registerUser(
       username,
       email,
@@ -615,6 +634,7 @@ test.describe('User actions', () => {
     await product.addProductQuantity(quantity);
     await home.expectCartPage();
     await cart.bProceedToCheckout.click();
+    await header.openCartPage();
     await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
 
@@ -642,7 +662,7 @@ test.describe('User actions', () => {
     // 18. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 16: Place Order: Login before Checkout', async ({ page, home, user, product, cart }) => {
+  test('Test Case 16: Place Order: Login before Checkout', async ({ page, header, home, user, product, cart }) => {
     //Arrange
     const quantity = productData.productQuantity;
 
@@ -697,7 +717,7 @@ test.describe('User actions', () => {
     const expiryYear = cartData.expiryYear;
 
     //Act
-    await home.signLogin.click();
+    await header.openSignupLoginPage();
     await user.registerUser(
       username,
       email,
@@ -718,7 +738,7 @@ test.describe('User actions', () => {
     );
 
     await expect(loggedUser).toBeVisible();
-    await home.logout.click();
+    await header.logout.click();
     await user.loginUser(email, password);
     await expect(loggedUser).toBeVisible();
 
@@ -798,11 +818,11 @@ test.describe('User actions', () => {
     // 8. Verify that user is navigated to that category page
   });
 
-  test('Test Case 19: View & Cart Brand Products @smoke', async ({ home }) => {
+  test('Test Case 19: View & Cart Brand Products @smoke', async ({ header, home }) => {
     //Arrange
 
     //Act
-    await home.products.click();
+    await header.openProductsPage();
     await home.expectLeftSidebar();
     await home.openBrandMastHarbour();
 
@@ -820,7 +840,7 @@ test.describe('User actions', () => {
     // 8. Verify that user is navigated to that brand page and can see products
   });
 
-  test('Test Case 20: Search Products and Verify Cart After Login', async ({ page, product, home, user }) => {
+  test('Test Case 20: Search Products and Verify Cart After Login', async ({ header, page, product, home, user }) => {
     //Arrange
     test.slow();
     // test.setTimeout(120000);
@@ -862,7 +882,7 @@ test.describe('User actions', () => {
     // }
     //* -----------------------------
 
-    await home.cart.click();
+    await header.openCartPage();
 
     const cartProductNumber = await page.locator('#cart_info_table').locator('tbody > tr').count();
     Number(cartProductNumber) == Number(searchResults);
@@ -870,7 +890,7 @@ test.describe('User actions', () => {
 
     await user.loginUser(email, password);
 
-    await home.cart.click();
+    await header.openCartPage();
     const cartProductNumberAfterLogin = await page.locator('#cart_info_table').locator('tbody > tr').count();
     //Assert
     Number(cartProductNumberAfterLogin) == Number(searchResults);
@@ -939,7 +959,7 @@ test.describe('User actions', () => {
     // 7. Verify that product is displayed in cart page
   });
 
-  test('Test Case 23: Verify address details in checkout page', async ({ page, home, user, product, cart }) => {
+  test('Test Case 23: Verify address details in checkout page', async ({ header, page, home, user, product, cart }) => {
     //Arrange
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -986,7 +1006,7 @@ test.describe('User actions', () => {
       ${phoneNumber}`;
 
     // Act
-    await home.signLogin.click();
+    await header.openSignupLoginPage();
     await user.registerUser(
       username,
       email,

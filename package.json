@@ -1,5 +1,5 @@
 {
-  "name": "playwright-online-shop",
+  "name": "automation-exercise-playwright",
   "version": "1.0.0",
   "description": "Automation tests for online shop by using framework Playwright.",
   "main": "index.js",
