@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { BasePage } from '../pages/base.page';
 import { ProductPage } from '../pages/product.page';
 import { ContactUsPage } from '../pages/contact-us.page';
@@ -6,6 +6,8 @@ import { CartPage } from '../pages/cart.page';
 import { SignupLoginPage } from '../pages/signLogin.page';
 import { TestCasesPage } from '../pages/test-cases.page';
 import { HomePage } from './home.component';
+import { DeleteAccountPage } from '../pages/delete-account.page';
+import { LoginPage } from '../pages/login.page';
 
 export class HeaderComponent extends BasePage {
   readonly home: Locator;
@@ -18,6 +20,7 @@ export class HeaderComponent extends BasePage {
   readonly videoTutorials: Locator;
   readonly contactUs: Locator;
   readonly logout: Locator;
+  readonly loggedUser: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -53,6 +56,11 @@ export class HeaderComponent extends BasePage {
     return new SignupLoginPage(this.page);
   }
 
+  async clickDeleteAccount(): Promise<DeleteAccountPage> {
+    await this.deleteAccount.click();
+    return new DeleteAccountPage(this.page);
+  }
+
   async openTestCasesPage(): Promise<TestCasesPage> {
     await this.testCases.click();
     return new TestCasesPage(this.page);
@@ -61,5 +69,18 @@ export class HeaderComponent extends BasePage {
   async openContactUsPage(): Promise<ContactUsPage> {
     await this.contactUs.click();
     return new ContactUsPage(this.page);
+  }
+
+  async clickLogout(): Promise<LoginPage> {
+    await this.logout.click();
+    return new LoginPage(this.page);
+  }
+
+  getLoggedUser(username: string): Locator {
+    return this.page.getByRole('listitem').filter({ hasText: `Logged in as ${username}` });
+  }
+
+  async expectLoggedUser(username: string): Promise<void> {
+    await expect.soft(this.getLoggedUser(username)).toBeVisible();
   }
 }

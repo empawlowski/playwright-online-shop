@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
 import { HomePage } from '../components/home.component';
 import { homeData } from '../assets/data/e2e/home.data';
 import { BasePage } from './base.page';
@@ -8,14 +8,14 @@ export class SignupLoginPage extends BasePage {
   readonly homePage: HomePage;
   readonly headerComponent: HeaderComponent;
 
-  readonly hSignup: Locator;
-  readonly fillSignupName: Locator;
-  readonly fillSignupEmail: Locator;
-  readonly bSignup: Locator;
+  // readonly hSignup: Locator;
+  // readonly fillSignupName: Locator;
+  // readonly fillSignupEmail: Locator;
+  // readonly bSignup: Locator;
   readonly hLogin: Locator;
-  readonly fillLoginEmail: Locator;
-  readonly fillLoginPassword: Locator;
-  readonly bLogin: Locator;
+  readonly fieldLoginEmail: Locator;
+  readonly fieldLoginPassword: Locator;
+  readonly buttonLogin: Locator;
 
   readonly inputSignupName: Locator;
   readonly inputSignupEmail: Locator;
@@ -45,7 +45,7 @@ export class SignupLoginPage extends BasePage {
 
   readonly loggedUser: Locator;
   readonly hIncorrectEmail: Locator;
-  readonly hEmailExist: Locator;
+  // readonly hEmailExist: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -54,14 +54,14 @@ export class SignupLoginPage extends BasePage {
     //   signLogin = this.page.getByRole('link', { name: 'Signup / Login' });
 
     //* POM for New User Registration/ Login (#signUp) (#registerUser) (#loginUser)
-    this.hSignup = this.page.getByRole('heading', { name: 'New User Signup!' });
-    this.fillSignupName = this.page.getByTestId('signup-name');
-    this.fillSignupEmail = this.page.getByTestId('signup-email');
-    this.bSignup = this.page.getByRole('button', { name: 'Signup' });
+    // this.hSignup = this.page.getByRole('heading', { name: 'New User Signup!' });
+    // this.fillSignupName = this.page.getByTestId('signup-name');
+    // this.fillSignupEmail = this.page.getByTestId('signup-email');
+    // this.bSignup = this.page.getByRole('button', { name: 'Signup' });
     this.hLogin = this.page.getByRole('heading', { name: 'Login to your account' });
-    this.fillLoginEmail = this.page.getByTestId('login-email');
-    this.fillLoginPassword = this.page.getByTestId('login-password');
-    this.bLogin = this.page.getByTestId('login-button');
+    this.fieldLoginEmail = this.page.getByTestId('login-email');
+    this.fieldLoginPassword = this.page.getByTestId('login-password');
+    this.buttonLogin = this.page.getByTestId('login-button');
 
     this.inputSignupName = this.page.locator('#name');
     this.inputSignupEmail = this.page.locator('#email');
@@ -92,17 +92,17 @@ export class SignupLoginPage extends BasePage {
 
     //* POM for expect status
     this.loggedUser = this.page.getByText(homeData.loggedUser);
-    this.hIncorrectEmail = this.page.getByText(homeData.incorrectEmail);
-    this.hEmailExist = this.page.getByText(homeData.emailExist);
+    this.hIncorrectEmail = this.page.getByText(homeData.incorrectData);
+    // this.hEmailExist = this.page.getByText(homeData.emailExist);
   }
 
-  async signUp(username: string, email: string): Promise<void> {
-    await this.headerComponent.signLogin.click();
-    await expect(this.hSignup).toBeVisible();
-    await this.fillSignupName.fill(username);
-    await this.fillSignupEmail.fill(email);
-    await this.bSignup.click();
-  }
+  // async signUp(username: string, email: string): Promise<void> {
+  //   await this.headerComponent.signLogin.click();
+  //   await expect(this.hSignup).toBeVisible();
+  //   await this.fillSignupName.fill(username);
+  //   await this.fillSignupEmail.fill(email);
+  //   await this.bSignup.click();
+  // }
 
   async registerUser(
     username: string,
@@ -123,48 +123,64 @@ export class SignupLoginPage extends BasePage {
     phoneNumber: string,
   ): Promise<void> {
     // await this.homePage.signLogin.click();
-    await expect(this.hSignup).toBeVisible();
-    await this.fillSignupName.fill(username);
-    await this.fillSignupEmail.fill(email);
-    await this.bSignup.click();
-    await expect(this.inputSignupName).toHaveValue(username);
-    await expect(this.inputSignupEmail).toHaveValue(email);
-    await this.selectGender.click();
-    await this.fillPassword.fill(password);
-    await this.selectDays.selectOption(days);
-    await this.selectMonths.selectOption(months);
-    await this.selectYears.selectOption(years);
-    await this.selectNewsletter.click();
-    await this.selectOption.click();
-    await this.fillFirstName.fill(firstName);
-    await this.fillLastName.fill(lastName);
-    await this.fillCompany.fill(company);
-    await this.fillAddress1.fill(address1);
-    await this.fillAddress2.fill(address2);
-    await this.fillCountry.selectOption(country);
-    await this.fillState.fill(state);
-    await this.fillCity.fill(city);
-    await this.fillZipCode.fill(zipCode);
-    await this.fillMobileNumber.fill(phoneNumber);
-    await this.bCreateAccount.click();
-    await expect(this.hAccountCreated).toBeVisible();
-    await this.bContinue.click();
+    // await expect(this.hSignup).toBeVisible();
+    //!
+    //? past for registerUser()
+    // const userBaseData: UserSignupModel = createSignupUser();
+    // await header.openSignupLoginPage();
+    // await expect(login.headerSignup).toBeVisible();
+    // await login.fillUserSignup(userBaseData);
+    // await signup.expectAccountInformation(userBaseData);
+    // await signup.expectAccountInformation(userBaseData);
+    // await signup.fillBasicInformation(userBasicInfoData);
+    // await signup.fillAddressInformation(userAddressInfoData);
+    // await signup.clickCreateAccount();
+    // await expect.soft(signup.create.headerAccountCreated).toContainText('Account Created!');
+    // await signup.create.clickContinue();
+    // await header.expectLoggedUser(userBaseData.name);
+    //!
+    // await this.fillSignupName.fill(username);
+    // await this.fillSignupEmail.fill(email);
+    // await this.bSignup.click();
+    // await expect(this.inputSignupName).toHaveValue(username);
+    // await expect(this.inputSignupEmail).toHaveValue(email);
+    // await this.selectGender.click();
+    // await this.fillPassword.fill(password);
+    // await this.selectDays.selectOption(days);
+    // await this.selectMonths.selectOption(months);
+    // await this.selectYears.selectOption(years);
+    // await this.selectNewsletter.click();
+    // await this.selectOption.click();
+    // await this.fillFirstName.fill(firstName);
+    // await this.fillLastName.fill(lastName);
+    // await this.fillCompany.fill(company);
+    // await this.fillAddress1.fill(address1);
+    // await this.fillAddress2.fill(address2);
+    // await this.fillCountry.selectOption(country);
+    // await this.fillState.fill(state);
+    // await this.fillCity.fill(city);
+    // await this.fillZipCode.fill(zipCode);
+    // await this.fillMobileNumber.fill(phoneNumber);
+    // await this.bCreateAccount.click();
+    // await expect(this.hAccountCreated).toBeVisible();
+    // await this.bContinue.click();
     // await expect(this.page.getByText(`Logged in as ${username}`)).toBeVisible();
   }
 
-  async loginUser(email: string, password: string): Promise<void> {
-    await this.headerComponent.signLogin.click();
-    await expect(this.hLogin).toBeVisible();
-    await this.fillLoginEmail.fill(email);
-    await this.fillLoginPassword.fill(password);
-    await this.bLogin.click();
-  }
+  // async loginToAccount(email: string, password: string): Promise<void> {
+  //   // await this.headerComponent.signLogin.click();
+  //   await expect(this.hLogin).toBeVisible();
+  //   await this.fieldLoginEmail.fill(email);
+  //   await this.fieldLoginPassword.fill(password);
+  //   await this.buttonLogin.click();
+  // }
   // await expect(this.page.getByText(`Logged in as ${username}`)).toBeVisible();
 
   async deleteUser(): Promise<void> {
     await this.headerComponent.deleteAccount.click();
-    await expect(this.hAccountDeleted).toBeVisible();
-    await this.bContinue.click();
-    await this.homePage.expectPage();
+    //? return page?
+    // await expect(this.hAccountDeleted).toBeVisible();
+    // await this.bContinue.click();
+    // await this.homePage.expectPage();
   }
 }
