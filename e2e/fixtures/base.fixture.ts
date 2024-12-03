@@ -7,13 +7,16 @@ import { HeaderComponent } from '../components/header.component';
 import { ContactUsPage } from '../pages/contact-us.page';
 import { TestCasesPage } from '../pages/test-cases.page';
 import { SliderComponent } from '../components/slider.component';
+import { LoginPage } from '../pages/login.page';
+import { SignupPage } from '../pages/signup.page';
 
 interface Pages {
   cart: CartPage;
   contactUs: ContactUsPage;
   home: HomePage;
   user: SignupLoginPage;
-  // login: LoginPage;
+  login: LoginPage;
+  signup: SignupPage;
   product: ProductPage;
   testCases: TestCasesPage;
 
@@ -34,6 +37,14 @@ export const test = base.extend<Pages>({
   user: async ({ page }, use) => {
     await use(new SignupLoginPage(page));
   },
+
+  login: async ({ page }, use) => {
+    await use(new LoginPage(page));
+  },
+  signup: async ({ page }, use) => {
+    await use(new SignupPage(page));
+  },
+
   product: async ({ page }, use) => {
     await use(new ProductPage(page));
   },

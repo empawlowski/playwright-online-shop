@@ -67,7 +67,7 @@ export class HomePage extends BasePage {
   //   await this.page.goto('/');
   // }
 
-  async expectPage(): Promise<void> {
+  async expectHomePage(): Promise<void> {
     await expect.soft(this.page).toHaveURL('/');
     await expect(this.page).toHaveTitle(homeData.titleHome);
   }
@@ -78,10 +78,10 @@ export class HomePage extends BasePage {
     await expect(this.sidebarBrands).toBeVisible();
   }
 
-  async expectLoginPage(): Promise<void> {
-    await expect(this.page).toHaveURL('/login');
-    await expect(this.page).toHaveTitle(homeData.titleLogin);
-  }
+  // async expectLoginPage(): Promise<void> {
+  //   await expect(this.page).toHaveURL('/login');
+  //   await expect(this.page).toHaveTitle(homeData.titleLogin);
+  // }
 
   async expectCartPage(): Promise<void> {
     await expect(this.page).toHaveURL('/view_cart');

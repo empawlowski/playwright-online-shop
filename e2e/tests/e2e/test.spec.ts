@@ -6,6 +6,11 @@ import { cartData } from '../../assets/data/e2e/cart.data';
 import { test } from '../../fixtures/base.fixture';
 import { expect } from '@playwright/test';
 import { contactUsData } from '../../assets/data/e2e/contact-us.data';
+import { createSignupUser } from '../../factories/login.factory';
+import { UserLoginModel, UserSignupModel } from '../../models/login.model';
+import { UserSignupAddressInfoModel, UserSignupBasicInfoModel } from '../../models/signup.model';
+import { testCasesData } from '../../assets/data/test-cases/test-cases.data';
+import { createSignupUserBasicInfo } from '../../factories/signup.factory';
 
 test.describe('User actions', () => {
   test.beforeEach(async ({ page, home }, testInfo) => {
@@ -44,7 +49,7 @@ test.describe('User actions', () => {
     await home.goTo();
 
     //Assert
-    await home.expectPage();
+    await home.expectHomePage();
   });
 
   test.afterEach(async ({ page }, testInfo) => {
@@ -52,57 +57,103 @@ test.describe('User actions', () => {
 
     if (testInfo.status !== testInfo.expectedStatus) console.log(`Did not run as expected, ended up at ${page.url()}`);
 
-    await page.close();
+    // await page.close();
   });
 
-  test('Test Case 1: Register User', async ({ header, home, user }) => {
+  test('Test Case 1: Register User', async ({ header, login, signup, home }) => {
     //Arrange
+    // const username = faker.internet.userName();
+    // const email = faker.internet.email({ provider: 'fakerjs.dev' });
+    // const password = faker.internet.password();
+    // const days = faker.string.numeric(1);
+    // const months = faker.string.numeric(1);
+    // const years = userData.years;
+    // const firstName = faker.person.firstName();
+    // const lastName = faker.person.lastName();
+    // const company = faker.company.name();
+    // const address1 = faker.location.streetAddress({ useFullAddress: true });
+    // const address2 = faker.location.secondaryAddress();
+    // const country = userData.country;
+    // const state = faker.location.state();
+    // const city = faker.location.city();
+    // const zipCode = faker.location.zipCode();
+    // const phoneNumber = faker.phone.number();
 
-    const username = faker.internet.userName();
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    const password = faker.internet.password();
-    const days = faker.string.numeric(1);
-    const months = faker.string.numeric(1);
-    const years = userData.years;
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-    const company = faker.company.name();
-    const address1 = faker.location.streetAddress({ useFullAddress: true });
-    const address2 = faker.location.secondaryAddress();
-    const country = userData.country;
-    const state = faker.location.state();
-    const city = faker.location.city();
-    const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number('###-###-###');
-
+    const userBaseData: UserSignupModel = createSignupUser();
+    const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
+    // const userBasicInfoData: UserSignupBasicInfoModel = {
+    //   password: faker.internet.password(),
+    //   day: faker.number.int({ min: 1, max: 31 }).toString(),
+    //   month: faker.date.month(),
+    //   year: faker.number.int({ min: 1900, max: 2021 }).toString(),
+    // };
+    const userAddressInfoData: UserSignupAddressInfoModel = {
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      company: faker.company.name(),
+      address: faker.location.streetAddress({ useFullAddress: true }),
+      address2: faker.location.secondaryAddress(),
+      country: userData.country,
+      state: faker.location.state(),
+      city: faker.location.city(),
+      zipCode: faker.location.zipCode(),
+      phoneNumber: faker.phone.number(),
+    };
     //Act
-    // await home.signLogin.click(); // add Test Case 14
     await header.openSignupLoginPage();
-    await user.registerUser(
-      username,
-      email,
-      password,
-      days,
-      months,
-      years,
-      firstName,
-      lastName,
-      country,
-      company,
-      address1,
-      address2,
-      state,
-      city,
-      zipCode,
-      phoneNumber,
-    );
-    await user.deleteUser();
+    await expect(login.headerSignup).toBeVisible();
+
+    await login.fillUserSignup(userBaseData);
+    await signup.expectAccountInformation(userBaseData);
+    await signup.fillBasicInformation(userBasicInfoData);
+    await signup.fillAddressInformation(userAddressInfoData);
+    await signup.clickCreateAccount();
+    //? new page 'account_created'
+    // 14. Verify that 'ACCOUNT CREATED!' is visible
+    await expect.soft(signup.create.headerAccountCreated).toContainText('Account Created!');
+    // 15. Click 'Continue' button
+    await signup.create.clickContinue();
+
+    // await user.registerUser(
+    //   username,
+    //   email,
+    //   password,
+    //   days,
+    //   months,
+    //   years,
+    //   firstName,
+    //   lastName,
+    //   country,
+    //   company,
+    //   address1,
+    //   address2,
+    //   state,
+    //   city,
+    //   zipCode,
+    //   phoneNumber,
+    // );
+
+    // 16. Verify that 'Logged in as username' is visible
+    //?
+    // await expect.soft(page.locator('.fa-user')).toBeVisible();
+    // await expect.soft(page.getByRole('listitem').filter({ hasText: 'Logged in as' })).toBeVisible();
+    await header.expectLoggedUser(userBaseData.name);
+    // aka locator('li').filter({ hasText: 'Logged in as Cyrus' })
+    // await expect(this.page.getByText(`Logged in as ${username}`)).toBeVisible();
+    // 17. Click 'Delete Account' button
+    // await user.deleteUser();
+    await header.clickDeleteAccount();
+    // 18. Verify that 'ACCOUNT DELETED!' is visible and click 'Continue' button
+    await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    await signup.delete.clickContinue();
+    // 19. Verify that home page is visible successfully
 
     //Assert
-    await home.expectPage();
+    await home.expectHomePage();
 
     // Test Case 1: Register User
-    // 1. Launch browser (//)
+    const TC1: string = testCasesData.test_case_1;
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click on 'Signup / Login' button
@@ -123,8 +174,14 @@ test.describe('User actions', () => {
     // 19. Verify that home page is visible successfully
   });
 
-  test('Test Case 2: Login User with correct data', async ({ header, home, user }) => {
+  test('Test Case 2: Login User with correct data', async ({ header, login, home, user }) => {
+    //TODO:
     //Arrange
+
+    const userLoginData: UserLoginModel = {
+      email: userData.fakeEmail,
+      password: userData.fakePassword,
+    };
 
     const username = userData.fakeUsername;
     const email = userData.fakeEmail;
@@ -141,7 +198,7 @@ test.describe('User actions', () => {
     const state = faker.location.state();
     const city = faker.location.city();
     const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number('###-###-###');
+    const phoneNumber = faker.phone.number();
 
     //Act
     // await home.signLogin.click();
@@ -166,13 +223,18 @@ test.describe('User actions', () => {
     );
     await header.logout.click();
     await home.goTo();
-    await home.expectPage();
-    await user.loginUser(email, password);
+    await home.expectHomePage();
+    await header.openSignupLoginPage();
+    await login.loginToAccount(userLoginData);
     await expect(user.loggedUser).toBeVisible();
+    //?
     await user.deleteUser();
+    // await header.clickDeleteAccount();
+    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    // await signup.delete.clickContinue();
 
     //Assert
-    await home.expectPage();
+    await home.expectHomePage();
 
     // Test Case 2: Login User with correct email and password
     // 1. Launch browser (//)
@@ -188,15 +250,19 @@ test.describe('User actions', () => {
     // 11. Verify that home page is visible successfully
   });
 
-  test('Test Case 3: Login User with incorrect data', async ({ user }) => {
+  test('Test Case 3: Login User with incorrect data', async ({ header, login, user }) => {
     //Arrange
-    const email = userData.incorrectEmail;
-    const password = userData.incorrectPassword;
+    const userLoginData: UserLoginModel = {
+      email: userData.incorrectEmail,
+      password: userData.incorrectPassword,
+    };
 
     //Act
-    await user.loginUser(email, password);
+    await header.openSignupLoginPage();
+    await login.loginToAccount(userLoginData);
 
     //Assert
+    await expect.soft(login.paragraphLoginIncorrectData).toBeVisible();
     await expect(user.hIncorrectEmail).toBeVisible();
 
     // Test Case 3: Login User with incorrect email and password
@@ -210,20 +276,26 @@ test.describe('User actions', () => {
     // 8. Verify error 'Your email or password is incorrect!' is visible
   });
 
-  test('Test Case 4: Logout User', async ({ header, page, user, home }) => {
+  test('Test Case 4: Logout User', async ({ header, login, user }) => {
     //Arrange
-
-    const username = userData.logoutUser;
-    const email = userData.logoutEmail;
-    const password = userData.fakePassword;
+    const userLoginData: UserLoginModel = {
+      email: userData.logoutEmail,
+      password: userData.fakePassword,
+      username: userData.logoutUser,
+    };
 
     //Act
-    await user.loginUser(email, password);
-    await expect(page.getByText(`${homeData.loggedInAs} ${username}`)).toBeVisible();
-    await header.logout.click();
+    await header.openSignupLoginPage();
+    await expect.soft(login.headerLogin).toBeVisible();
+    await login.loginToAccount(userLoginData);
+    // await user.loginToAccount(email, password);
+    await header.expectLoggedUser(userLoginData.username!);
+    // await expect(page.getByText(`${homeData.loggedInAs} ${username}`)).toBeVisible();
+    // await header.logout.click();
+    await header.clickLogout();
 
     //Assert
-    await home.expectLoginPage();
+    await login.expectLoginPage();
 
     // Test Case 4: Logout User
     // 1. Launch browser (//)
@@ -238,17 +310,20 @@ test.describe('User actions', () => {
     // 10. Verify that user is navigated to login page
   });
 
-  test('Test Case 5: Register User with existing email', async ({ user }) => {
+  test('Test Case 5: Register User with existing email', async ({ header, login }) => {
     //Arrange
-
-    const username = userData.logoutUser;
-    const email = userData.logoutEmail;
+    const userBaseData: UserSignupModel = {
+      name: userData.logoutUser,
+      email: userData.logoutEmail,
+    };
 
     //Act
-    await user.signUp(username, email);
+    await header.openSignupLoginPage();
+    await expect.soft(login.headerSignup).toBeVisible();
+    await login.fillUserSignup(userBaseData);
 
     //Assert
-    await expect(user.hEmailExist).toBeVisible();
+    await expect(login.paragraphSignupIncorrectData).toBeVisible();
 
     // Test Case 5: Register User with existing email
     // 1. Launch browser (//)
@@ -280,7 +355,7 @@ test.describe('User actions', () => {
     await contactUs.buttonBackHome.click();
 
     //Assert
-    await home.expectPage();
+    await home.expectHomePage();
 
     // Test Case 6: Contact Us Form
     // 1. Launch browser (//)
@@ -443,6 +518,7 @@ test.describe('User actions', () => {
   });
 
   test('Test Case 14: Place Order: Register while Checkout', async ({ page, header, product, cart, user }) => {
+    //TODO:
     //Arrange
 
     const quantity = productData.productQuantity;
@@ -462,7 +538,7 @@ test.describe('User actions', () => {
     const state = faker.location.state();
     const city = faker.location.city();
     const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number('###-###-###');
+    const phoneNumber = faker.phone.number();
 
     const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
 
@@ -529,6 +605,9 @@ test.describe('User actions', () => {
 
     //Assert
     await user.deleteUser();
+    // await header.clickDeleteAccount();
+    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    // await signup.delete.clickContinue();
 
     // Test Case 14: Place Order: Register while Checkout
     // 1. Launch browser (//)
@@ -554,6 +633,7 @@ test.describe('User actions', () => {
   });
 
   test('Test Case 15: Place Order: Register before Checkout', async ({ page, header, home, user, product, cart }) => {
+    //TODO:
     //Arrange
 
     const quantity = productData.productQuantity;
@@ -573,7 +653,7 @@ test.describe('User actions', () => {
     const state = faker.location.state();
     const city = faker.location.city();
     const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number('###-###-###');
+    const phoneNumber = faker.phone.number();
 
     const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
 
@@ -640,6 +720,9 @@ test.describe('User actions', () => {
 
     //Assert
     await user.deleteUser();
+    // await header.clickDeleteAccount();
+    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    // await signup.delete.clickContinue();
 
     // Test Case 15: Place Order: Register before Checkout
     // 1. Launch browser (//)
@@ -662,8 +745,14 @@ test.describe('User actions', () => {
     // 18. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 16: Place Order: Login before Checkout', async ({ page, header, home, user, product, cart }) => {
+  test('Test Case 16: Place Order: Login before Checkout', async ({ page, header, login, home, user, product, cart }) => {
+    //TODO:
     //Arrange
+    const userLoginData: UserLoginModel = {
+      email: userData.fakeExistEmail,
+      password: userData.fakePassword,
+    };
+
     const quantity = productData.productQuantity;
 
     const username = userData.fakeExistUsername;
@@ -681,7 +770,7 @@ test.describe('User actions', () => {
     const state = faker.location.state();
     const city = faker.location.city();
     const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number('###-###-###');
+    const phoneNumber = faker.phone.number();
 
     const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
 
@@ -739,7 +828,8 @@ test.describe('User actions', () => {
 
     await expect(loggedUser).toBeVisible();
     await header.logout.click();
-    await user.loginUser(email, password);
+    await header.openSignupLoginPage();
+    await login.loginToAccount(userLoginData);
     await expect(loggedUser).toBeVisible();
 
     await product.addProductQuantity(quantity);
@@ -750,6 +840,9 @@ test.describe('User actions', () => {
 
     //Assert
     await user.deleteUser();
+    // await header.clickDeleteAccount();
+    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    // await signup.delete.clickContinue();
 
     // Test Case 16: Place Order: Login before Checkout
     // 1. Launch browser (//)
@@ -795,6 +888,7 @@ test.describe('User actions', () => {
   });
 
   test('Test Case 18: View Category Products', async ({ home }) => {
+    //TODO:
     //Arrange
 
     //Act
@@ -819,6 +913,7 @@ test.describe('User actions', () => {
   });
 
   test('Test Case 19: View & Cart Brand Products @smoke', async ({ header, home }) => {
+    //TODO:
     //Arrange
 
     //Act
@@ -840,13 +935,18 @@ test.describe('User actions', () => {
     // 8. Verify that user is navigated to that brand page and can see products
   });
 
-  test('Test Case 20: Search Products and Verify Cart After Login', async ({ header, page, product, home, user }) => {
+  test('Test Case 20: Search Products and Verify Cart After Login', async ({ header, login, page, product, home, user }) => {
     //Arrange
     test.slow();
     // test.setTimeout(120000);
 
     const search = productData.searchProduct;
     const expectProductNumber = Number(14);
+
+    const userLoginData: UserLoginModel = {
+      email: userData.logoutEmail,
+      password: userData.fakePassword,
+    };
 
     const email = userData.logoutEmail; //'fake@email.cc',
     const password = userData.fakePassword; //'fake!Password00',
@@ -888,7 +988,8 @@ test.describe('User actions', () => {
     Number(cartProductNumber) == Number(searchResults);
     console.log('Are the values is correct: ', cartProductNumber === searchResults);
 
-    await user.loginUser(email, password);
+    await header.openSignupLoginPage();
+    await login.loginToAccount(userLoginData);
 
     await header.openCartPage();
     const cartProductNumberAfterLogin = await page.locator('#cart_info_table').locator('tbody > tr').count();
@@ -960,6 +1061,7 @@ test.describe('User actions', () => {
   });
 
   test('Test Case 23: Verify address details in checkout page', async ({ header, page, home, user, product, cart }) => {
+    //TODO:
     //Arrange
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -976,7 +1078,7 @@ test.describe('User actions', () => {
     const state = faker.location.state();
     const city = faker.location.city();
     const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number('###-###-###');
+    const phoneNumber = faker.phone.number();
 
     const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
 
@@ -1035,6 +1137,9 @@ test.describe('User actions', () => {
 
     //Assert
     await user.deleteUser();
+    // await header.clickDeleteAccount();
+    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    // await signup.delete.clickContinue();
 
     // Test Case 23: Verify address details in checkout page
     // 1. Launch browser (//)
@@ -1055,6 +1160,7 @@ test.describe('User actions', () => {
   });
 
   test('Test Case 24: Download Invoice after purchase order', async ({ page, product, cart, user }) => {
+    //TODO:
     //Arrange
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -1071,7 +1177,7 @@ test.describe('User actions', () => {
     const state = faker.location.state();
     const city = faker.location.city();
     const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number('###-###-###');
+    const phoneNumber = faker.phone.number();
 
     const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
 
@@ -1150,6 +1256,9 @@ test.describe('User actions', () => {
 
     //Assert
     await user.deleteUser();
+    // await header.clickDeleteAccount();
+    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    // await signup.delete.clickContinue();
 
     // Test Case 24: Download Invoice after purchase order
     // 1. Launch browser (//)
