@@ -1,6 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
 import { BasePage } from './base.page';
-import { HomePage } from '../components/home.component';
+import { HomePage } from './home.page';
 
 export class AccountCreatedPage extends BasePage {
   readonly headerAccountCreated: Locator;

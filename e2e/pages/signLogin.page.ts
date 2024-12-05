@@ -1,5 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
-import { HomePage } from '../components/home.component';
+import { HomePage } from './home.page';
 import { homeData } from '../assets/data/e2e/home.data';
 import { BasePage } from './base.page';
 import { HeaderComponent } from '../components/header.component';

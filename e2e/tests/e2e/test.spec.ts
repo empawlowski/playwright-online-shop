@@ -11,8 +11,10 @@ import { UserLoginModel, UserSignupModel } from '../../models/login.model';
 import { UserSignupAddressInfoModel, UserSignupBasicInfoModel } from '../../models/signup.model';
 import { testCasesData } from '../../assets/data/test-cases/test-cases.data';
 import { createSignupUserBasicInfo } from '../../factories/signup.factory';
+import { urlTitleData } from '../../assets/data/e2e/url-title.data';
+import { categoryProductsData } from '../../assets/data/e2e/category-products.data';
 
-test.describe('User actions', () => {
+test.describe('Test for test cases', () => {
   test.beforeEach(async ({ page, home }, testInfo) => {
     //Arrange
     console.log(`Running ${testInfo.title}`);
@@ -386,13 +388,13 @@ test.describe('User actions', () => {
     // 5. Verify user is navigated to test cases page successfully
   });
 
-  test('Test Case 8: Verify All Products and product detail page', async ({ header, product }) => {
+  test('Test Case 8: Verify All Products and product detail page', async ({ header, products }) => {
     //Arrange
     //Act
     await header.openProductsPage();
-    await product.selectFirstProduct();
+    await products.selectFirstProduct();
     //Assert
-    await product.expectFirstProductDetails();
+    await products.expectFirstProductDetails();
 
     // Test Case 8: Verify All Products and product detail page
     // 1. Launch browser (//)
@@ -406,13 +408,13 @@ test.describe('User actions', () => {
     // 9. Verify that detail detail is visible: product name, category, price, availability, condition, brand
   });
 
-  test('Test Case 9: Search Product', async ({ product }) => {
+  test('Test Case 9: Search Product', async ({ products }) => {
     //Arrange
     const search: string = productData.searchProduct;
     //Act
-    await product.searchProduct(search);
+    await products.searchProduct(search);
     //Assert
-    await expect(product.linkViewProduct.first()).toBeVisible();
+    await expect(products.linkViewProduct.first()).toBeVisible();
 
     // Test Case 9: Search Product
     // 1. Launch browser (//)
@@ -425,7 +427,7 @@ test.describe('User actions', () => {
     // 8. Verify all the products related to search are visible
   });
 
-  test('Test Case 10: Verify Subscription in home page', async ({ page, product }) => {
+  test('Test Case 10: Verify Subscription in home page', async ({ page, products }) => {
     //Arrange
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
 
@@ -433,10 +435,10 @@ test.describe('User actions', () => {
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
     });
-    await product.sendSubscribe(email);
+    await products.sendSubscribe(email);
 
     //Assert
-    await expect(product.successSubs).toContainText(homeData.confirmationSubscribe);
+    await expect(products.successSubs).toContainText(homeData.confirmationSubscribe);
 
     // Test Case 10: Verify Subscription in home page
     // 1. Launch browser (//)
@@ -448,7 +450,7 @@ test.describe('User actions', () => {
     // 7. Verify success message 'You have been successfully subscribed!' is visible
   });
 
-  test('Test Case 11: Verify Subscription in Cart page', async ({ header, page, home, product }) => {
+  test('Test Case 11: Verify Subscription in Cart page', async ({ header, page, home, products }) => {
     //Arrange
 
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -459,10 +461,10 @@ test.describe('User actions', () => {
       window.scrollTo(0, document.body.scrollHeight);
     });
 
-    await product.sendSubscribe(email);
+    await products.sendSubscribe(email);
 
     //Assert
-    await expect(product.successSubs).toContainText(homeData.confirmationSubscribe);
+    await expect(products.successSubs).toContainText(homeData.confirmationSubscribe);
 
     // Test Case 11: Verify Subscription in Cart page
     // 1. Launch browser (//)
@@ -475,14 +477,14 @@ test.describe('User actions', () => {
     // 8. Verify success message 'You have been successfully subscribed!' is visible
   });
 
-  test('Test Case 12: Add Products in Cart', async ({ product }) => {
+  test('Test Case 12: Add Products in Cart', async ({ products }) => {
     //Arrange
     //Act
-    await product.addProducts();
+    await products.addProducts();
     //Assert
-    const rowCount = await product.tableRow.count();
+    const rowCount = await products.tableRow.count();
     expect(rowCount).toBe(2);
-    await product.expectAddProducts();
+    await products.expectAddProducts();
 
     // Test Case 12: Add Products in Cart
     // 1. Launch browser (//)
@@ -497,13 +499,13 @@ test.describe('User actions', () => {
     // 10. Verify their prices, quantity and total price
   });
 
-  test('Test Case 13: Verify Product quantity in Cart @smoke', async ({ product }) => {
+  test('Test Case 13: Verify Product quantity in Cart @smoke', async ({ products }) => {
     //Arrange
     const quantity = productData.productQuantity;
     //Act
-    await product.addProductQuantity(quantity);
+    await products.addProductQuantity(quantity);
     //Assert
-    await product.expectAddProductQuantity();
+    await products.expectAddProductQuantity();
 
     // Test Case 13: Verify Product quantity in Cart
     // 1. Launch browser (//)
@@ -517,7 +519,7 @@ test.describe('User actions', () => {
     // 9. Verify that product is displayed in cart page with exact quantity
   });
 
-  test('Test Case 14: Place Order: Register while Checkout', async ({ page, header, product, cart, user }) => {
+  test('Test Case 14: Place Order: Register while Checkout', async ({ page, header, products, cart, user }) => {
     //TODO:
     //Arrange
 
@@ -574,7 +576,7 @@ test.describe('User actions', () => {
     const expiryYear = cartData.expiryYear;
 
     //Act
-    await product.addProductQuantity(quantity);
+    await products.addProductQuantity(quantity);
     await cart.checkoutFromCartPage();
 
     await user.registerUser(
@@ -632,7 +634,7 @@ test.describe('User actions', () => {
     // 20. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 15: Place Order: Register before Checkout', async ({ page, header, home, user, product, cart }) => {
+  test('Test Case 15: Place Order: Register before Checkout', async ({ page, header, home, user, products, cart }) => {
     //TODO:
     //Arrange
 
@@ -711,7 +713,7 @@ test.describe('User actions', () => {
 
     await expect(loggedUser).toBeVisible();
 
-    await product.addProductQuantity(quantity);
+    await products.addProductQuantity(quantity);
     await home.expectCartPage();
     await cart.bProceedToCheckout.click();
     await header.openCartPage();
@@ -745,7 +747,7 @@ test.describe('User actions', () => {
     // 18. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 16: Place Order: Login before Checkout', async ({ page, header, login, home, user, product, cart }) => {
+  test('Test Case 16: Place Order: Login before Checkout', async ({ page, header, login, home, user, products, cart }) => {
     //TODO:
     //Arrange
     const userLoginData: UserLoginModel = {
@@ -832,7 +834,7 @@ test.describe('User actions', () => {
     await login.loginToAccount(userLoginData);
     await expect(loggedUser).toBeVisible();
 
-    await product.addProductQuantity(quantity);
+    await products.addProductQuantity(quantity);
     await home.expectCartPage();
     await cart.bProceedToCheckout.click();
     await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
@@ -864,12 +866,12 @@ test.describe('User actions', () => {
     // 17. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 17: Remove Products From Cart', async ({ product, home, cart }) => {
+  test('Test Case 17: Remove Products From Cart', async ({ products, home, cart }) => {
     //Arrange
     const quantity = productData.productQuantity;
 
     //Act
-    await product.addProductQuantity(quantity);
+    await products.addProductQuantity(quantity);
     await home.expectCartPage();
     await cart.bDeleteQuantity.click();
 
@@ -888,18 +890,38 @@ test.describe('User actions', () => {
   });
 
   test('Test Case 18: View Category Products', async ({ home }) => {
-    //TODO:
     //Arrange
+    const womenProductData = {
+      category: 'Women',
+      products: 'Dress',
+      header: categoryProductsData.hWomenDressProducts,
+      url: urlTitleData.urlWomenDress,
+      title: urlTitleData.productWomenDress,
+    };
+
+    const menProductData = {
+      category: 'Men',
+      products: 'Jeans',
+      header: categoryProductsData.hMenJeansProducts,
+      url: urlTitleData.urlMenJeans,
+      title: urlTitleData.productMenJeans,
+    };
 
     //Act
-    await home.expectLeftSidebar();
+    await home.leftSidebar.expectLeftSidebar();
 
-    await home.openWomenCategory();
-    await home.expectWomenDressProductsPage();
+    await home.leftSidebar.openCategoryByName(womenProductData.category);
+    await home.leftSidebar.openCategoryProductsByName(womenProductData.products);
 
-    await home.openMenCategory();
+    await home.categoryProducts.expectCategoryProductsPage(womenProductData.url, womenProductData.title);
+    await expect(home.categoryProducts.getHeaderName(womenProductData.header)).toBeVisible();
+
+    await home.leftSidebar.openCategoryByName(menProductData.category);
+    await home.leftSidebar.openCategoryProductsByName(menProductData.products);
+
+    await home.categoryProducts.expectCategoryProductsPage(menProductData.url, menProductData.title);
     //Assert
-    await home.expectMenJeansProductsPage();
+    await expect(home.categoryProducts.getHeaderName(menProductData.header)).toBeVisible();
 
     // Test Case 18: View Category Products
     // 1. Launch browser (//)
@@ -912,13 +934,13 @@ test.describe('User actions', () => {
     // 8. Verify that user is navigated to that category page
   });
 
-  test('Test Case 19: View & Cart Brand Products @smoke', async ({ header, home }) => {
+  test('Test Case 19: View & Cart Brand Products @smoke', async ({ header, home, products }) => {
     //TODO:
     //Arrange
 
     //Act
     await header.openProductsPage();
-    await home.expectLeftSidebar();
+    await products.leftSidebar.expectLeftSidebar();
     await home.openBrandMastHarbour();
 
     //Assert
@@ -935,7 +957,7 @@ test.describe('User actions', () => {
     // 8. Verify that user is navigated to that brand page and can see products
   });
 
-  test('Test Case 20: Search Products and Verify Cart After Login', async ({ header, login, page, product, home, user }) => {
+  test('Test Case 20: Search Products and Verify Cart After Login', async ({ header, login, page, products, home, user }) => {
     //Arrange
     test.slow();
     // test.setTimeout(120000);
@@ -952,7 +974,7 @@ test.describe('User actions', () => {
     const password = userData.fakePassword; //'fake!Password00',
 
     //Act
-    await product.searchProduct(search);
+    await products.searchProduct(search);
     const searchResults = await page.locator('div.single-products').count();
     await expect(searchResults).toBe(expectProductNumber);
     console.log('Results on page: ', searchResults);
@@ -962,14 +984,14 @@ test.describe('User actions', () => {
 
     for (const addToCart of addToCarts) {
       await addToCart.click();
-      await product.bContinueShopping.click();
+      await products.bContinueShopping.click();
     }
     //* -----------------------------
 
     //* Catching by text and method .all()
     // for (const addToCart of await page.locator('.productinfo.text-center').getByText('Add to cart').all()) {
     //   await addToCart.click();
-    //   await product.bContinueShopping.click();
+    //   await products.bContinueShopping.click();
     // }
     //* -----------------------------
 
@@ -978,7 +1000,7 @@ test.describe('User actions', () => {
     //
     // for (let i = 0; i < (await addToCart.count()); i++) {
     //   await addToCart.nth(i).click();
-    //   await product.bContinueShopping.click();
+    //   await products.bContinueShopping.click();
     // }
     //* -----------------------------
 
@@ -1012,17 +1034,17 @@ test.describe('User actions', () => {
     // 12. Verify that those products are visible in cart after login as well
   });
 
-  test('Test Case 21: Add review on product', async ({ product }) => {
+  test('Test Case 21: Add review on product', async ({ products }) => {
     //Arrange
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
     const review = faker.lorem.text();
 
     //Act
-    await product.addProductReview(username, email, review);
+    await products.addProductReview(username, email, review);
 
     //Assert
-    await product.expectSuccessReviewMessage();
+    await products.expectSuccessReviewMessage();
 
     // Test Case 21: Add review on product
     // 1. Launch browser (//)
@@ -1036,7 +1058,7 @@ test.describe('User actions', () => {
     // 9. Verify success message 'Thank you for your review.'
   });
 
-  test('Test Case 22: Add to cart from Recommended items', async ({ page, home, product }) => {
+  test('Test Case 22: Add to cart from Recommended items', async ({ page, home, products }) => {
     //Arrange
 
     //Act
@@ -1048,7 +1070,7 @@ test.describe('User actions', () => {
 
     //Assert
     //product on page
-    await expect(product.tableRow).toBeVisible();
+    await expect(products.tableRow).toBeVisible();
 
     // Test Case 22: Add to cart from Recommended items
     // 1. Launch browser (//)
@@ -1060,7 +1082,7 @@ test.describe('User actions', () => {
     // 7. Verify that product is displayed in cart page
   });
 
-  test('Test Case 23: Verify address details in checkout page', async ({ header, page, home, user, product, cart }) => {
+  test('Test Case 23: Verify address details in checkout page', async ({ header, page, home, user, products, cart }) => {
     //TODO:
     //Arrange
     const username = faker.internet.userName();
@@ -1130,8 +1152,8 @@ test.describe('User actions', () => {
 
     await expect(loggedUser).toBeVisible();
 
-    await product.bAddToCart.first().click();
-    await product.bContinueShopping.click();
+    await products.bAddToCart.first().click();
+    await products.bContinueShopping.click();
 
     await cart.proceedToCheckoutWithAddressVerification(deliveryAddress, deliveryInvoice);
 
@@ -1159,7 +1181,7 @@ test.describe('User actions', () => {
     // 15. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 24: Download Invoice after purchase order', async ({ page, product, cart, user }) => {
+  test('Test Case 24: Download Invoice after purchase order', async ({ page, products, cart, user }) => {
     //TODO:
     //Arrange
     const username = faker.internet.userName();
@@ -1213,7 +1235,7 @@ test.describe('User actions', () => {
     const expiryYear = cartData.expiryYear;
 
     // Act
-    await product.addProductGoCartPage();
+    await products.addProductGoCartPage();
     await cart.bProceedToCheckout.click();
     await cart.bRegisterLogin.click();
 
