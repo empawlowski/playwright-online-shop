@@ -1,10 +1,11 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { HomePage } from '../components/home.component';
+import { HomePage } from './home.page';
 import { productData } from '../assets/data/e2e/product.data';
 import { BasePage } from './base.page';
 import { HeaderComponent } from '../components/header.component';
+import { LeftSidebarComponent } from '../components/left-sidebar.component';
 
-export class ProductPage extends BasePage {
+export class ProductsPage extends BasePage {
   readonly homePage: HomePage;
   readonly headerComponent: HeaderComponent;
 
@@ -23,6 +24,8 @@ export class ProductPage extends BasePage {
   readonly hSuccessSubmittedLocator: Locator;
   readonly bContactUsHome: Locator;
 
+  readonly leftSidebar: LeftSidebarComponent;
+
   constructor(page: Page) {
     super(page);
     this.homePage = new HomePage(page);
@@ -35,6 +38,8 @@ export class ProductPage extends BasePage {
     this.hSuccessSubmitted = page.locator('#contact-page').getByText('Success! Your details have been submitted successfully.');
     this.hSuccessSubmittedLocator = page.locator('.alert-success');
     this.bContactUsHome = page.locator('#form-section').getByRole('link', { name: ' Home' });
+
+    this.leftSidebar = new LeftSidebarComponent(page);
   }
 
   //* POM for page Products (#selectFirstProduct) (#expectFirstProductDetails) (#searchProduct) (#sendSubscribe)

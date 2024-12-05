@@ -1,13 +1,13 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { HomePage } from '../components/home.component';
-import { ProductPage } from './product.page';
+import { HomePage } from './home.page';
+import { ProductsPage } from './product.page';
 import { BasePage } from './base.page';
 import { HeaderComponent } from '../components/header.component';
 
 export class CartPage extends BasePage {
   private readonly homePage: HomePage;
   private readonly headerComponent: HeaderComponent;
-  readonly product: ProductPage;
+  readonly product: ProductsPage;
   readonly addressDelivery: Locator;
 
   readonly addressInvoice: Locator;
@@ -34,7 +34,7 @@ export class CartPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.homePage = new HomePage(page);
-    this.product = new ProductPage(page);
+    this.product = new ProductsPage(page);
 
     //Test Case 14: Place Order: Register while Checkout
     this.addressDelivery = page.locator('#address_delivery');

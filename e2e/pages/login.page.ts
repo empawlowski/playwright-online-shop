@@ -1,9 +1,10 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { BasePage } from './base.page';
 import { UserLoginModel, UserSignupModel } from '../models/login.model';
-import { HomePage } from '../components/home.component';
+import { HomePage } from './home.page';
 import { SignupPage } from './signup.page';
 import { homeData } from '../assets/data/e2e/home.data';
+import { urlTitleData } from '../assets/data/e2e/url-title.data';
 
 export class LoginPage extends BasePage {
   readonly headerLogin: Locator;
@@ -35,7 +36,7 @@ export class LoginPage extends BasePage {
 
   async expectLoginPage(): Promise<void> {
     await expect(this.page).toHaveURL('/login');
-    await expect(this.page).toHaveTitle(homeData.titleLogin);
+    await expect(this.page).toHaveTitle(urlTitleData.login);
   }
 
   async loginToAccount(user: UserLoginModel): Promise<HomePage> {

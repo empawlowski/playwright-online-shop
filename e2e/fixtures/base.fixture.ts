@@ -1,8 +1,8 @@
 import { test as base } from '@playwright/test';
 import { CartPage } from '../pages/cart.page';
-import { HomePage } from '../components/home.component';
+import { HomePage } from '../pages/home.page';
 import { SignupLoginPage } from '../pages/signLogin.page';
-import { ProductPage } from '../pages/product.page';
+import { ProductsPage } from '../pages/product.page';
 import { HeaderComponent } from '../components/header.component';
 import { ContactUsPage } from '../pages/contact-us.page';
 import { TestCasesPage } from '../pages/test-cases.page';
@@ -17,7 +17,7 @@ interface Pages {
   user: SignupLoginPage;
   login: LoginPage;
   signup: SignupPage;
-  product: ProductPage;
+  products: ProductsPage;
   testCases: TestCasesPage;
 
   header: HeaderComponent;
@@ -45,8 +45,8 @@ export const test = base.extend<Pages>({
     await use(new SignupPage(page));
   },
 
-  product: async ({ page }, use) => {
-    await use(new ProductPage(page));
+  products: async ({ page }, use) => {
+    await use(new ProductsPage(page));
   },
   testCases: async ({ page }, use) => {
     await use(new TestCasesPage(page));

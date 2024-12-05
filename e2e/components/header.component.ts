@@ -1,11 +1,11 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { BasePage } from '../pages/base.page';
-import { ProductPage } from '../pages/product.page';
+import { ProductsPage } from '../pages/product.page';
 import { ContactUsPage } from '../pages/contact-us.page';
 import { CartPage } from '../pages/cart.page';
 import { SignupLoginPage } from '../pages/signLogin.page';
 import { TestCasesPage } from '../pages/test-cases.page';
-import { HomePage } from './home.component';
+import { HomePage } from '../pages/home.page';
 import { DeleteAccountPage } from '../pages/delete-account.page';
 import { LoginPage } from '../pages/login.page';
 
@@ -41,9 +41,9 @@ export class HeaderComponent extends BasePage {
     return new HomePage(this.page);
   }
 
-  async openProductsPage(): Promise<ProductPage> {
+  async openProductsPage(): Promise<ProductsPage> {
     await this.home.click();
-    return new ProductPage(this.page);
+    return new ProductsPage(this.page);
   }
 
   async openCartPage(): Promise<CartPage> {
