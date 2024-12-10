@@ -11,25 +11,25 @@ export class CartPage extends BasePage {
   readonly addressDelivery: Locator;
 
   readonly addressInvoice: Locator;
-  readonly fillDescription: Locator;
-  readonly bPlaceOrder: Locator;
+  readonly fieldDescription: Locator;
+  readonly buttonPlaceOrder: Locator;
 
-  readonly fillNameOnCard: Locator;
-  readonly fillCardNumber: Locator;
-  readonly fillCvc: Locator;
-  readonly fillExpiryMonth: Locator;
-  readonly fillExpiryYear: Locator;
-  readonly bPay: Locator;
+  readonly fieldNameOnCard: Locator;
+  readonly fieldCardNumber: Locator;
+  readonly fieldCvc: Locator;
+  readonly fieldExpiryMonth: Locator;
+  readonly fieldExpiryYear: Locator;
+  readonly buttonPay: Locator;
   readonly toastMessage: Locator;
 
-  readonly bProceedToCheckout: Locator;
-  readonly bRegisterLogin: Locator;
+  readonly buttonProceedToCheckout: Locator;
+  readonly buttonRegisterLogin: Locator;
 
-  readonly bDeleteQuantity: Locator;
+  readonly buttonDeleteQuantity: Locator;
   readonly divCartEmpty: Locator;
 
-  readonly bDownloadInvoice: Locator;
-  readonly bContinue: Locator;
+  readonly buttonDownloadInvoice: Locator;
+  readonly buttonContinue: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -39,59 +39,59 @@ export class CartPage extends BasePage {
     //Test Case 14: Place Order: Register while Checkout
     this.addressDelivery = page.locator('#address_delivery');
     this.addressInvoice = page.locator('#address_invoice');
-    this.fillDescription = page.locator('#ordermsg').locator('.form-control');
-    this.bPlaceOrder = page.getByRole('link', { name: 'Place Order' });
+    this.fieldDescription = page.locator('#ordermsg').locator('.form-control');
+    this.buttonPlaceOrder = page.getByRole('link', { name: 'Place Order' });
 
-    this.fillNameOnCard = page.getByTestId('name-on-card');
-    this.fillCardNumber = page.getByTestId('card-number');
-    this.fillCvc = page.getByTestId('cvc');
-    this.fillExpiryMonth = page.getByTestId('expiry-month');
-    this.fillExpiryYear = page.getByTestId('expiry-year');
-    this.bPay = page.getByTestId('pay-button');
+    this.fieldNameOnCard = page.getByTestId('name-on-card');
+    this.fieldCardNumber = page.getByTestId('card-number');
+    this.fieldCvc = page.getByTestId('cvc');
+    this.fieldExpiryMonth = page.getByTestId('expiry-month');
+    this.fieldExpiryYear = page.getByTestId('expiry-year');
+    this.buttonPay = page.getByTestId('pay-button');
     this.toastMessage = page.locator('#success_message');
 
-    this.bProceedToCheckout = page.getByText('Proceed To Checkout');
-    this.bRegisterLogin = page.getByRole('link', { name: 'Register / Login' });
+    this.buttonProceedToCheckout = page.getByText('Proceed To Checkout');
+    this.buttonRegisterLogin = page.getByRole('link', { name: 'Register / Login' });
 
-    this.bDeleteQuantity = page.locator('a.cart_quantity_delete');
+    this.buttonDeleteQuantity = page.locator('a.cart_quantity_delete');
     this.divCartEmpty = page.locator('#empty_cart');
 
     //Test Case 24: Download Invoice after purchase order
-    this.bDownloadInvoice = page.locator('.check_out');
-    this.bContinue = page.locator('.btn-primary');
+    this.buttonDownloadInvoice = page.locator('.check_out');
+    this.buttonContinue = page.locator('.btn-primary');
   }
 
   async checkoutFromCartPage(): Promise<void> {
     await this.homePage.expectCartPage();
-    await this.bProceedToCheckout.click();
-    await this.bRegisterLogin.click();
+    await this.buttonProceedToCheckout.click();
+    await this.buttonRegisterLogin.click();
   }
 
   async proceedToCheckout(deliveryAddress: string, deliveryInvoice: string, description: string): Promise<void> {
     await this.headerComponent.cart.click();
     await this.homePage.expectCartPage();
-    await this.bProceedToCheckout.click();
+    await this.buttonProceedToCheckout.click();
     await expect(this.addressDelivery).toHaveText(deliveryAddress);
     await expect(this.addressInvoice).toHaveText(deliveryInvoice);
     await this.product.expectAddProductQuantity();
-    await this.fillDescription.fill(description);
-    await this.bPlaceOrder.click();
+    await this.fieldDescription.fill(description);
+    await this.buttonPlaceOrder.click();
   }
 
   async checkoutWithoutExpectProductQuantity(deliveryAddress: string, deliveryInvoice: string, description: string): Promise<void> {
     await this.headerComponent.cart.click();
     await this.homePage.expectCartPage();
-    await this.bProceedToCheckout.click();
+    await this.buttonProceedToCheckout.click();
     await expect(this.addressDelivery).toHaveText(deliveryAddress);
     await expect(this.addressInvoice).toHaveText(deliveryInvoice);
-    await this.fillDescription.fill(description);
-    await this.bPlaceOrder.click();
+    await this.fieldDescription.fill(description);
+    await this.buttonPlaceOrder.click();
   }
 
   async proceedToCheckoutWithAddressVerification(deliveryAddress: string, deliveryInvoice: string): Promise<void> {
     await this.headerComponent.cart.click();
     await this.homePage.expectCartPage();
-    await this.bProceedToCheckout.click();
+    await this.buttonProceedToCheckout.click();
     await expect(this.addressDelivery).toHaveText(deliveryAddress);
     await expect(this.addressInvoice).toHaveText(deliveryInvoice);
   }
@@ -104,12 +104,12 @@ export class CartPage extends BasePage {
     expiryMonth: string,
     expiryYear: string,
   ): Promise<void> {
-    await this.fillNameOnCard.fill(firstName + lastName);
-    await this.fillCardNumber.fill(cardNumber);
-    await this.fillCvc.fill(cvc);
-    await this.fillExpiryMonth.fill(expiryMonth);
-    await this.fillExpiryYear.fill(expiryYear);
-    await this.bPay.click();
+    await this.fieldNameOnCard.fill(firstName + lastName);
+    await this.fieldCardNumber.fill(cardNumber);
+    await this.fieldCvc.fill(cvc);
+    await this.fieldExpiryMonth.fill(expiryMonth);
+    await this.fieldExpiryYear.fill(expiryYear);
+    await this.buttonPay.click();
     await this.toastMessage.isVisible();
   }
 }

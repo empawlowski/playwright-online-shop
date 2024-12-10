@@ -10,7 +10,7 @@ import { createSignupUser } from '../../factories/login.factory';
 import { UserLoginModel, UserSignupModel } from '../../models/login.model';
 import { UserSignupAddressInfoModel, UserSignupBasicInfoModel } from '../../models/signup.model';
 import { testCasesData } from '../../assets/data/test-cases/test-cases.data';
-import { createSignupUserBasicInfo } from '../../factories/signup.factory';
+import { createSignupUserAddressInfo, createSignupUserBasicInfo } from '../../factories/signup.factory';
 import { urlTitleData } from '../../assets/data/e2e/url-title.data';
 import { categoryProductsData } from '../../assets/data/e2e/category-products.data';
 
@@ -89,18 +89,20 @@ test.describe('Test for test cases', () => {
     //   month: faker.date.month(),
     //   year: faker.number.int({ min: 1900, max: 2021 }).toString(),
     // };
-    const userAddressInfoData: UserSignupAddressInfoModel = {
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      company: faker.company.name(),
-      address: faker.location.streetAddress({ useFullAddress: true }),
-      address2: faker.location.secondaryAddress(),
-      country: userData.country,
-      state: faker.location.state(),
-      city: faker.location.city(),
-      zipCode: faker.location.zipCode(),
-      phoneNumber: faker.phone.number(),
-    };
+    const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
+    // const userAddressInfoData: UserSignupAddressInfoModel = {
+    //   firstName: faker.person.firstName(),
+    //   lastName: faker.person.lastName(),
+    //   company: faker.company.name(),
+    //   address: faker.location.streetAddress({ useFullAddress: true }),
+    //   address2: faker.location.secondaryAddress(),
+    //   country: userData.country,
+    //   state: faker.location.state(),
+    //   city: faker.location.city(),
+    //   zipCode: faker.location.zipCode(),
+    //   phoneNumber: faker.phone.number(),
+    // };
+
     //Act
     await header.openSignupLoginPage();
     await expect(login.headerSignup).toBeVisible();
@@ -715,7 +717,7 @@ test.describe('Test for test cases', () => {
 
     await products.addProductQuantity(quantity);
     await home.expectCartPage();
-    await cart.bProceedToCheckout.click();
+    await cart.buttonProceedToCheckout.click();
     await header.openCartPage();
     await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
@@ -836,7 +838,7 @@ test.describe('Test for test cases', () => {
 
     await products.addProductQuantity(quantity);
     await home.expectCartPage();
-    await cart.bProceedToCheckout.click();
+    await cart.buttonProceedToCheckout.click();
     await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
 
@@ -873,7 +875,7 @@ test.describe('Test for test cases', () => {
     //Act
     await products.addProductQuantity(quantity);
     await home.expectCartPage();
-    await cart.bDeleteQuantity.click();
+    await cart.buttonDeleteQuantity.click();
 
     //Assert
     await expect(cart.divCartEmpty).toBeVisible();
@@ -1236,8 +1238,8 @@ test.describe('Test for test cases', () => {
 
     // Act
     await products.addProductGoCartPage();
-    await cart.bProceedToCheckout.click();
-    await cart.bRegisterLogin.click();
+    await cart.buttonProceedToCheckout.click();
+    await cart.buttonRegisterLogin.click();
 
     await user.registerUser(
       username,
@@ -1264,7 +1266,7 @@ test.describe('Test for test cases', () => {
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
     //* Download method
     const downloadPromise = page.waitForEvent('download');
-    await cart.bDownloadInvoice.click();
+    await cart.buttonDownloadInvoice.click();
     const download = await downloadPromise;
     if (download) {
       console.log('File downloaded successfully.');
@@ -1274,7 +1276,7 @@ test.describe('Test for test cases', () => {
     }
     //*--------------
 
-    await cart.bContinue.click();
+    await cart.buttonContinue.click();
 
     //Assert
     await user.deleteUser();

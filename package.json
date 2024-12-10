@@ -1,6 +1,6 @@
 {
   "name": "automation-exercise-playwright",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Automation tests for online shop by using framework Playwright.",
   "main": "index.js",
   "scripts": {
