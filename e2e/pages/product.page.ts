@@ -4,10 +4,21 @@ import { productData } from '../assets/data/e2e/product.data';
 import { BasePage } from './base.page';
 import { HeaderComponent } from '../components/header.component';
 import { LeftSidebarComponent } from '../components/left-sidebar.component';
+import { urlTitleData } from '../assets/data/e2e/url-title.data';
+import { ProductDetailsPage } from './product-details.page';
 
 export class ProductsPage extends BasePage {
   readonly homePage: HomePage;
   readonly headerComponent: HeaderComponent;
+  readonly details: ProductDetailsPage;
+
+  readonly header: Locator;
+
+  readonly linkViewProduct: Locator;
+  readonly fieldSearchProduct: Locator;
+  readonly buttonSearch: Locator;
+  readonly headerSearchedProducts: Locator;
+  readonly singleProduct: Locator;
 
   readonly hGetInTouch: Locator;
 
@@ -30,6 +41,15 @@ export class ProductsPage extends BasePage {
     super(page);
     this.homePage = new HomePage(page);
     this.headerComponent = new HeaderComponent(page);
+    this.details = new ProductDetailsPage(page);
+
+    this.header = page.getByRole('heading', { name: 'All Products', exact: true });
+
+    this.linkViewProduct = this.page.getByRole('link', { name: 'View Product' });
+    this.fieldSearchProduct = this.page.locator('#search_product');
+    this.buttonSearch = this.page.locator('#submit_search');
+    this.headerSearchedProducts = this.page.getByRole('heading', { name: 'Searched Products' });
+    this.singleProduct = this.page.locator('.single-products');
 
     this.hGetInTouch = page.getByRole('heading', { name: 'Get in Touch' }); //? used?
 
@@ -42,20 +62,7 @@ export class ProductsPage extends BasePage {
     this.leftSidebar = new LeftSidebarComponent(page);
   }
 
-  //* POM for page Products (#selectFirstProduct) (#expectFirstProductDetails) (#searchProduct) (#sendSubscribe)
-  linkViewProduct = this.page.getByRole('link', { name: 'View Product' });
-
-  hBlueTop = this.page.getByRole('heading', { name: 'Blue Top' });
-  category = this.page.getByText('Category:');
-  price = this.page.getByText('Rs.');
-  availability = this.page.getByText('Availability:');
-  condition = this.page.getByText('Condition:');
-  brand = this.page.getByText('Brand:');
-
-  fillSearchProduct = this.page.locator('#search_product');
-  bSearch = this.page.locator('#submit_search');
-  hSearchedProducts = this.page.getByRole('heading', { name: 'Searched Products' });
-
+  //* POM for page Products (#sendSubscribe)
   bAddToCart = this.page.locator('.productinfo.text-center').getByText('Add to cart');
   bProductViewAddToCart = this.page.getByRole('button', { name: 'Add to cart' });
   bContinueShopping = this.page.getByRole('button', { name: 'Continue Shopping' });
@@ -90,29 +97,37 @@ export class ProductsPage extends BasePage {
   divSuccessReview = this.page.locator('#review-section');
   hSuccessReview = this.page.getByText(productData.divSuccessReview);
 
-  async selectFirstProduct(): Promise<void> {
-    // await this.homePage.products.click();
-    await this.homePage.expectProductsPage();
-    await this.linkViewProduct.first().click();
+  getFirstViewProduct(): Locator {
+    return this.linkViewProduct.first();
   }
 
-  async expectFirstProductDetails(): Promise<void> {
-    await expect(this.page).toHaveURL('/product_details/1');
-    await expect(this.hBlueTop).toBeVisible();
-    await expect(this.category).toBeVisible();
-    await expect(this.price).toBeVisible();
-    await expect(this.availability).toBeVisible();
-    await expect(this.condition).toBeVisible();
-    await expect(this.brand).toBeVisible();
+  async expectProductsPage(): Promise<void> {
+    await expect(this.page).toHaveURL(urlTitleData.urlProducts);
+    await expect(this.page).toHaveTitle(urlTitleData.products);
+    await expect(this.header).toBeVisible();
+  }
+
+  async openFirstViewProduct(): Promise<void> {
+    await this.getFirstViewProduct().click();
   }
 
   async searchProduct(search: string): Promise<void> {
-    await this.headerComponent.products.click();
-    await this.homePage.expectProductsPage();
-    await this.fillSearchProduct.fill(search);
-    await this.bSearch.click();
-    await expect(this.hSearchedProducts).toBeVisible();
+    await this.fieldSearchProduct.fill(search);
+    await this.buttonSearch.click();
+    await expect(this.headerSearchedProducts).toBeVisible();
   }
+
+  async isFoundProductsHaveSearchText(search: string): Promise<void> {
+    let products = await this.singleProduct.all();
+    if (await this.singleProduct.first().isVisible()) {
+      for (let product of products) {
+        await expect.soft(product).toContainText(search, { ignoreCase: true });
+      }
+    } else {
+      console.log('No found product');
+    }
+  }
+  //TODO: below
 
   async addProductGoCartPage(): Promise<void> {
     await this.headerComponent.products.click();
@@ -140,8 +155,6 @@ export class ProductsPage extends BasePage {
   }
 
   async addProductQuantity(quantity: string): Promise<void> {
-    await this.linkViewProduct.first().click();
-    await this.homePage.expectFirstProductsPage();
     await this.fillQuantity.fill(quantity);
     await this.bProductViewAddToCart.click();
     await this.viewCart.click();
@@ -158,8 +171,8 @@ export class ProductsPage extends BasePage {
     await this.bSubscribe.click();
   }
   async addProductReview(username: string, email: string, review: string): Promise<void> {
-    await this.headerComponent.products.click();
-    await this.homePage.expectProductsPage();
+    // await this.headerComponent.products.click();
+    // await this.homePage.expectProductsPage();
     await this.linkViewProduct.first().click();
     await this.hWriteYourReview.isVisible();
     await this.fieldName.fill(username);

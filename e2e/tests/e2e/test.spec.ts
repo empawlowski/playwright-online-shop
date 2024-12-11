@@ -6,13 +6,15 @@ import { cartData } from '../../assets/data/e2e/cart.data';
 import { test } from '../../fixtures/base.fixture';
 import { expect } from '@playwright/test';
 import { contactUsData } from '../../assets/data/e2e/contact-us.data';
-import { createSignupUser } from '../../factories/login.factory';
+import { createFakeLoginUser, createSignupUser } from '../../factories/login.factory';
 import { UserLoginModel, UserSignupModel } from '../../models/login.model';
 import { UserSignupAddressInfoModel, UserSignupBasicInfoModel } from '../../models/signup.model';
 import { testCasesData } from '../../assets/data/test-cases/test-cases.data';
 import { createSignupUserAddressInfo, createSignupUserBasicInfo } from '../../factories/signup.factory';
 import { urlTitleData } from '../../assets/data/e2e/url-title.data';
 import { categoryProductsData } from '../../assets/data/e2e/category-products.data';
+import { createContactUsForm } from '../../factories/contact-us.factory';
+import { ProductDetailsModel } from '../../models/product-details.model';
 
 test.describe('Test for test cases', () => {
   test.beforeEach(async ({ page, home }, testInfo) => {
@@ -104,13 +106,23 @@ test.describe('Test for test cases', () => {
     // };
 
     //Act
+    // 4. Click on 'Signup / Login' button
     await header.openSignupLoginPage();
+    // 5. Verify 'New User Signup!' is visible
     await expect(login.headerSignup).toBeVisible();
-
+    // 6. Enter name and email address
+    // 7. Click 'Signup' button
     await login.fillUserSignup(userBaseData);
+    // 8. Verify that 'ENTER ACCOUNT INFORMATION' is visible
     await signup.expectAccountInformation(userBaseData);
+    // 9. Fill details: Title, Name, Email, Password, Date of birth
     await signup.fillBasicInformation(userBasicInfoData);
+    // 10. Select checkbox 'Sign up for our newsletter!'
+    // 11. Select checkbox 'Receive special offers from our partners!'
+    await signup.selectNewsletterAndOffers();
+    // 12. Fill details: First name, Last name, Company, Address, Address2, Country, State, City, Zipcode, Mobile Number
     await signup.fillAddressInformation(userAddressInfoData);
+    // 13. Click 'Create Account button'
     await signup.clickCreateAccount();
     //? new page 'account_created'
     // 14. Verify that 'ACCOUNT CREATED!' is visible
@@ -178,8 +190,9 @@ test.describe('Test for test cases', () => {
     // 19. Verify that home page is visible successfully
   });
 
-  test('Test Case 2: Login User with correct data', async ({ header, login, home, user }) => {
+  test('Test Case 2: Login User with correct data', async ({ header, login, request, home, signup, user }) => {
     //TODO:
+    //! NOW
     //Arrange
 
     const userLoginData: UserLoginModel = {
@@ -193,55 +206,131 @@ test.describe('Test for test cases', () => {
     const days = userData.days;
     const months = userData.months;
     const years = userData.years;
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-    const company = faker.company.name();
-    const address1 = faker.location.streetAddress({ useFullAddress: true });
-    const address2 = faker.location.secondaryAddress();
-    const country = userData.country;
-    const state = faker.location.state();
-    const city = faker.location.city();
-    const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number();
+    // const firstName = faker.person.firstName();
+    // const lastName = faker.person.lastName();
+    // const company = faker.company.name();
+    // const address1 = faker.location.streetAddress({ useFullAddress: true });
+    // const address2 = faker.location.secondaryAddress();
+    // const country = userData.country;
+    // const state = faker.location.state();
+    // const city = faker.location.city();
+    // const zipCode = faker.location.zipCode();
+    // const phoneNumber = faker.phone.number();
+
+    const userBaseData: UserSignupModel = createSignupUser();
+    const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
+    // const userBasicInfoData: UserSignupBasicInfoModel = {
+    //   password: faker.internet.password(),
+    //   day: faker.number.int({ min: 1, max: 31 }).toString(),
+    //   month: faker.date.month(),
+    //   year: faker.number.int({ min: 1900, max: 2021 }).toString(),
+    // };
+    const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
+    // const userAddressInfoData: UserSignupAddressInfoModel = {
+    //   firstName: faker.person.firstName(),
+    //   lastName: faker.person.lastName(),
+    //   company: faker.company.name(),
+    //   address: faker.location.streetAddress({ useFullAddress: true }),
+    //   address2: faker.location.secondaryAddress(),
+    //   country: userData.country,
+    //   state: faker.location.state(),
+    //   city: faker.location.city(),
+    //   zipCode: faker.location.zipCode(),
+    //   phoneNumber: faker.phone.number(),
+    // };
 
     //Act
+    // 4. Click on 'Signup / Login' button
+    await header.openSignupLoginPage();
+    // 5. Verify 'Login to your account' is visible
+    await expect(login.headerLogin).toBeVisible();
+    // 6. Enter correct email address and password
+    //? API
+    //Arrange
+    const response = await request.post('api/createAccount', {
+      headers: {
+        Accept: '*/*',
+        ContentType: 'application/json',
+      },
+      form: {
+        name: 'fakeAPINameTest',
+        email: 'fake@apitest.io',
+        password: 'fake!Password00',
+        title: 'Mr',
+        birth_date: '23',
+        birth_month: 'May',
+        birth_year: '1988',
+        firstname: 'FirstName',
+        lastname: 'LastName',
+        company: 'Company',
+        address1: 'Address 1',
+        address2: 'Address 2',
+        country: 'Australia',
+        zipcode: '56-121-78',
+        state: 'California',
+        city: 'Portland',
+        mobile_number: '561-121-121',
+      },
+    });
+    const responseBody = JSON.parse(await response.text());
+
+    //Act
+    expect(response.status()).toBe(200);
+    //Assert
+    console.log(responseBody);
+    expect(responseBody.responseCode).toBe(201);
+    expect(responseBody.message).toBe('User created!');
+    //? Login method
+    const apiUserData = {
+      email: 'fake@apitest.io',
+      password: 'fake!Password00',
+    };
+    await login.loginToAccount(apiUserData);
+    //? END API
+    // 7. Click 'login' button
+    // 8. Verify that 'Logged in as username' is visible
+    // 9. Click 'Delete Account' button
+    // 10. Verify that 'ACCOUNT DELETED!' is visible
+    // 11. Verify that home page is visible successfully
     // await home.signLogin.click();
-    await header.openSignupLoginPage();
-    await user.registerUser(
-      username,
-      email,
-      password,
-      days,
-      months,
-      years,
-      firstName,
-      lastName,
-      country,
-      company,
-      address1,
-      address2,
-      state,
-      city,
-      zipCode,
-      phoneNumber,
-    );
-    await header.logout.click();
-    await home.goTo();
-    await home.expectHomePage();
-    await header.openSignupLoginPage();
-    await login.loginToAccount(userLoginData);
-    await expect(user.loggedUser).toBeVisible();
+    //! ---
+    // await user.registerUser(
+    //   username,
+    //   email,
+    //   password,
+    //   days,
+    //   months,
+    //   years,
+    //   firstName,
+    //   lastName,
+    //   country,
+    //   company,
+    //   address1,
+    //   address2,
+    //   state,
+    //   city,
+    //   zipCode,
+    //   phoneNumber,
+    // );
+    // await header.logout.click();
+    // await home.goTo();
+    // await home.expectHomePage();
+    // await header.openSignupLoginPage();
+    // await login.loginToAccount(userLoginData);
+    //! ---
+    // await expect(user.loggedUser).toBeVisible();
+    await header.expectLoggedUser('fakeAPINameTest');
     //?
-    await user.deleteUser();
-    // await header.clickDeleteAccount();
-    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
-    // await signup.delete.clickContinue();
+    // await user.deleteUser();
+    await header.clickDeleteAccount();
+    await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    await signup.delete.clickContinue();
 
     //Assert
     await home.expectHomePage();
 
     // Test Case 2: Login User with correct email and password
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click on 'Signup / Login' button
@@ -256,10 +345,12 @@ test.describe('Test for test cases', () => {
 
   test('Test Case 3: Login User with incorrect data', async ({ header, login, user }) => {
     //Arrange
-    const userLoginData: UserLoginModel = {
-      email: userData.incorrectEmail,
-      password: userData.incorrectPassword,
-    };
+    const userLoginData: UserLoginModel = createFakeLoginUser();
+
+    // const userLoginData: UserLoginModel = {
+    //   email: userData.incorrectEmail,
+    //   password: userData.incorrectPassword,
+    // };
 
     //Act
     await header.openSignupLoginPage();
@@ -270,7 +361,7 @@ test.describe('Test for test cases', () => {
     await expect(user.hIncorrectEmail).toBeVisible();
 
     // Test Case 3: Login User with incorrect email and password
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click on 'Signup / Login' button
@@ -280,8 +371,9 @@ test.describe('Test for test cases', () => {
     // 8. Verify error 'Your email or password is incorrect!' is visible
   });
 
-  test('Test Case 4: Logout User', async ({ header, login, user }) => {
+  test('Test Case 4: Logout User', async ({ header, login }) => {
     //Arrange
+    //TODO: Update userLoginData > .env
     const userLoginData: UserLoginModel = {
       email: userData.logoutEmail,
       password: userData.fakePassword,
@@ -292,17 +384,14 @@ test.describe('Test for test cases', () => {
     await header.openSignupLoginPage();
     await expect.soft(login.headerLogin).toBeVisible();
     await login.loginToAccount(userLoginData);
-    // await user.loginToAccount(email, password);
     await header.expectLoggedUser(userLoginData.username!);
-    // await expect(page.getByText(`${homeData.loggedInAs} ${username}`)).toBeVisible();
-    // await header.logout.click();
     await header.clickLogout();
 
     //Assert
     await login.expectLoginPage();
 
     // Test Case 4: Logout User
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click on 'Signup / Login' button
@@ -316,6 +405,7 @@ test.describe('Test for test cases', () => {
 
   test('Test Case 5: Register User with existing email', async ({ header, login }) => {
     //Arrange
+    //TODO: update userBaseData to fakerjs
     const userBaseData: UserSignupModel = {
       name: userData.logoutUser,
       email: userData.logoutEmail,
@@ -330,7 +420,7 @@ test.describe('Test for test cases', () => {
     await expect(login.paragraphSignupIncorrectData).toBeVisible();
 
     // Test Case 5: Register User with existing email
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click on 'Signup / Login' button
@@ -342,15 +432,12 @@ test.describe('Test for test cases', () => {
 
   test('Test Case 6: Contact Us Form', async ({ header, contactUs, home }) => {
     //Arrange
-    const name = faker.person.fullName();
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    const subject = faker.word.words({ count: { min: 3, max: 5 } });
-    const message = faker.word.words({ count: { min: 15, max: 25 } });
+    const contactUsFormData = createContactUsForm();
 
     //Act
     await header.openContactUsPage();
     await expect.soft(contactUs.header).toBeVisible();
-    await contactUs.fillContactUs(name, email, subject, message);
+    await contactUs.fillContactUs(contactUsFormData);
 
     await contactUs.catchDialog();
     await contactUs.buttonAcceptDialog.click();
@@ -375,12 +462,12 @@ test.describe('Test for test cases', () => {
     // 11. Click 'Home' button and verify that landed to home page successfully
   });
 
-  test('Test Case 7: Verify Test Cases Page', async ({ slider, home }) => {
+  test('Test Case 7: Verify Test Cases Page', async ({ slider, testCases }) => {
     //Act
     await slider.openTestCasesFromSlider();
 
     //Assert
-    await home.expectTestCasePage();
+    await testCases.expectTestCasePage();
 
     // Test Case 7: Verify Test Cases Page
     // 1. Launch browser (//)
@@ -392,14 +479,28 @@ test.describe('Test for test cases', () => {
 
   test('Test Case 8: Verify All Products and product detail page', async ({ header, products }) => {
     //Arrange
+    const detailsData: ProductDetailsModel = {
+      name: 'Blue Top',
+      category: 'Women > Tops',
+      price: '500',
+      availability: 'In Stock',
+      condition: 'New',
+      brand: 'Polo',
+    };
     //Act
     await header.openProductsPage();
-    await products.selectFirstProduct();
+    await products.expectProductsPage();
+
+    // 7. Click on 'View Product' of first product
+    await products.openFirstViewProduct();
     //Assert
-    await products.expectFirstProductDetails();
+    // 8. User is landed to product detail page
+    await products.details.expectProductDetailsPage();
+    // 9. Verify that detail detail is visible: product name, category, price, availability, condition, brand
+    await products.details.expectProductDetails(detailsData);
 
     // Test Case 8: Verify All Products and product detail page
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click on 'Products' button
@@ -410,16 +511,20 @@ test.describe('Test for test cases', () => {
     // 9. Verify that detail detail is visible: product name, category, price, availability, condition, brand
   });
 
-  test('Test Case 9: Search Product', async ({ products }) => {
+  test('Test Case 9: Search Product', async ({ header, products }) => {
+    //? some search words like "Top" will show products without the name "Top" in the product details. "Top" also shows results for "Tops".
     //Arrange
-    const search: string = productData.searchProduct;
+    const search: string = 'Blue';
     //Act
+    await header.openProductsPage();
+    await products.expectProductsPage();
     await products.searchProduct(search);
+
     //Assert
-    await expect(products.linkViewProduct.first()).toBeVisible();
+    await products.isFoundProductsHaveSearchText(search);
 
     // Test Case 9: Search Product
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click on 'Products' button
@@ -505,6 +610,8 @@ test.describe('Test for test cases', () => {
     //Arrange
     const quantity = productData.productQuantity;
     //Act
+    await products.openFirstViewProduct();
+    await products.details.expectProductDetailsPage();
     await products.addProductQuantity(quantity);
     //Assert
     await products.expectAddProductQuantity();
@@ -521,8 +628,9 @@ test.describe('Test for test cases', () => {
     // 9. Verify that product is displayed in cart page with exact quantity
   });
 
-  test('Test Case 14: Place Order: Register while Checkout', async ({ page, header, products, cart, user }) => {
+  test('Test Case 14: Place Order: Register while Checkout', async ({ page, header, products, cart, user, signup }) => {
     //TODO:
+    //! NOW
     //Arrange
 
     const quantity = productData.productQuantity;
@@ -544,7 +652,30 @@ test.describe('Test for test cases', () => {
     const zipCode = faker.location.zipCode();
     const phoneNumber = faker.phone.number();
 
-    const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
+    const userBaseData: UserSignupModel = createSignupUser();
+    const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
+    // const userBasicInfoData: UserSignupBasicInfoModel = {
+    //   password: faker.internet.password(),
+    //   day: faker.number.int({ min: 1, max: 31 }).toString(),
+    //   month: faker.date.month(),
+    //   year: faker.number.int({ min: 1900, max: 2021 }).toString(),
+    // };
+    const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
+    // const userAddressInfoData: UserSignupAddressInfoModel = {
+    //   firstName: faker.person.firstName(),
+    //   lastName: faker.person.lastName(),
+    //   company: faker.company.name(),
+    //   address: faker.location.streetAddress({ useFullAddress: true }),
+    //   address2: faker.location.secondaryAddress(),
+    //   country: userData.country,
+    //   state: faker.location.state(),
+    //   city: faker.location.city(),
+    //   zipCode: faker.location.zipCode(),
+    //   phoneNumber: faker.phone.number(),
+    // };
+
+    // const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
+    await header.expectLoggedUser(username);
 
     const yourDeliveryAddress = cartData.yourDeliveryAddress;
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
@@ -578,6 +709,8 @@ test.describe('Test for test cases', () => {
     const expiryYear = cartData.expiryYear;
 
     //Act
+    await products.openFirstViewProduct();
+    await products.details.expectProductDetailsPage();
     await products.addProductQuantity(quantity);
     await cart.checkoutFromCartPage();
 
@@ -599,7 +732,8 @@ test.describe('Test for test cases', () => {
       zipCode,
       phoneNumber,
     );
-    await expect(loggedUser).toBeVisible();
+    // await expect(loggedUser).toBeVisible();
+    await header.expectLoggedUser(username);
 
     await header.openCartPage();
 
@@ -608,10 +742,10 @@ test.describe('Test for test cases', () => {
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
 
     //Assert
-    await user.deleteUser();
-    // await header.clickDeleteAccount();
-    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
-    // await signup.delete.clickContinue();
+    // await user.deleteUser();
+    await header.clickDeleteAccount();
+    await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    await signup.delete.clickContinue();
 
     // Test Case 14: Place Order: Register while Checkout
     // 1. Launch browser (//)
@@ -636,8 +770,9 @@ test.describe('Test for test cases', () => {
     // 20. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 15: Place Order: Register before Checkout', async ({ page, header, home, user, products, cart }) => {
+  test('Test Case 15: Place Order: Register before Checkout', async ({ page, header, home, user, products, cart, signup }) => {
     //TODO:
+    //! NOW
     //Arrange
 
     const quantity = productData.productQuantity;
@@ -659,7 +794,29 @@ test.describe('Test for test cases', () => {
     const zipCode = faker.location.zipCode();
     const phoneNumber = faker.phone.number();
 
-    const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
+    const userBaseData: UserSignupModel = createSignupUser();
+    const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
+    // const userBasicInfoData: UserSignupBasicInfoModel = {
+    //   password: faker.internet.password(),
+    //   day: faker.number.int({ min: 1, max: 31 }).toString(),
+    //   month: faker.date.month(),
+    //   year: faker.number.int({ min: 1900, max: 2021 }).toString(),
+    // };
+    const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
+    // const userAddressInfoData: UserSignupAddressInfoModel = {
+    //   firstName: faker.person.firstName(),
+    //   lastName: faker.person.lastName(),
+    //   company: faker.company.name(),
+    //   address: faker.location.streetAddress({ useFullAddress: true }),
+    //   address2: faker.location.secondaryAddress(),
+    //   country: userData.country,
+    //   state: faker.location.state(),
+    //   city: faker.location.city(),
+    //   zipCode: faker.location.zipCode(),
+    //   phoneNumber: faker.phone.number(),
+    // };
+
+    // const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
 
     const yourDeliveryAddress = cartData.yourDeliveryAddress;
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
@@ -713,8 +870,11 @@ test.describe('Test for test cases', () => {
       phoneNumber,
     );
 
-    await expect(loggedUser).toBeVisible();
+    // await expect(loggedUser).toBeVisible();
+    await header.expectLoggedUser(username);
 
+    await products.openFirstViewProduct();
+    await products.details.expectProductDetailsPage();
     await products.addProductQuantity(quantity);
     await home.expectCartPage();
     await cart.buttonProceedToCheckout.click();
@@ -723,10 +883,10 @@ test.describe('Test for test cases', () => {
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
 
     //Assert
-    await user.deleteUser();
-    // await header.clickDeleteAccount();
-    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
-    // await signup.delete.clickContinue();
+    // await user.deleteUser();
+    await header.clickDeleteAccount();
+    await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    await signup.delete.clickContinue();
 
     // Test Case 15: Place Order: Register before Checkout
     // 1. Launch browser (//)
@@ -749,8 +909,9 @@ test.describe('Test for test cases', () => {
     // 18. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 16: Place Order: Login before Checkout', async ({ page, header, login, home, user, products, cart }) => {
+  test('Test Case 16: Place Order: Login before Checkout', async ({ page, header, login, home, user, products, cart, signup }) => {
     //TODO:
+    //! NOW
     //Arrange
     const userLoginData: UserLoginModel = {
       email: userData.fakeExistEmail,
@@ -776,7 +937,29 @@ test.describe('Test for test cases', () => {
     const zipCode = faker.location.zipCode();
     const phoneNumber = faker.phone.number();
 
-    const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
+    const userBaseData: UserSignupModel = createSignupUser();
+    const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
+    // const userBasicInfoData: UserSignupBasicInfoModel = {
+    //   password: faker.internet.password(),
+    //   day: faker.number.int({ min: 1, max: 31 }).toString(),
+    //   month: faker.date.month(),
+    //   year: faker.number.int({ min: 1900, max: 2021 }).toString(),
+    // };
+    const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
+    // const userAddressInfoData: UserSignupAddressInfoModel = {
+    //   firstName: faker.person.firstName(),
+    //   lastName: faker.person.lastName(),
+    //   company: faker.company.name(),
+    //   address: faker.location.streetAddress({ useFullAddress: true }),
+    //   address2: faker.location.secondaryAddress(),
+    //   country: userData.country,
+    //   state: faker.location.state(),
+    //   city: faker.location.city(),
+    //   zipCode: faker.location.zipCode(),
+    //   phoneNumber: faker.phone.number(),
+    // };
+
+    // const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
 
     const yourDeliveryAddress = cartData.yourDeliveryAddress;
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
@@ -830,12 +1013,16 @@ test.describe('Test for test cases', () => {
       phoneNumber,
     );
 
-    await expect(loggedUser).toBeVisible();
-    await header.logout.click();
+    // await expect(loggedUser).toBeVisible();
+    await header.expectLoggedUser(username);
+    await header.clickLogout();
     await header.openSignupLoginPage();
     await login.loginToAccount(userLoginData);
-    await expect(loggedUser).toBeVisible();
+    // await expect(loggedUser).toBeVisible();
+    await header.expectLoggedUser(username);
 
+    await products.openFirstViewProduct();
+    await products.details.expectProductDetailsPage();
     await products.addProductQuantity(quantity);
     await home.expectCartPage();
     await cart.buttonProceedToCheckout.click();
@@ -843,10 +1030,10 @@ test.describe('Test for test cases', () => {
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
 
     //Assert
-    await user.deleteUser();
-    // await header.clickDeleteAccount();
-    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
-    // await signup.delete.clickContinue();
+    // await user.deleteUser();
+    await header.clickDeleteAccount();
+    await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    await signup.delete.clickContinue();
 
     // Test Case 16: Place Order: Login before Checkout
     // 1. Launch browser (//)
@@ -873,6 +1060,8 @@ test.describe('Test for test cases', () => {
     const quantity = productData.productQuantity;
 
     //Act
+    await products.openFirstViewProduct();
+    await products.details.expectProductDetailsPage();
     await products.addProductQuantity(quantity);
     await home.expectCartPage();
     await cart.buttonDeleteQuantity.click();
@@ -964,7 +1153,7 @@ test.describe('Test for test cases', () => {
     test.slow();
     // test.setTimeout(120000);
 
-    const search = productData.searchProduct;
+    const search: string = 'Top';
     const expectProductNumber = Number(14);
 
     const userLoginData: UserLoginModel = {
@@ -976,6 +1165,8 @@ test.describe('Test for test cases', () => {
     const password = userData.fakePassword; //'fake!Password00',
 
     //Act
+    await header.openProductsPage();
+    await products.expectProductsPage();
     await products.searchProduct(search);
     const searchResults = await page.locator('div.single-products').count();
     await expect(searchResults).toBe(expectProductNumber);
@@ -1036,13 +1227,15 @@ test.describe('Test for test cases', () => {
     // 12. Verify that those products are visible in cart after login as well
   });
 
-  test('Test Case 21: Add review on product', async ({ products }) => {
+  test('Test Case 21: Add review on product', async ({ header, products }) => {
     //Arrange
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
     const review = faker.lorem.text();
 
     //Act
+    await header.openProductsPage();
+    await products.expectProductsPage();
     await products.addProductReview(username, email, review);
 
     //Assert
@@ -1084,8 +1277,9 @@ test.describe('Test for test cases', () => {
     // 7. Verify that product is displayed in cart page
   });
 
-  test('Test Case 23: Verify address details in checkout page', async ({ header, page, home, user, products, cart }) => {
+  test('Test Case 23: Verify address details in checkout page', async ({ header, page, home, user, products, cart, signup }) => {
     //TODO:
+    //! NOW
     //Arrange
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -1104,7 +1298,29 @@ test.describe('Test for test cases', () => {
     const zipCode = faker.location.zipCode();
     const phoneNumber = faker.phone.number();
 
-    const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
+    const userBaseData: UserSignupModel = createSignupUser();
+    const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
+    // const userBasicInfoData: UserSignupBasicInfoModel = {
+    //   password: faker.internet.password(),
+    //   day: faker.number.int({ min: 1, max: 31 }).toString(),
+    //   month: faker.date.month(),
+    //   year: faker.number.int({ min: 1900, max: 2021 }).toString(),
+    // };
+    const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
+    // const userAddressInfoData: UserSignupAddressInfoModel = {
+    //   firstName: faker.person.firstName(),
+    //   lastName: faker.person.lastName(),
+    //   company: faker.company.name(),
+    //   address: faker.location.streetAddress({ useFullAddress: true }),
+    //   address2: faker.location.secondaryAddress(),
+    //   country: userData.country,
+    //   state: faker.location.state(),
+    //   city: faker.location.city(),
+    //   zipCode: faker.location.zipCode(),
+    //   phoneNumber: faker.phone.number(),
+    // };
+
+    // const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
 
     const yourDeliveryAddress = cartData.yourDeliveryAddress;
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
@@ -1152,7 +1368,8 @@ test.describe('Test for test cases', () => {
       phoneNumber,
     );
 
-    await expect(loggedUser).toBeVisible();
+    // await expect(loggedUser).toBeVisible();
+    await header.expectLoggedUser(username);
 
     await products.bAddToCart.first().click();
     await products.bContinueShopping.click();
@@ -1160,10 +1377,10 @@ test.describe('Test for test cases', () => {
     await cart.proceedToCheckoutWithAddressVerification(deliveryAddress, deliveryInvoice);
 
     //Assert
-    await user.deleteUser();
-    // await header.clickDeleteAccount();
-    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
-    // await signup.delete.clickContinue();
+    // await user.deleteUser();
+    await header.clickDeleteAccount();
+    await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    await signup.delete.clickContinue();
 
     // Test Case 23: Verify address details in checkout page
     // 1. Launch browser (//)
@@ -1183,8 +1400,9 @@ test.describe('Test for test cases', () => {
     // 15. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 24: Download Invoice after purchase order', async ({ page, products, cart, user }) => {
+  test('Test Case 24: Download Invoice after purchase order', async ({ page, products, cart, user, header, signup }) => {
     //TODO:
+    //! NOW
     //Arrange
     const username = faker.internet.userName();
     const email = faker.internet.email({ provider: 'fakerjs.dev' });
@@ -1203,7 +1421,29 @@ test.describe('Test for test cases', () => {
     const zipCode = faker.location.zipCode();
     const phoneNumber = faker.phone.number();
 
-    const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
+    const userBaseData: UserSignupModel = createSignupUser();
+    const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
+    // const userBasicInfoData: UserSignupBasicInfoModel = {
+    //   password: faker.internet.password(),
+    //   day: faker.number.int({ min: 1, max: 31 }).toString(),
+    //   month: faker.date.month(),
+    //   year: faker.number.int({ min: 1900, max: 2021 }).toString(),
+    // };
+    const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
+    // const userAddressInfoData: UserSignupAddressInfoModel = {
+    //   firstName: faker.person.firstName(),
+    //   lastName: faker.person.lastName(),
+    //   company: faker.company.name(),
+    //   address: faker.location.streetAddress({ useFullAddress: true }),
+    //   address2: faker.location.secondaryAddress(),
+    //   country: userData.country,
+    //   state: faker.location.state(),
+    //   city: faker.location.city(),
+    //   zipCode: faker.location.zipCode(),
+    //   phoneNumber: faker.phone.number(),
+    // };
+
+    // const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
 
     const yourDeliveryAddress = cartData.yourDeliveryAddress;
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
@@ -1260,7 +1500,8 @@ test.describe('Test for test cases', () => {
       phoneNumber,
     );
 
-    await expect(loggedUser).toBeVisible();
+    // await expect(loggedUser).toBeVisible();
+    await header.expectLoggedUser(username);
 
     await cart.checkoutWithoutExpectProductQuantity(deliveryAddress, deliveryInvoice, description);
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
@@ -1279,10 +1520,10 @@ test.describe('Test for test cases', () => {
     await cart.buttonContinue.click();
 
     //Assert
-    await user.deleteUser();
-    // await header.clickDeleteAccount();
-    // await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
-    // await signup.delete.clickContinue();
+    // await user.deleteUser();
+    await header.clickDeleteAccount();
+    await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
+    await signup.delete.clickContinue();
 
     // Test Case 24: Download Invoice after purchase order
     // 1. Launch browser (//)

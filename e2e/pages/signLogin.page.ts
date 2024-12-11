@@ -43,7 +43,7 @@ export class SignupLoginPage extends BasePage {
 
   readonly hAccountDeleted: Locator;
 
-  readonly loggedUser: Locator;
+  // readonly loggedUser: Locator;
   readonly hIncorrectEmail: Locator;
   // readonly hEmailExist: Locator;
 
@@ -91,11 +91,10 @@ export class SignupLoginPage extends BasePage {
     this.hAccountDeleted = this.page.getByText('Account Deleted!');
 
     //* POM for expect status
-    this.loggedUser = this.page.getByText(homeData.loggedUser);
+    // this.loggedUser = this.page.getByText(homeData.loggedUser);
     this.hIncorrectEmail = this.page.getByText(homeData.incorrectData);
     // this.hEmailExist = this.page.getByText(homeData.emailExist);
   }
-
   // async signUp(username: string, email: string): Promise<void> {
   //   await this.headerComponent.signLogin.click();
   //   await expect(this.hSignup).toBeVisible();
@@ -103,7 +102,6 @@ export class SignupLoginPage extends BasePage {
   //   await this.fillSignupEmail.fill(email);
   //   await this.bSignup.click();
   // }
-
   async registerUser(
     username: string,
     email: string,
@@ -176,11 +174,11 @@ export class SignupLoginPage extends BasePage {
   // }
   // await expect(this.page.getByText(`Logged in as ${username}`)).toBeVisible();
 
-  async deleteUser(): Promise<void> {
-    await this.headerComponent.deleteAccount.click();
-    //? return page?
-    // await expect(this.hAccountDeleted).toBeVisible();
-    // await this.bContinue.click();
-    // await this.homePage.expectPage();
-  }
+  // async deleteUser(): Promise<void> {
+  //   await this.headerComponent.deleteAccount.click();
+  //   //? return page?
+  //   // await expect(this.hAccountDeleted).toBeVisible();
+  //   // await this.bContinue.click();
+  //   // await this.homePage.expectPage();
+  // }
 }
