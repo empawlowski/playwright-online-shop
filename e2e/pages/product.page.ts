@@ -6,6 +6,7 @@ import { HeaderComponent } from '../components/header.component';
 import { LeftSidebarComponent } from '../components/left-sidebar.component';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { ProductDetailsPage } from './product-details.page';
+import { CartPage } from './cart.page';
 
 export class ProductsPage extends BasePage {
   readonly homePage: HomePage;
@@ -68,24 +69,10 @@ export class ProductsPage extends BasePage {
   bContinueShopping = this.page.getByRole('button', { name: 'Continue Shopping' });
   viewCart = this.page.getByRole('link', { name: 'View Cart' });
 
-  tableRow = this.page.locator('#cart_info_table').locator('tbody').locator('tr');
-  cartPriceP1 = this.page.locator('#product-1').locator('.cart_price');
-  cartQuantityP1 = this.page.locator('#product-1').locator('.cart_quantity');
-  cartTotalPriceP1 = this.page.locator('#product-1').locator('.cart_total_price');
-  cartPriceP2 = this.page.locator('#product-2').locator('.cart_price');
-  cartQuantityP2 = this.page.locator('#product-2').locator('.cart_quantity');
-  cartTotalPriceP2 = this.page.locator('#product-2').locator('.cart_total_price');
-
   //Test Case 13: Verify Product quantity in Cart
   fillQuantity = this.page.locator('#quantity');
   tableProductName = this.page.locator('.cart_description').getByRole('link', { name: productData.firstProduct });
   tableCartQuantity = this.page.locator('.cart_quantity');
-
-  //* POM for page Subscription (#sendSubscribe)
-  hSubscription = this.page.getByRole('heading', { name: 'Subscription', exact: true });
-  fillSubsEmail = this.page.locator('#susbscribe_email');
-  bSubscribe = this.page.locator('#subscribe');
-  successSubs = this.page.locator('#success-subscribe');
 
   //*POM for review (#addProductReview) (#expectSuccessReviewMessage)
   //Test Case 21: Add review on product
@@ -127,6 +114,18 @@ export class ProductsPage extends BasePage {
       console.log('No found product');
     }
   }
+
+  async addProductNumberAndContinue(index: number): Promise<void> {
+    await this.bAddToCart.nth(index).click();
+    await this.bContinueShopping.click();
+  }
+
+  async addProductNumberAndViewCart(index: number): Promise<CartPage> {
+    await this.bAddToCart.nth(index).click();
+    await this.viewCart.click();
+    return new CartPage(this.page);
+  }
+
   //TODO: below
 
   async addProductGoCartPage(): Promise<void> {
@@ -135,23 +134,6 @@ export class ProductsPage extends BasePage {
     await this.bContinueShopping.click();
     await this.headerComponent.cart.click();
     await this.homePage.expectCartPage();
-  }
-
-  async addProducts(): Promise<void> {
-    await this.headerComponent.products.click();
-    await this.bAddToCart.first().click();
-    await this.bContinueShopping.click();
-    await this.bAddToCart.nth(1).click();
-    await this.viewCart.click();
-  }
-
-  async expectAddProducts() {
-    await expect(this.cartPriceP1).toHaveText(productData.cartPriceP1);
-    await expect(this.cartQuantityP1).toHaveText(productData.cartQuantity);
-    await expect(this.cartTotalPriceP1).toHaveText(productData.cartPriceP1);
-    await expect(this.cartPriceP2).toHaveText(productData.cartPriceP2);
-    await expect(this.cartQuantityP2).toHaveText(productData.cartQuantity);
-    await expect(this.cartTotalPriceP2).toHaveText(productData.cartPriceP2);
   }
 
   async addProductQuantity(quantity: string): Promise<void> {
@@ -165,14 +147,7 @@ export class ProductsPage extends BasePage {
     await expect(this.tableCartQuantity).toHaveText(productData.productQuantity);
   }
 
-  async sendSubscribe(email: string): Promise<void> {
-    await expect(this.hSubscription).toBeVisible();
-    await this.fillSubsEmail.fill(email);
-    await this.bSubscribe.click();
-  }
   async addProductReview(username: string, email: string, review: string): Promise<void> {
-    // await this.headerComponent.products.click();
-    // await this.homePage.expectProductsPage();
     await this.linkViewProduct.first().click();
     await this.hWriteYourReview.isVisible();
     await this.fieldName.fill(username);

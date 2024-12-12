@@ -11,6 +11,7 @@ export const urlTitleData = {
   testCase: 'Automation Practice Website for UI Testing - Test Cases',
 
   urlProducts: '/products',
+  urlCart: '/view_cart',
   urlTestCases: '/test_cases',
   urlProductDetails: '/product_details/1', //? regExp?
   urlWomenDress: '/category_products/1', //? regExp?

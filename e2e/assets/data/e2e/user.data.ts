@@ -1,6 +1,8 @@
 export const userData = {
   fakeUsername: 'fakeName', //? .env
+  fakeAPIname: 'fakeAPIname', //? .env
   fakeEmail: 'fake@email.pw', //? .env
+  fakeAPIemail: 'fake-api@email.pw', //? .env
   fakePassword: 'fake!Password00', //? .env
   fakeExistUsername: 'fakeExistUsername',
   fakeExistEmail: 'fakeexistemail@email.pw',
