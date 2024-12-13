@@ -115,7 +115,6 @@ export class SignupPage extends BasePage {
   ): Promise<void> {
     await this.login.fillUserSignup(userBaseData);
     await this.expectAccountInformation(userBaseData);
-    await this.expectAccountInformation(userBaseData);
     await this.fillBasicInformation(userBasicInfoData);
     await this.fillAddressInformation(userAddressInfoData);
     await this.clickCreateAccount();

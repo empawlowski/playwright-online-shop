@@ -6,6 +6,7 @@ import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { categoryProductsData } from '../assets/data/e2e/category-products.data';
 import { CartPage } from './cart.page';
 import { FooterComponent } from '../components/footer.component';
+import { ProductsPage } from './product.page';
 
 export class HomePage extends BasePage {
   readonly brandPolo: Locator;
@@ -20,6 +21,7 @@ export class HomePage extends BasePage {
   readonly linkViewCart: Locator;
 
   readonly leftSidebar: LeftSidebarComponent;
+  readonly products: ProductsPage;
   readonly categoryProducts: CategoryProductsPage;
   readonly footer: FooterComponent;
 
@@ -39,6 +41,7 @@ export class HomePage extends BasePage {
     this.linkViewCart = page.getByRole('link', { name: 'View Cart' });
 
     this.leftSidebar = new LeftSidebarComponent(page);
+    this.products = new ProductsPage(page);
     this.categoryProducts = new CategoryProductsPage(page);
     this.footer = new FooterComponent(page);
   }

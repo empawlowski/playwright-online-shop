@@ -488,7 +488,7 @@ test.describe('Test for test cases', () => {
     // 9. Verify that product is displayed in cart page with exact quantity
   });
 
-  test('Test Case 14: Place Order: Register while Checkout', async ({ header, products, home, cart, user, signup }) => {
+  test('🐱‍💻 Test Case 14: Place Order: Register while Checkout', async ({ header, products, home, cart, login, signup }) => {
     //TODO:
     //! NOW
     //Arrange
@@ -534,11 +534,10 @@ test.describe('Test for test cases', () => {
     //   phoneNumber: faker.phone.number(),
     // };
 
-    await header.expectLoggedUser(username);
-
     const yourDeliveryAddress = cartData.yourDeliveryAddress;
     const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
 
+    //TODO: here 🐱‍💻
     const deliveryAddress = `
       ${yourDeliveryAddress}
       Mrs. ${firstName} ${lastName}
@@ -550,6 +549,7 @@ test.describe('Test for test cases', () => {
       ${userAddressInfoData.country}
       ${phoneNumber}`;
 
+    //TODO: here 🐱‍💻
     const deliveryInvoice = `
       ${yourDeliveryInvoice}
       Mrs. ${firstName} ${lastName}
@@ -568,32 +568,47 @@ test.describe('Test for test cases', () => {
     const expiryYear = cartData.expiryYear;
 
     //Act
-    await products.openFirstViewProduct();
-    await products.details.expectProductDetailsPage();
-    await products.addProductQuantity(quantity);
-    await cart.expectCartPage();
-    await cart.checkoutFromCartPage();
-
-    //? openSignup from checkout?
-    await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
-
-    await header.expectLoggedUser(username);
-
+    // 4. Add products to cart
+    await home.products.addProductNumberAndContinue(0);
+    // 5. Click 'Cart' button
     await header.openCartPage();
+    // 6. Verify that cart page is displayed
     await cart.expectCartPage();
-
-    await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
-
+    // 7. Click Proceed To Checkout
+    await cart.clickProceedToCheckout();
+    // 8. Click 'Register / Login' button
+    await cart.clickRegisterLogin();
+    // 9. Fill all details in Signup and create account
+    // await login.fillUserSignup(userBaseData);
+    await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
+    // 10. Verify 'ACCOUNT CREATED!' and click 'Continue' button
+    await expect.soft(signup.create.headerAccountCreated).toContainText('Account Created!');
+    // 11. Verify ' Logged in as username' at top
+    await header.expectLoggedUser(username);
+    // 12. Click 'Cart' button
+    await header.openCartPage();
+    // 13. Click 'Proceed To Checkout' button
+    await cart.clickProceedToCheckout();
+    // 14. Verify Address Details and Review Your Order
+    await cart.proceedToCheckout(deliveryAddress, deliveryInvoice);
+    // 15. Enter description in comment text area and click 'Place Order'
+    await cart.fillDescription(description);
+    await cart.clickPlaceOrder();
+    // 16. Enter payment details: Name on Card, Card Number, CVC, Expiration date
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
-
-    //Assert
-    // await user.deleteUser();
+    // 17. Click 'Pay and Confirm Order' button
+    //TODO:
+    // 18. Verify success message 'Your order has been placed successfully!'
+    //TODO:
+    // 19. Click 'Delete Account' button
     await header.clickDeleteAccount();
+    // 20. Verify 'ACCOUNT DELETED!' and click 'Continue' button
+    //Assert
     await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
     await signup.delete.clickContinue();
 
     // Test Case 14: Place Order: Register while Checkout
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Add products to cart
@@ -604,7 +619,7 @@ test.describe('Test for test cases', () => {
     // 9. Fill all details in Signup and create account
     // 10. Verify 'ACCOUNT CREATED!' and click 'Continue' button
     // 11. Verify ' Logged in as username' at top
-    // 12.Click 'Cart' button
+    // 12. Click 'Cart' button
     // 13. Click 'Proceed To Checkout' button
     // 14. Verify Address Details and Review Your Order
     // 15. Enter description in comment text area and click 'Place Order'
@@ -706,8 +721,13 @@ test.describe('Test for test cases', () => {
     await products.addProductQuantity(quantity);
     await cart.expectCartPage();
     await cart.buttonProceedToCheckout.click();
+
     await header.openCartPage();
-    await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
+    // 13. Click 'Proceed To Checkout' button
+    await cart.clickProceedToCheckout();
+    await cart.proceedToCheckout(deliveryAddress, deliveryInvoice);
+    await cart.fillDescription(description);
+    await cart.clickPlaceOrder();
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
 
     //Assert
@@ -837,11 +857,16 @@ test.describe('Test for test cases', () => {
     await products.addProductQuantity(quantity);
     await cart.expectCartPage();
     await cart.buttonProceedToCheckout.click();
-    await cart.proceedToCheckout(deliveryAddress, deliveryInvoice, description);
+    //?
+    await header.openCartPage();
+    // 13. Click 'Proceed To Checkout' button
+    await cart.clickProceedToCheckout();
+    await cart.proceedToCheckout(deliveryAddress, deliveryInvoice);
+    await cart.fillDescription(description);
+    await cart.clickPlaceOrder();
     await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
 
     //Assert
-    // await user.deleteUser();
     await header.clickDeleteAccount();
     await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
     await signup.delete.clickContinue();
@@ -1191,7 +1216,7 @@ test.describe('Test for test cases', () => {
     // 15. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 24: Download Invoice after purchase order', async ({ page, products, cart, user, header, signup }) => {
+  test('Test Case 24: Download Invoice after purchase order', async ({ home, page, products, cart, user, header, signup }) => {
     //TODO:
     //! NOW
     //Arrange
@@ -1268,9 +1293,18 @@ test.describe('Test for test cases', () => {
     const expiryYear = cartData.expiryYear;
 
     // Act
-    await products.addProductGoCartPage();
+    // await products.addProductGoCartPage();  //TODO:
+    // 4. Add products to cart
+    await home.products.addProductNumberAndContinue(0);
+    // async addProductGoCartPage(): Promise<void> {
+    //   await this.headerComponent.products.click();
+    //   await this.bAddToCart.first().click();
+    //   await this.bContinueShopping.click();
+    //   await this.headerComponent.cart.click();
+    //   await this.homePage.expectCartPage();
+    // }
     await cart.buttonProceedToCheckout.click();
-    await cart.buttonRegisterLogin.click();
+    await cart.buttonRegisterLogin.click(); //? method?
 
     await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
 

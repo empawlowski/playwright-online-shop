@@ -9,7 +9,6 @@ import { ProductDetailsPage } from './product-details.page';
 import { CartPage } from './cart.page';
 
 export class ProductsPage extends BasePage {
-  readonly homePage: HomePage;
   readonly headerComponent: HeaderComponent;
   readonly details: ProductDetailsPage;
 
@@ -40,7 +39,6 @@ export class ProductsPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.homePage = new HomePage(page);
     this.headerComponent = new HeaderComponent(page);
     this.details = new ProductDetailsPage(page);
 
@@ -128,13 +126,13 @@ export class ProductsPage extends BasePage {
 
   //TODO: below
 
-  async addProductGoCartPage(): Promise<void> {
-    await this.headerComponent.products.click();
-    await this.bAddToCart.first().click();
-    await this.bContinueShopping.click();
-    await this.headerComponent.cart.click();
-    await this.homePage.expectCartPage();
-  }
+  // async addProductGoCartPage(): Promise<void> {
+  //   await this.headerComponent.products.click();
+  //   await this.bAddToCart.first().click();
+  //   await this.bContinueShopping.click();
+  //   await this.headerComponent.cart.click();
+  //   await this.homePage.expectCartPage();
+  // }
 
   async addProductQuantity(quantity: string): Promise<void> {
     await this.fillQuantity.fill(quantity);
