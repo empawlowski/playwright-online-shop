@@ -446,7 +446,7 @@ test.describe('Test for test cases', () => {
     //Assert
     const rowCount = await cart.rowForProduct.count();
     expect(rowCount).toBe(2);
-    await cart.expectAddProducts();
+    await cart.expectAddedProducts();
 
     // Test Case 12: Add Products in Cart
     // 1. Launch browser
@@ -689,22 +689,38 @@ test.describe('Test for test cases', () => {
     // 17. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 17: Remove Products From Cart', async ({ products, cart }) => {
+  test('🐱‍💻 ✅ Test Case 17: Remove Products From Cart', async ({ home, header, cart, products }) => {
     //Arrange
+
+    const productsData = [0, 1];
+    const productsNameData = ['Blue Top', 'Men Tshirt'];
+
+    type Product = {
+      id: number;
+      name: string;
+    };
+    const combinedProductsData: Record<string, { id: number; name: string }> = { 0: { id: 0, name: 'Blue Top' }, 1: { id: 1, name: 'Men Tshirt' } };
+
     const quantity: number = 4;
 
     //Act
-    await products.openFirstViewProduct();
-    await products.details.expectProductDetailsPage();
-    await products.addProductQuantity(quantity);
+    // 4. Add products to cart
+    await home.products.addProductNumberAndContinue(combinedProductsData[0].id);
+    // await home.products.addProductNumberAndContinue(combinedProductsData[1].id);
+    // 5. Click 'Cart' button
+    await header.openCartPage();
+    // 6. Verify that cart page is displayed
     await cart.expectCartPage();
-    await cart.buttonDeleteQuantity.click();
-
+    // await cart.expectAddedProductsName(productsNameData, productData); //TODO:
+    // 7. Click 'X' button corresponding to particular product
+    await cart.clickDeleteQuantity();
+    //?
     //Assert
-    await expect(cart.divCartEmpty).toBeVisible();
+    // 8. Verify that product is removed from the cart
+    await expect(cart.sectionCartEmpty).toBeVisible();
 
     // Test Case 17: Remove Products From Cart
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Add products to cart

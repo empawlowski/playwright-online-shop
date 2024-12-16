@@ -1,16 +1,16 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { ProductsPage } from './product.page';
 import { BasePage } from './base.page';
 import { productData } from '../assets/data/e2e/product.data';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { LoginPage } from './login.page';
 
 export class CartPage extends BasePage {
-  readonly product: ProductsPage;
+  readonly buttonProceedToCheckout: Locator;
+  readonly buttonRegisterLogin: Locator;
+  readonly rowForProduct: Locator;
 
   //?
   //TODO:
-  readonly rowForProduct: Locator;
   readonly cartPriceP1: Locator;
   readonly cartQuantityP1: Locator;
   readonly cartTotalPriceP1: Locator;
@@ -19,11 +19,8 @@ export class CartPage extends BasePage {
   readonly cartTotalPriceP2: Locator;
   //?
 
-  readonly buttonProceedToCheckout: Locator;
-  readonly buttonRegisterLogin: Locator;
-
   readonly buttonDeleteQuantity: Locator;
-  readonly divCartEmpty: Locator;
+  readonly sectionCartEmpty: Locator;
 
   readonly buttonDownloadInvoice: Locator;
   readonly buttonContinue: Locator;
@@ -32,8 +29,9 @@ export class CartPage extends BasePage {
     super(page);
     this.buttonProceedToCheckout = page.locator('.check_out', { hasText: 'Proceed To Checkout' });
     this.buttonRegisterLogin = page.getByRole('link', { name: 'Register / Login' });
-
     this.rowForProduct = page.locator('#cart_info_table').getByRole('row', { name: 'Product Image' });
+    this.buttonDeleteQuantity = page.locator('.cart_quantity_delete');
+    this.sectionCartEmpty = page.locator('#empty_cart');
 
     //TODO:
     this.cartPriceP1 = this.page.locator('#product-1').locator('.cart_price');
@@ -45,12 +43,18 @@ export class CartPage extends BasePage {
     //TODO:
 
     //Test Case 14: Place Order: Register while Checkout
-    this.buttonDeleteQuantity = page.locator('a.cart_quantity_delete');
-    this.divCartEmpty = page.locator('#empty_cart');
 
     //Test Case 24: Download Invoice after purchase order
     this.buttonDownloadInvoice = page.locator('.check_out');
     this.buttonContinue = page.locator('.btn-primary');
+  }
+
+  getProductName(productName: string): Locator {
+    return this.page.getByRole('row', { name: productName, exact: true });
+  }
+
+  async clickDeleteQuantity(): Promise<void> {
+    await this.buttonDeleteQuantity.click();
   }
 
   async expectCartPage(): Promise<void> {
@@ -58,8 +62,16 @@ export class CartPage extends BasePage {
     await expect(this.page).toHaveTitle(urlTitleData.cart);
   }
 
+  //TODO:
+  //!
+  async expectAddedProductsName(productName: string[], products: string[]): Promise<void> {
+    for (let i = 0; i < products.length; i++) {
+      await expect.soft(this.getProductName(productName[i])).toBeVisible();
+    }
+  }
+
   //TODO: clear method
-  async expectAddProducts() {
+  async expectAddedProducts(): Promise<void> {
     await expect(this.cartPriceP1).toHaveText(productData.cartPriceP1);
     await expect(this.cartQuantityP1).toHaveText(productData.cartQuantity);
     await expect(this.cartTotalPriceP1).toHaveText(productData.cartPriceP1);
