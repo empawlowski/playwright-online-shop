@@ -6,7 +6,6 @@ export const productData = {
   cartQuantity: '1',
   cartPriceP2: 'Rs. 400',
 
-  productQuantity: '4',
   productReview: 'Write Your Review',
   divSuccessReview: 'Thank you for your review.',
 };

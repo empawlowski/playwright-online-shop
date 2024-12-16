@@ -9,19 +9,25 @@ import { TestCasesPage } from '../pages/test-cases.page';
 import { SliderComponent } from '../components/slider.component';
 import { LoginPage } from '../pages/login.page';
 import { SignupPage } from '../pages/signup.page';
+import { CheckoutPage } from '../pages/e2e/checkout.page';
+import { PaymentPage } from '../pages/e2e/payment.page';
+import { FooterComponent } from '../components/footer.component';
 
 interface Pages {
   cart: CartPage;
   contactUs: ContactUsPage;
+  checkout: CheckoutPage;
   home: HomePage;
   user: SignupLoginPage;
   login: LoginPage;
   signup: SignupPage;
+  payment: PaymentPage;
   products: ProductsPage;
   testCases: TestCasesPage;
 
   header: HeaderComponent;
   slider: SliderComponent;
+  footer: FooterComponent;
 }
 
 export const test = base.extend<Pages>({
@@ -30,6 +36,9 @@ export const test = base.extend<Pages>({
   },
   contactUs: async ({ page }, use) => {
     await use(new ContactUsPage(page));
+  },
+  checkout: async ({ page }, use) => {
+    await use(new CheckoutPage(page));
   },
   home: async ({ page }, use) => {
     await use(new HomePage(page));
@@ -48,6 +57,9 @@ export const test = base.extend<Pages>({
   products: async ({ page }, use) => {
     await use(new ProductsPage(page));
   },
+  payment: async ({ page }, use) => {
+    await use(new PaymentPage(page));
+  },
   testCases: async ({ page }, use) => {
     await use(new TestCasesPage(page));
   },
@@ -57,5 +69,8 @@ export const test = base.extend<Pages>({
   },
   slider: async ({ page }, use) => {
     await use(new SliderComponent(page));
+  },
+  footer: async ({ page }, use) => {
+    await use(new FooterComponent(page));
   },
 });

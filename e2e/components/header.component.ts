@@ -36,6 +36,10 @@ export class HeaderComponent extends BasePage {
     this.logout = page.getByRole('link', { name: 'Logout' });
   }
 
+  getLoggedUser(username: string): Locator {
+    return this.page.getByRole('listitem').filter({ hasText: `Logged in as ${username}` });
+  }
+
   async openHomePage(): Promise<HomePage> {
     await this.home.click();
     return new HomePage(this.page);
@@ -74,10 +78,6 @@ export class HeaderComponent extends BasePage {
   async clickLogout(): Promise<LoginPage> {
     await this.logout.click();
     return new LoginPage(this.page);
-  }
-
-  getLoggedUser(username: string): Locator {
-    return this.page.getByRole('listitem').filter({ hasText: `Logged in as ${username}` });
   }
 
   async expectLoggedUser(username: string): Promise<void> {
