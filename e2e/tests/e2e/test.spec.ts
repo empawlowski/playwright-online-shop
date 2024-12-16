@@ -2,7 +2,6 @@ import { faker } from '@faker-js/faker';
 import { userData } from '../../assets/data/e2e/user.data';
 import { homeData } from '../../assets/data/e2e/home.data';
 import { productData } from '../../assets/data/e2e/product.data';
-import { cartData } from '../../assets/data/e2e/cart.data';
 import { test } from '../../fixtures/base.fixture';
 import { expect } from '@playwright/test';
 import { contactUsData } from '../../assets/data/e2e/contact-us.data';
@@ -1126,10 +1125,6 @@ test.describe('Test for test cases', () => {
 
     const description: string = faker.lorem.text();
     const cardData: CardInfoModel = createCardInfoForm();
-    const cardNumber = faker.finance.creditCardNumber({ issuer: '448#-#[5-7]##-####-###L' }); // '4480-0500-0000-0000;
-    const cvc = faker.finance.creditCardCVV();
-    const expiryMonth = cartData.expiryMonth;
-    const expiryYear = cartData.expiryYear;
 
     // Act
     // await products.addProductGoCartPage();  //TODO:
