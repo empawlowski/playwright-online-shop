@@ -1,18 +1,12 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { HomePage } from './home.page';
 import { ProductsPage } from './product.page';
 import { BasePage } from './base.page';
-import { HeaderComponent } from '../components/header.component';
 import { FooterComponent } from '../components/footer.component';
 import { productData } from '../assets/data/e2e/product.data';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { LoginPage } from './login.page';
-import { CheckoutPage } from './e2e/checkout.page';
 
 export class CartPage extends BasePage {
-  private readonly homePage: HomePage;
-  private readonly headerComponent: HeaderComponent;
-
   readonly footer: FooterComponent;
 
   readonly product: ProductsPage;
@@ -52,9 +46,6 @@ export class CartPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.homePage = new HomePage(page);
-    this.product = new ProductsPage(page);
-
     this.footer = new FooterComponent(page);
 
     this.rowForProduct = page.locator('#cart_info_table').getByRole('row', { name: 'Product Image' });
@@ -109,67 +100,11 @@ export class CartPage extends BasePage {
   }
 
   async clickProceedToCheckout(): Promise<void> {
-    // await this.cart.expectCartPage();
     await this.buttonProceedToCheckout.click();
-    // await this.buttonRegisterLogin.click();
   }
 
   async clickRegisterLogin(): Promise<LoginPage> {
     await this.buttonRegisterLogin.click();
     return new LoginPage(this.page);
   }
-
-  //! validation
-  async fillDescription(description: string): Promise<void> {
-    await this.fieldDescription.fill(description);
-  }
-
-  //! working
-  async clickPlaceOrder(): Promise<void> {
-    await this.buttonPlaceOrder.click();
-    //? promise
-  }
-
-  // async proceedToCheckout(deliveryAddress: string, deliveryInvoice: string): Promise<void> {
-  //   // await expect(this.addressDelivery).toHaveText(deliveryAddress);
-  //   // await expect(this.addressInvoice).toHaveText(deliveryInvoice);
-  //   await this.product.expectAddProductQuantity(); //? for what?
-  //   // await this.fieldDescription.fill(description); //? remove
-  //   // await this.clickPlaceOrder(); //? remove
-  // }
-
-  async checkoutWithoutExpectProductQuantity(deliveryAddress: string, deliveryInvoice: string, description: string): Promise<void> {
-    await this.headerComponent.cart.click();
-    await this.expectCartPage();
-    await this.buttonProceedToCheckout.click();
-    await expect(this.addressDelivery).toHaveText(deliveryAddress);
-    await expect(this.addressInvoice).toHaveText(deliveryInvoice);
-    await this.fillDescription(description);
-    await this.clickPlaceOrder();
-  }
-
-  async proceedToCheckoutWithAddressVerification(deliveryAddress: string, deliveryInvoice: string): Promise<void> {
-    await this.headerComponent.cart.click();
-    await this.expectCartPage();
-    await this.buttonProceedToCheckout.click();
-    // await expect(this.addressDelivery).toHaveText(deliveryAddress);
-    // await expect(this.addressInvoice).toHaveText(deliveryInvoice);
-  }
-
-  // async fillCartInformation(
-  //   firstName: string,
-  //   lastName: string,
-  //   cardNumber: string,
-  //   cvc: string,
-  //   expiryMonth: string,
-  //   expiryYear: string,
-  // ): Promise<void> {
-  //   await this.fieldNameOnCard.fill(firstName + lastName);
-  //   await this.fieldCardNumber.fill(cardNumber);
-  //   await this.fieldCvc.fill(cvc);
-  //   await this.fieldExpiryMonth.fill(expiryMonth);
-  //   await this.fieldExpiryYear.fill(expiryYear);
-  //   await this.buttonPay.click();
-  //   await this.toastMessage.isVisible();
-  // }
 }

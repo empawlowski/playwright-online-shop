@@ -1144,8 +1144,6 @@ test.describe('Test for test cases', () => {
 
     await header.expectLoggedUser(username);
 
-    // await cart.checkoutWithoutExpectProductQuantity(deliveryAddress, deliveryInvoice, description);
-    //?
     //TODO:
     await header.openCartPage();
     await cart.expectCartPage();
@@ -1154,7 +1152,7 @@ test.describe('Test for test cases', () => {
     await checkout.checkDeliveryInvoice(userAddressInfoData);
     await checkout.fillDescription(description);
     await checkout.clickPlaceOrder();
-    // await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
+
     await payment.fillCardInformation(cardData);
     await payment.clickPayAndConfirm();
 
