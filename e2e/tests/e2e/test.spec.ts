@@ -26,30 +26,23 @@ test.describe('Test for test cases', () => {
     // await chromium.launch(); //* Commented because using all browsers for tests
 
     //* Advertisements blocker
-    await page.route('**/*', (route) => {
-      if (route.request().url().startsWith('https://googleads.')) {
-        route.abort();
-      } else if (route.request().url().startsWith('https://fonts.googleapis.')) {
-        route.abort();
-      } else if (route.request().url().startsWith('https://pagead2.googlesyndication.com')) {
-        route.abort();
-      } else {
-        route.continue();
-      }
-    });
+    // await page.route('**/*', (route) => {
+    //   if (route.request().url().startsWith('https://googleads.')) {
+    //     route.abort();
+    //   } else if (route.request().url().startsWith('https://fonts.googleapis.')) {
+    //     route.abort();
+    //   } else if (route.request().url().startsWith('https://pagead2.googlesyndication.com')) {
+    //     route.abort();
+    //   } else {
+    //     route.continue();
+    //   }
+    // });
 
     //* Another method
-    // const locator = page.getByText('This site asks for consent to use your data');
-    // await page.addLocatorHandler(
-    //   locator,
-    //   async (overlay) => {
-    //     await overlay.getByRole('button', { name: 'Consent' }).click();
-    //   },
-    //   { times: 3, noWaitAfter: true },
-    // );
-    // // Run your tests that can be interrupted by the overlay.
-    // // ...
-    // await page.removeLocatorHandler(locator);
+    //* Setup the handler.
+    await page.addLocatorHandler(page.getByText('This site asks for consent to use your data'), async () => {
+      await page.getByRole('button', { name: 'Consent' }).click();
+    });
 
     await home.goTo();
 
@@ -415,17 +408,18 @@ test.describe('Test for test cases', () => {
     // 7. Verify success message 'You have been successfully subscribed!' is visible
   });
 
-  test('✅ Test Case 11: Verify Subscription in Cart page', async ({ header, cart }) => {
+  test('✅ Test Case 11: Verify Subscription in Cart page', async ({ header, cart, footer }) => {
     //Arrange
     const emailData: UserLoginModel = createFakeLoginUser();
     //Act
     await header.openCartPage();
+    await cart.expectCartPage();
     await cart.scrollDownPage();
-    await expect(cart.footer.headerSubscription).toBeVisible();
-    await cart.footer.sendSubscribe(emailData.email);
+    await expect(footer.headerSubscription).toBeVisible();
+    await footer.sendSubscribe(emailData.email);
 
     //Assert
-    await expect(cart.footer.alertSuccessSubs).toContainText(homeData.confirmationSubscribe);
+    await expect(footer.alertSuccessSubs).toContainText(homeData.confirmationSubscribe);
 
     // Test Case 11: Verify Subscription in Cart page
     // 1. Launch browser
@@ -467,15 +461,15 @@ test.describe('Test for test cases', () => {
     // 10. Verify their prices, quantity and total price
   });
 
-  test('Test Case 13: Verify Product quantity in Cart @smoke', async ({ products }) => {
+  test('🐱‍💻 Test Case 13: Verify Product quantity in Cart @smoke', async ({ products }) => {
     //Arrange
-    const quantity = productData.productQuantity;
+    const quantity: number = 4;
     //Act
     await products.openFirstViewProduct();
-    await products.details.expectProductDetailsPage();
+    await products.details.expectProductDetailsPage(); //TODO:
     await products.addProductQuantity(quantity);
     //Assert
-    await products.expectAddProductQuantity();
+    await products.expectAddProductQuantity(quantity);
 
     // Test Case 13: Verify Product quantity in Cart
     // 1. Launch browser (//)
@@ -566,43 +560,44 @@ test.describe('Test for test cases', () => {
     // 20. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('🐱‍💻 Test Case 15: Place Order: Register before Checkout', async ({ header, signup, products, cart, checkout, payment }) => {
-    //TODO:
-    //! NOW
+  test('🐱‍💻 ✅ Test Case 15: Place Order: Register before Checkout', async ({ header, signup, home, cart, checkout, payment }) => {
     //Arrange
-    const quantity = productData.productQuantity;
-
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
     const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
+    const productListNumber: number = 0;
     const description: string = faker.lorem.text();
     const cardData: CardInfoModel = createCardInfoForm();
 
     //Act
     await header.openSignupLoginPage();
     await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
+    await expect(signup.create.headerAccountCreated).toContainText('Account Created!');
+    await signup.create.clickContinue();
     await header.expectLoggedUser(userBaseData.name);
 
-    await products.openFirstViewProduct();
-    await products.details.expectProductDetailsPage();
-    await products.addProductQuantity(quantity);
-    await cart.expectCartPage();
-    await cart.buttonProceedToCheckout.click();
-
+    await home.products.addProductNumberAndContinue(productListNumber);
+    // 9. Click 'Cart' button
     await header.openCartPage();
-    // 13. Click 'Proceed To Checkout' button
+    // 10. Verify that cart page is displayed
+    await cart.expectCartPage();
+    // 11. Click Proceed To Checkout
     await cart.clickProceedToCheckout();
-    // await cart.proceedToCheckout(deliveryAddress, deliveryInvoice);
+    // 12. Verify Address Details and Review Your Order
     await checkout.checkDeliveryAddress(userAddressInfoData);
     await checkout.checkDeliveryInvoice(userAddressInfoData);
+    // 13. Enter description in comment text area and click 'Place Order'
     await checkout.fillDescription(description);
     await checkout.clickPlaceOrder();
-    // await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
+    // 14. Enter payment details: Name on Card, Card Number, CVC, Expiration date
     await payment.fillCardInformation(cardData);
+    // 15. Click 'Pay and Confirm Order' button
     await payment.clickPayAndConfirm();
-
-    //Assert
+    // 16. Verify success message 'Your order has been placed successfully!'
+    // 17. Click 'Delete Account' button
     await header.clickDeleteAccount();
+    //Assert
+    // 18. Verify 'ACCOUNT DELETED!' and click 'Continue' button
     await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
     await signup.delete.clickContinue();
 
@@ -627,77 +622,50 @@ test.describe('Test for test cases', () => {
     // 18. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('🐱‍💻 Test Case 16: Place Order: Login before Checkout', async ({
-    page,
-    header,
-    login,
-    checkout,
-    payment,
-    home,
-    user,
-    products,
-    cart,
-    signup,
-  }) => {
-    //TODO:
-    //! NOW
-    //Arrange
-
-    const quantity = productData.productQuantity;
-
-    // const username = userData.fakeExistUsername;
-
+  test('🐱‍💻 ✅ Test Case 16: Place Order: Login before Checkout', async ({ header, signup, home, cart, checkout, payment }) => {
+    // Arrange
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
     const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
-
-    const userLoginData: UserLoginModel = {
-      email: userBaseData.email,
-      password: userBasicInfoData.password,
+    const productsData = {
+      listProductA: 0,
+      listProductB: 1,
     };
     const description: string = faker.lorem.text();
     const cardData: CardInfoModel = createCardInfoForm();
 
-    //Act
+    // Act
+    // 4. Click 'Signup / Login' button
     await header.openSignupLoginPage();
+    // 5. Fill email, password and click 'Login' button
     await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
-
-    // await expect(loggedUser).toBeVisible();
+    await signup.create.clickContinue();
+    // 6. Verify 'Logged in as username' at top
     await header.expectLoggedUser(userBaseData.name);
-    await header.clickLogout();
-    await header.openSignupLoginPage();
-    await login.loginToAccount(userLoginData);
-    // await expect(loggedUser).toBeVisible();
-    await header.expectLoggedUser(userBaseData.name);
-
-    //TODO:
-    await products.openFirstViewProduct(); //?
-
-    await products.details.expectProductDetailsPage();
-    await products.addProductQuantity(quantity);
-    await cart.expectCartPage();
-    await cart.clickProceedToCheckout();
-    //?
+    // 7. Add products to cart
+    await home.products.addProductNumberAndContinue(productsData.listProductA);
+    await home.products.addProductNumberAndContinue(productsData.listProductB);
+    // 8. Click 'Cart' button
     await header.openCartPage();
-    // 13. Click 'Proceed To Checkout' button
+    // 9. Verify that cart page is displayed
+    await cart.expectCartPage();
+    // 10. Click Proceed To Checkout
     await cart.clickProceedToCheckout();
-
+    // 11. Verify Address Details and Review Your Order
     await checkout.checkDeliveryAddress(userAddressInfoData);
     await checkout.checkDeliveryInvoice(userAddressInfoData);
-    // await cart.proceedToCheckout(deliveryAddress, deliveryInvoice);
-
-    // await cart.fillDescription(description);
+    // 12. Enter description in comment text area and click 'Place Order'
     await checkout.fillDescription(description);
-    // await cart.clickPlaceOrder();
     await checkout.clickPlaceOrder();
-    // await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
-
+    // 13. Enter payment details: Name on Card, Card Number, CVC, Expiration date
     await payment.fillCardInformation(cardData);
-    // 17. Click 'Pay and Confirm Order' button
+    // 14. Click 'Pay and Confirm Order' button
     await payment.clickPayAndConfirm();
-
-    //Assert
+    // 15. Verify success message 'Your order has been placed successfully!'
+    // Assert
+    // 16. Click 'Delete Account' button
     await header.clickDeleteAccount();
+    // 17. Verify 'ACCOUNT DELETED!' and click 'Continue' button
     await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
     await signup.delete.clickContinue();
 
@@ -705,7 +673,7 @@ test.describe('Test for test cases', () => {
     // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
-    // 4. Click 'Signup / Login' button (used method to create new account before login)
+    // 4. Click 'Signup / Login' button
     // 5. Fill email, password and click 'Login' button
     // 6. Verify 'Logged in as username' at top
     // 7. Add products to cart
@@ -723,7 +691,7 @@ test.describe('Test for test cases', () => {
 
   test('Test Case 17: Remove Products From Cart', async ({ products, cart }) => {
     //Arrange
-    const quantity = productData.productQuantity;
+    const quantity: number = 4;
 
     //Act
     await products.openFirstViewProduct();

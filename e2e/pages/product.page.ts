@@ -126,23 +126,15 @@ export class ProductsPage extends BasePage {
 
   //TODO: below
 
-  // async addProductGoCartPage(): Promise<void> {
-  //   await this.headerComponent.products.click();
-  //   await this.bAddToCart.first().click();
-  //   await this.bContinueShopping.click();
-  //   await this.headerComponent.cart.click();
-  //   await this.homePage.expectCartPage();
-  // }
-
-  async addProductQuantity(quantity: string): Promise<void> {
-    await this.fillQuantity.fill(quantity);
+  async addProductQuantity(quantity: number): Promise<void> {
+    await this.fillQuantity.fill(quantity.toString()); //? fix
     await this.bProductViewAddToCart.click();
     await this.viewCart.click();
   }
 
-  async expectAddProductQuantity(): Promise<void> {
+  async expectAddProductQuantity(quantity: number): Promise<void> {
     await expect(this.tableProductName).toBeVisible();
-    await expect(this.tableCartQuantity).toHaveText(productData.productQuantity);
+    await expect(this.tableCartQuantity).toHaveText(quantity.toString()); //? fix
   }
 
   async addProductReview(username: string, email: string, review: string): Promise<void> {

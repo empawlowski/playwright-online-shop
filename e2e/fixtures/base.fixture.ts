@@ -11,6 +11,7 @@ import { LoginPage } from '../pages/login.page';
 import { SignupPage } from '../pages/signup.page';
 import { CheckoutPage } from '../pages/e2e/checkout.page';
 import { PaymentPage } from '../pages/e2e/payment.page';
+import { FooterComponent } from '../components/footer.component';
 
 interface Pages {
   cart: CartPage;
@@ -26,6 +27,7 @@ interface Pages {
 
   header: HeaderComponent;
   slider: SliderComponent;
+  footer: FooterComponent;
 }
 
 export const test = base.extend<Pages>({
@@ -67,5 +69,8 @@ export const test = base.extend<Pages>({
   },
   slider: async ({ page }, use) => {
     await use(new SliderComponent(page));
+  },
+  footer: async ({ page }, use) => {
+    await use(new FooterComponent(page));
   },
 });

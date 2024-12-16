@@ -1,16 +1,12 @@
 import { type Locator, type Page, expect } from '@playwright/test';
 import { ProductsPage } from './product.page';
 import { BasePage } from './base.page';
-import { FooterComponent } from '../components/footer.component';
 import { productData } from '../assets/data/e2e/product.data';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { LoginPage } from './login.page';
 
 export class CartPage extends BasePage {
-  readonly footer: FooterComponent;
-
   readonly product: ProductsPage;
-  readonly addressDelivery: Locator;
 
   //?
   //TODO:
@@ -23,18 +19,6 @@ export class CartPage extends BasePage {
   readonly cartTotalPriceP2: Locator;
   //?
 
-  readonly addressInvoice: Locator;
-  readonly fieldDescription: Locator;
-  readonly buttonPlaceOrder: Locator;
-
-  readonly fieldNameOnCard: Locator;
-  readonly fieldCardNumber: Locator;
-  readonly fieldCvc: Locator;
-  readonly fieldExpiryMonth: Locator;
-  readonly fieldExpiryYear: Locator;
-  readonly buttonPay: Locator;
-  readonly toastMessage: Locator;
-
   readonly buttonProceedToCheckout: Locator;
   readonly buttonRegisterLogin: Locator;
 
@@ -46,7 +30,8 @@ export class CartPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.footer = new FooterComponent(page);
+    this.buttonProceedToCheckout = page.locator('.check_out', { hasText: 'Proceed To Checkout' });
+    this.buttonRegisterLogin = page.getByRole('link', { name: 'Register / Login' });
 
     this.rowForProduct = page.locator('#cart_info_table').getByRole('row', { name: 'Product Image' });
 
@@ -60,22 +45,6 @@ export class CartPage extends BasePage {
     //TODO:
 
     //Test Case 14: Place Order: Register while Checkout
-    this.addressDelivery = page.locator('#address_delivery');
-    this.addressInvoice = page.locator('#address_invoice');
-    this.fieldDescription = page.locator('#ordermsg').locator('.form-control');
-    this.buttonPlaceOrder = page.getByRole('link', { name: 'Place Order' });
-
-    this.fieldNameOnCard = page.getByTestId('name-on-card');
-    this.fieldCardNumber = page.getByTestId('card-number');
-    this.fieldCvc = page.getByTestId('cvc');
-    this.fieldExpiryMonth = page.getByTestId('expiry-month');
-    this.fieldExpiryYear = page.getByTestId('expiry-year');
-    this.buttonPay = page.getByTestId('pay-button');
-    this.toastMessage = page.locator('#success_message');
-
-    this.buttonProceedToCheckout = page.locator('.check_out', { hasText: 'Proceed To Checkout' });
-    this.buttonRegisterLogin = page.getByRole('link', { name: 'Register / Login' });
-
     this.buttonDeleteQuantity = page.locator('a.cart_quantity_delete');
     this.divCartEmpty = page.locator('#empty_cart');
 
