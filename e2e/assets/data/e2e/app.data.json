@@ -1,0 +1,6 @@
+{
+  "checkout": { "yourDeliveryAddress": "Your delivery address", "yourDeliveryInvoice": "Your billing address" },
+  "payment": {
+    "alert": "Your order has been placed successfully!"
+  }
+}

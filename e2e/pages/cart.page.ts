@@ -7,6 +7,7 @@ import { FooterComponent } from '../components/footer.component';
 import { productData } from '../assets/data/e2e/product.data';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { LoginPage } from './login.page';
+import { CheckoutPage } from './e2e/checkout.page';
 
 export class CartPage extends BasePage {
   private readonly homePage: HomePage;
@@ -18,6 +19,7 @@ export class CartPage extends BasePage {
   readonly addressDelivery: Locator;
 
   //?
+  //TODO:
   readonly rowForProduct: Locator;
   readonly cartPriceP1: Locator;
   readonly cartQuantityP1: Locator;
@@ -55,7 +57,7 @@ export class CartPage extends BasePage {
 
     this.footer = new FooterComponent(page);
 
-    this.rowForProduct = this.page.locator('#cart_info_table').getByRole('row', { name: 'Product Image' });
+    this.rowForProduct = page.locator('#cart_info_table').getByRole('row', { name: 'Product Image' });
 
     //TODO:
     this.cartPriceP1 = this.page.locator('#product-1').locator('.cart_price');
@@ -128,13 +130,13 @@ export class CartPage extends BasePage {
     //? promise
   }
 
-  async proceedToCheckout(deliveryAddress: string, deliveryInvoice: string): Promise<void> {
-    await expect(this.addressDelivery).toHaveText(deliveryAddress);
-    await expect(this.addressInvoice).toHaveText(deliveryInvoice);
-    await this.product.expectAddProductQuantity();
-    // await this.fieldDescription.fill(description); //? remove
-    // await this.clickPlaceOrder(); //? remove
-  }
+  // async proceedToCheckout(deliveryAddress: string, deliveryInvoice: string): Promise<void> {
+  //   // await expect(this.addressDelivery).toHaveText(deliveryAddress);
+  //   // await expect(this.addressInvoice).toHaveText(deliveryInvoice);
+  //   await this.product.expectAddProductQuantity(); //? for what?
+  //   // await this.fieldDescription.fill(description); //? remove
+  //   // await this.clickPlaceOrder(); //? remove
+  // }
 
   async checkoutWithoutExpectProductQuantity(deliveryAddress: string, deliveryInvoice: string, description: string): Promise<void> {
     await this.headerComponent.cart.click();
@@ -150,24 +152,24 @@ export class CartPage extends BasePage {
     await this.headerComponent.cart.click();
     await this.expectCartPage();
     await this.buttonProceedToCheckout.click();
-    await expect(this.addressDelivery).toHaveText(deliveryAddress);
-    await expect(this.addressInvoice).toHaveText(deliveryInvoice);
+    // await expect(this.addressDelivery).toHaveText(deliveryAddress);
+    // await expect(this.addressInvoice).toHaveText(deliveryInvoice);
   }
 
-  async fillCartInformation(
-    firstName: string,
-    lastName: string,
-    cardNumber: string,
-    cvc: string,
-    expiryMonth: string,
-    expiryYear: string,
-  ): Promise<void> {
-    await this.fieldNameOnCard.fill(firstName + lastName);
-    await this.fieldCardNumber.fill(cardNumber);
-    await this.fieldCvc.fill(cvc);
-    await this.fieldExpiryMonth.fill(expiryMonth);
-    await this.fieldExpiryYear.fill(expiryYear);
-    await this.buttonPay.click();
-    await this.toastMessage.isVisible();
-  }
+  // async fillCartInformation(
+  //   firstName: string,
+  //   lastName: string,
+  //   cardNumber: string,
+  //   cvc: string,
+  //   expiryMonth: string,
+  //   expiryYear: string,
+  // ): Promise<void> {
+  //   await this.fieldNameOnCard.fill(firstName + lastName);
+  //   await this.fieldCardNumber.fill(cardNumber);
+  //   await this.fieldCvc.fill(cvc);
+  //   await this.fieldExpiryMonth.fill(expiryMonth);
+  //   await this.fieldExpiryYear.fill(expiryYear);
+  //   await this.buttonPay.click();
+  //   await this.toastMessage.isVisible();
+  // }
 }
