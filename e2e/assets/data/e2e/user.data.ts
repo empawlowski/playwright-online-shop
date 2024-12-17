@@ -8,10 +8,10 @@ export const userData = {
   fakeExistEmail: 'fakeexistemail@email.pw',
   incorrectEmail: 'f3k4@email.pw',
   incorrectPassword: 'f4k3!Password00',
-  logoutUser: 'fakeUserName',
-  logoutEmail: 'fake@email.cc',
-  days: '23',
-  months: '5',
-  years: '1988',
+  logoutUser: 'fakeUserName', //? .env
+  logoutEmail: 'fake@email.cc', //? .env
+  // days: '23',
+  // months: '5',
+  // years: '1988',
   // country: 'Australia', //? factory
 };

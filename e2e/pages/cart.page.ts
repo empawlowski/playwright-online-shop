@@ -25,9 +25,6 @@ export class CartPage extends BasePage {
   readonly buttonDeleteQuantity: Locator;
   readonly sectionCartEmpty: Locator;
 
-  // readonly buttonDownloadInvoice: Locator;
-  // readonly buttonContinue: Locator;
-
   constructor(page: Page) {
     super(page);
     this.buttonProceedToCheckout = page.locator('.check_out', { hasText: 'Proceed To Checkout' });

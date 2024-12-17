@@ -25,14 +25,6 @@ export class ProductsPage extends BasePage {
   readonly linkViewCart: Locator;
   readonly buttonContinueShopping: Locator;
 
-  readonly hGetInTouch: Locator;
-
-  readonly bDialogSubmit: Locator;
-
-  readonly hSuccessSubmitted: Locator;
-  readonly hSuccessSubmittedLocator: Locator;
-  readonly bContactUsHome: Locator;
-
   constructor(page: Page) {
     super(page);
     this.headerComponent = new HeaderComponent(page);
@@ -42,24 +34,16 @@ export class ProductsPage extends BasePage {
 
     this.header = page.getByRole('heading', { name: 'All Products', exact: true });
 
-    this.buttonAddToCart = this.page.locator('.productinfo.text-center').getByText('Add to cart');
-    this.linkViewProduct = this.page.getByRole('link', { name: 'View Product' });
-    this.fieldSearchProduct = this.page.locator('#search_product');
-    this.buttonSearch = this.page.locator('#submit_search');
-    this.headerSearchedProducts = this.page.getByRole('heading', { name: 'Searched Products' });
-    this.singleProduct = this.page.locator('.single-products');
+    // this.buttonAddToCart = page.locator('.productinfo.text-center').getByText('Add to cart');
+    this.buttonAddToCart = page.locator('.text-center').getByText('Add to cart');
+    this.linkViewProduct = page.getByRole('link', { name: 'View Product' });
+    this.fieldSearchProduct = page.locator('#search_product');
+    this.buttonSearch = page.locator('#submit_search');
+    this.headerSearchedProducts = page.getByRole('heading', { name: 'Searched Products' });
+    this.singleProduct = page.locator('.single-products');
 
-    this.linkViewCart = this.page.getByRole('link', { name: 'View Cart' });
-    this.buttonContinueShopping = this.page.getByRole('button', { name: 'Continue Shopping' });
-
-    this.hGetInTouch = page.getByRole('heading', { name: 'Get in Touch' }); //? used?
-
-    this.bDialogSubmit = page.getByRole('button', { name: 'Submit' }); //? used?
-
-    //? used?
-    this.hSuccessSubmitted = page.locator('#contact-page').getByText('Success! Your details have been submitted successfully.');
-    this.hSuccessSubmittedLocator = page.locator('.alert-success');
-    this.bContactUsHome = page.locator('#form-section').getByRole('link', { name: ' Home' });
+    this.linkViewCart = page.getByRole('link', { name: 'View Cart' });
+    this.buttonContinueShopping = page.getByRole('button', { name: 'Continue Shopping' });
   }
 
   getFirstViewProduct(): Locator {
@@ -93,9 +77,13 @@ export class ProductsPage extends BasePage {
     }
   }
 
+  async clickContinueShopping(): Promise<void> {
+    await this.buttonContinueShopping.click();
+  }
+
   async addProductNumberAndContinue(index: number): Promise<void> {
     await this.buttonAddToCart.nth(index).click();
-    await this.buttonContinueShopping.click();
+    await this.clickContinueShopping();
   }
 
   async addProductNumberAndViewCart(index: number): Promise<CartPage> {

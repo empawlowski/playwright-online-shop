@@ -60,7 +60,6 @@ test.describe('Test for test cases', () => {
 
   test('😒 Test Case 1: Register User', async ({ header, login, signup, home }) => {
     //Arrange
-
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
     const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
@@ -68,9 +67,6 @@ test.describe('Test for test cases', () => {
     //Act
     await header.openSignupLoginPage();
     await expect(login.headerSignup).toBeVisible();
-    //? steps 6- 13
-    await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
-
     // 6. Enter name and email address
     // 7. Click 'Signup' button
     // await login.fillUserSignup(userBaseData);
@@ -85,7 +81,7 @@ test.describe('Test for test cases', () => {
     // await signup.fillAddressInformation(userAddressInfoData);
     // 13. Click 'Create Account button'
     // await signup.clickCreateAccount();
-    //? new page 'account_created'
+    await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
     // 14. Verify that 'ACCOUNT CREATED!' is visible
     await expect.soft(signup.create.headerAccountCreated).toContainText('Account Created!');
     // 15. Click 'Continue' button
@@ -98,9 +94,9 @@ test.describe('Test for test cases', () => {
     // 18. Verify that 'ACCOUNT DELETED!' is visible and click 'Continue' button
     await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
     await signup.delete.clickContinue();
-    // 19. Verify that home page is visible successfully
 
     //Assert
+    // 19. Verify that home page is visible successfully
     await home.expectHomePage();
 
     // Test Case 1: Register User
@@ -444,8 +440,8 @@ test.describe('Test for test cases', () => {
     await products.addProductNumberAndContinue(productNumber.first);
     await products.addProductNumberAndViewCart(productNumber.second);
     //Assert
-    const rowCount = await cart.rowForProduct.count();
-    expect(rowCount).toBe(2);
+    const rows = await cart.rowForProduct.count();
+    expect(rows).toBe(2);
     await cart.expectAddedProducts();
 
     // Test Case 12: Add Products in Cart
@@ -808,72 +804,76 @@ test.describe('Test for test cases', () => {
     // 8. Verify that user is navigated to that brand page and can see products
   });
 
-  test('Test Case 20: Search Products and Verify Cart After Login', async ({ header, login, page, products, home, user }) => {
+  test('✅ Test Case 20: Search Products and Verify Cart After Login', async ({ header, products, cart, login }) => {
     //Arrange
     test.slow();
-    // test.setTimeout(120000);
-
-    const search: string = 'Top';
-    const expectProductNumber = Number(14);
+    const search: string = 'Blue';
+    const expectProductNumber: number = 7;
 
     const userLoginData: UserLoginModel = {
-      email: userData.logoutEmail,
-      password: userData.fakePassword,
+      email: userData.logoutEmail, //'fake@email.cc',
+      password: userData.fakePassword, //'fake!Password00',
     };
 
-    const email = userData.logoutEmail; //'fake@email.cc',
-    const password = userData.fakePassword; //'fake!Password00',
-
     //Act
+    // 3. Click on 'Products' button
     await header.openProductsPage();
+    // 4. Verify user is navigated to ALL PRODUCTS page successfully
     await products.expectProductsPage();
+    // 5. Enter product name in search input and click search button
     await products.searchProduct(search);
-    const searchResults = await page.locator('div.single-products').count();
-    await expect(searchResults).toBe(expectProductNumber);
-    console.log('Results on page: ', searchResults);
+    // 6. Verify 'SEARCHED PRODUCTS' is visible
+    await expect(products.singleProduct.first()).toBeVisible();
+    // 7. Verify all the products related to search are visible
+    await products.isFoundProductsHaveSearchText(search);
+    const foundProducts = await products.singleProduct.count();
+    expect(foundProducts).toBe(expectProductNumber);
+    // 8. Add those products to cart
 
     //* Catching by $$ selector
-    const addToCarts = await page.$$('div.productinfo.text-center > a.btn.btn-default.add-to-cart');
+    // const addToCarts = await page.$$('div.text-center > a.btn.btn-default.add-to-cart');
+    // for (const addToCart of addToCarts) {
+    //   await addToCart.click();
+    //   await products.clickContinueShopping();
+    // }
+    //* -----------------------------
+
+    //* Catching by the .all() method
+    const addToCarts = await products.buttonAddToCart.all();
 
     for (const addToCart of addToCarts) {
       await addToCart.click();
-      await products.buttonContinueShopping.click();
+      await products.clickContinueShopping();
     }
     //* -----------------------------
 
-    //* Catching by text and method .all()
-    // for (const addToCart of await page.locator('.productinfo.text-center').getByText('Add to cart').all()) {
-    //   await addToCart.click();
-    //   await products.bContinueShopping.click();
-    // }
-    //* -----------------------------
+    //* Catching by the .count() method
+    // const addToCart = products.buttonAddToCart;
 
-    //* Catching by text and method .count()
-    // const addToCart = page.locator('.productinfo.text-center').getByText('Add to cart');
-    //
     // for (let i = 0; i < (await addToCart.count()); i++) {
     //   await addToCart.nth(i).click();
-    //   await products.bContinueShopping.click();
+    //   await products.clickContinueShopping();
     // }
     //* -----------------------------
 
+    // 9. Click 'Cart' button and verify that products are visible in cart
     await header.openCartPage();
-
-    const cartProductNumber = await page.locator('#cart_info_table').locator('tbody > tr').count();
-    Number(cartProductNumber) == Number(searchResults);
-    console.log('Are the values is correct: ', cartProductNumber === searchResults);
-
+    const cartProductNumber = await cart.rowForProduct.count();
+    expect(cartProductNumber).toBe(foundProducts);
+    // console.log('Are the values is correct: ', cartProductNumber === foundProducts);
+    // 10. Click 'Signup / Login' button and submit login details
     await header.openSignupLoginPage();
     await login.loginToAccount(userLoginData);
-
+    // 11. Again, go to Cart page
     await header.openCartPage();
-    const cartProductNumberAfterLogin = await page.locator('#cart_info_table').locator('tbody > tr').count();
+    // 12. Verify that those products are visible in cart after login as well
+    const cartProductNumberAfterLogin = await cart.rowForProduct.count();
     //Assert
-    Number(cartProductNumberAfterLogin) == Number(searchResults);
-    console.log('Are the values is correct: ', cartProductNumberAfterLogin === searchResults);
+    expect(cartProductNumberAfterLogin).toBe(foundProducts);
+    // console.log('Are the values is correct: ', cartProductNumberAfterLogin === foundProducts);
 
     // Test Case 20: Search Products and Verify Cart After Login
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Click on 'Products' button
     // 4. Verify user is navigated to ALL PRODUCTS page successfully
