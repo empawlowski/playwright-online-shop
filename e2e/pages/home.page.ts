@@ -3,10 +3,10 @@ import { BasePage } from './base.page';
 import { LeftSidebarComponent } from '../components/left-sidebar.component';
 import { CategoryProductsPage } from './category-products.page';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';
-import { categoryProductsData } from '../assets/data/e2e/category-products.data';
 import { CartPage } from './cart.page';
 import { FooterComponent } from '../components/footer.component';
 import { ProductsPage } from './product.page';
+import * as data from '../assets/data/e2e/app.data.json';
 
 export class HomePage extends BasePage {
   readonly brandPolo: Locator;
@@ -31,8 +31,8 @@ export class HomePage extends BasePage {
     this.brandPolo = page.locator('[href*="/brand_products/Polo"]', { hasText: 'Polo' });
     this.brandMastHarbour = page.locator('[href*="/brand_products/Mast & Harbour"]', { hasText: 'Mast & Harbour' });
 
-    this.hBrandMastHarbour = page.getByRole('heading', { name: categoryProductsData.hBrandMastHarbour });
-    this.hBrandPolo = page.getByRole('heading', { name: categoryProductsData.hBrandPolo });
+    this.hBrandMastHarbour = page.getByRole('heading', { name: data.category_products.headers.brands.mastHarbour });
+    this.hBrandPolo = page.getByRole('heading', { name: data.category_products.headers.brands.polo });
 
     //* POM for Recommended items - page bottom ()
     //Test Case 22: Add to cart from Recommended items

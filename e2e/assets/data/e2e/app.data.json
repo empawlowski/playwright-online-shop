@@ -1,4 +1,20 @@
 {
+  "products": {},
+  "category_products": {
+    "headers": {
+      "women": {
+        "dress": "Women - Dress Products"
+      },
+      "men": {
+        "jeans": "Men - Jeans Products"
+      },
+
+      "brands": {
+        "polo": "Brand - Polo",
+        "mastHarbour": "Brand - Mast & Harbour Products"
+      }
+    }
+  },
   "checkout": { "yourDeliveryAddress": "Your delivery address", "yourDeliveryInvoice": "Your billing address" },
   "payment": {
     "alert": "Your order has been placed successfully!"

@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { userData } from '../../assets/data/e2e/user.data';
 import { homeData } from '../../assets/data/e2e/home.data';
-import { productData } from '../../assets/data/e2e/product.data';
 import { test } from '../../fixtures/base.fixture';
 import { expect } from '@playwright/test';
 import { contactUsData } from '../../assets/data/e2e/contact-us.data';
@@ -11,11 +10,11 @@ import { UserSignupAddressInfoModel, UserSignupBasicInfoModel } from '../../mode
 import { testCasesData } from '../../assets/data/test-cases/test-cases.data';
 import { createSignupUserAddressInfo, createSignupUserBasicInfo } from '../../factories/signup.factory';
 import { urlTitleData } from '../../assets/data/e2e/url-title.data';
-import { categoryProductsData } from '../../assets/data/e2e/category-products.data';
 import { createContactUsForm } from '../../factories/contact-us.factory';
 import { ProductDetailsModel } from '../../models/product-details.model';
 import { createCardInfoForm } from '../../factories/payment.factory';
 import { CardInfoModel } from '../../models/payment.model';
+import * as data from '../../assets/data/e2e/app.data.json';
 
 test.describe('Test for test cases', () => {
   test.beforeEach(async ({ page, home }, testInfo) => {
@@ -730,12 +729,12 @@ test.describe('Test for test cases', () => {
     // 8. Verify that product is removed from the cart
   });
 
-  test('Test Case 18: View Category Products', async ({ home }) => {
+  test('✅ Test Case 18: View Category Products', async ({ home }) => {
     //Arrange
     const womenProductData = {
       category: 'Women',
       products: 'Dress',
-      header: categoryProductsData.hWomenDressProducts,
+      header: data.category_products.headers.women.dress,
       url: urlTitleData.urlWomenDress,
       title: urlTitleData.productWomenDress,
     };
@@ -743,7 +742,7 @@ test.describe('Test for test cases', () => {
     const menProductData = {
       category: 'Men',
       products: 'Jeans',
-      header: categoryProductsData.hMenJeansProducts,
+      header: data.category_products.headers.men.jeans,
       url: urlTitleData.urlMenJeans,
       title: urlTitleData.productMenJeans,
     };
@@ -765,7 +764,7 @@ test.describe('Test for test cases', () => {
     await expect(home.categoryProducts.getHeaderName(menProductData.header)).toBeVisible();
 
     // Test Case 18: View Category Products
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that categories are visible on left side bar
     // 4. Click on 'Women' category
