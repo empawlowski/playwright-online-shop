@@ -1,6 +1,28 @@
 {
+  "products": {
+    "name": { "polo": "Polo", "mastHarbour": "Mast & Harbour" },
+    "headers": {
+      "women": {
+        "dress": "Women - Dress Products"
+      },
+      "men": {
+        "jeans": "Men - Jeans Products"
+      },
+
+      "brands": {
+        "polo": "Polo Products",
+        "mastHarbour": "Mast & Harbour Products"
+      }
+    }
+  },
+  "cart": {},
+  "login": {
+    "incorrectData": "Your email or password is incorrect!",
+    "emailExist": "Email Address already exist!"
+  },
   "checkout": { "yourDeliveryAddress": "Your delivery address", "yourDeliveryInvoice": "Your billing address" },
   "payment": {
     "alert": "Your order has been placed successfully!"
-  }
+  },
+  "title": { "main": "Automation Exercise" }
 }

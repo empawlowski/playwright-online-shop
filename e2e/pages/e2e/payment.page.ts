@@ -1,6 +1,7 @@
 import { type Locator, type Page } from '@playwright/test';
 import { BasePage } from '../base.page';
 import { CardInfoModel } from '../../models/payment.model';
+import { PaymentDonePage } from './payment-done.page';
 
 export class PaymentPage extends BasePage {
   readonly fieldNameOnCard: Locator;
@@ -11,6 +12,8 @@ export class PaymentPage extends BasePage {
   readonly buttonPayAndConfirm: Locator;
   readonly alert: Locator;
 
+  readonly done: PaymentDonePage;
+
   constructor(page: Page) {
     super(page);
     this.fieldNameOnCard = page.getByTestId('name-on-card');
@@ -20,6 +23,8 @@ export class PaymentPage extends BasePage {
     this.fieldExpiryYear = page.getByTestId('expiry-year');
     this.buttonPayAndConfirm = page.getByTestId('pay-button');
     this.alert = page.locator('#success_message');
+
+    this.done = new PaymentDonePage(this.page);
   }
 
   async fillCardInformation(card: CardInfoModel): Promise<void> {
@@ -34,9 +39,9 @@ export class PaymentPage extends BasePage {
     await this.alert.isVisible();
   }
 
-  async clickPayAndConfirm(): Promise<PaymentPage> {
+  async clickPayAndConfirm(): Promise<PaymentDonePage> {
     await this.buttonPayAndConfirm.click();
     await this.isAlertVisible();
-    return new PaymentPage(this.page);
+    return new PaymentDonePage(this.page);
   }
 }

@@ -6,3 +6,9 @@ export interface ProductDetailsModel {
   condition: string;
   brand: string;
 }
+
+export interface ProductReviewModel {
+  name: string;
+  email: string;
+  review: string;
+}

@@ -8,8 +8,8 @@ export class AccountCreatedPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.headerAccountCreated = this.page.getByTestId('account-created');
-    this.buttonContinue = this.page.getByTestId('continue-button');
+    this.headerAccountCreated = page.getByTestId('account-created');
+    this.buttonContinue = page.getByTestId('continue-button');
   }
 
   async clickContinue(): Promise<HomePage> {

@@ -11,7 +11,7 @@ export class TestCasesPage extends BasePage {
   }
 
   async expectTestCasePage(): Promise<void> {
-    await expect(this.page).toHaveURL(urlTitleData.urlTestCases);
+    await expect(this.page).toHaveURL('/test_cases');
     await expect(this.page).toHaveTitle(urlTitleData.testCase);
     await expect(this.header).toBeVisible();
   }

@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { userData } from '../../assets/data/e2e/user.data';
 import { homeData } from '../../assets/data/e2e/home.data';
-import { productData } from '../../assets/data/e2e/product.data';
 import { test } from '../../fixtures/base.fixture';
 import { expect } from '@playwright/test';
 import { contactUsData } from '../../assets/data/e2e/contact-us.data';
@@ -11,11 +10,12 @@ import { UserSignupAddressInfoModel, UserSignupBasicInfoModel } from '../../mode
 import { testCasesData } from '../../assets/data/test-cases/test-cases.data';
 import { createSignupUserAddressInfo, createSignupUserBasicInfo } from '../../factories/signup.factory';
 import { urlTitleData } from '../../assets/data/e2e/url-title.data';
-import { categoryProductsData } from '../../assets/data/e2e/category-products.data';
 import { createContactUsForm } from '../../factories/contact-us.factory';
-import { ProductDetailsModel } from '../../models/product-details.model';
+import { ProductDetailsModel, ProductReviewModel } from '../../models/product-details.model';
 import { createCardInfoForm } from '../../factories/payment.factory';
 import { CardInfoModel } from '../../models/payment.model';
+import * as data from '../../assets/data/e2e/app.data.json';
+import { createProductReview } from '../../factories/product-details.factory';
 
 test.describe('Test for test cases', () => {
   test.beforeEach(async ({ page, home }, testInfo) => {
@@ -321,7 +321,7 @@ test.describe('Test for test cases', () => {
     await testCases.expectTestCasePage();
 
     // Test Case 7: Verify Test Cases Page
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click on 'Test Cases' button
@@ -461,18 +461,23 @@ test.describe('Test for test cases', () => {
     // 10. Verify their prices, quantity and total price
   });
 
-  test('🐱‍💻 Test Case 13: Verify Product quantity in Cart @smoke', async ({ products }) => {
+  test('✅ Test Case 13: Verify Product quantity in Cart @smoke', async ({ products, cart }) => {
     //Arrange
-    const quantity: number = 4;
+    const productData = {
+      name: 'Blue Top',
+      quantity: 4,
+    };
     //Act
     await products.openFirstViewProduct();
-    await products.details.expectProductDetailsPage(); //TODO:
-    await products.addProductQuantity(quantity);
+    await products.details.expectProductDetailsPage();
+    await products.details.addProductQuantity(productData.quantity);
+    await products.details.clickAddToCart();
+    await products.details.clickViewCart();
     //Assert
-    await products.expectAddProductQuantity(quantity);
+    await cart.expectAddedProductAndQuantity(productData.name, productData.quantity);
 
     // Test Case 13: Verify Product quantity in Cart
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click 'View Product' for any product on home page
@@ -548,7 +553,7 @@ test.describe('Test for test cases', () => {
     // 8. Click 'Register / Login' button
     // 9. Fill all details in Signup and create account
     // 10. Verify 'ACCOUNT CREATED!' and click 'Continue' button
-    // 11. Verify ' Logged in as username' at top
+    // 11. Verify 'Logged in as username' at top
     // 12. Click 'Cart' button
     // 13. Click 'Proceed To Checkout' button
     // 14. Verify Address Details and Review Your Order
@@ -730,21 +735,19 @@ test.describe('Test for test cases', () => {
     // 8. Verify that product is removed from the cart
   });
 
-  test('Test Case 18: View Category Products', async ({ home }) => {
+  test('✅ Test Case 18: View Category Products', async ({ home }) => {
     //Arrange
     const womenProductData = {
       category: 'Women',
       products: 'Dress',
-      header: categoryProductsData.hWomenDressProducts,
-      url: urlTitleData.urlWomenDress,
+      header: data.products.headers.women.dress,
       title: urlTitleData.productWomenDress,
     };
 
     const menProductData = {
       category: 'Men',
       products: 'Jeans',
-      header: categoryProductsData.hMenJeansProducts,
-      url: urlTitleData.urlMenJeans,
+      header: data.products.headers.men.jeans,
       title: urlTitleData.productMenJeans,
     };
 
@@ -754,18 +757,18 @@ test.describe('Test for test cases', () => {
     await home.leftSidebar.openCategoryByName(womenProductData.category);
     await home.leftSidebar.openCategoryProductsByName(womenProductData.products);
 
-    await home.categoryProducts.expectCategoryProductsPage(womenProductData.url, womenProductData.title);
+    await home.categoryProducts.expectCategoryProductsPage(womenProductData.title);
     await expect(home.categoryProducts.getHeaderName(womenProductData.header)).toBeVisible();
 
     await home.leftSidebar.openCategoryByName(menProductData.category);
     await home.leftSidebar.openCategoryProductsByName(menProductData.products);
 
-    await home.categoryProducts.expectCategoryProductsPage(menProductData.url, menProductData.title);
+    await home.categoryProducts.expectCategoryProductsPage(menProductData.title);
     //Assert
     await expect(home.categoryProducts.getHeaderName(menProductData.header)).toBeVisible();
 
     // Test Case 18: View Category Products
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that categories are visible on left side bar
     // 4. Click on 'Women' category
@@ -775,20 +778,27 @@ test.describe('Test for test cases', () => {
     // 8. Verify that user is navigated to that category page
   });
 
-  test('Test Case 19: View & Cart Brand Products @smoke', async ({ header, home, products }) => {
-    //TODO:
+  test('✅ Test Case 19: View & Cart Brand Products @smoke', async ({ header, products }) => {
     //Arrange
+    const brandsData = {
+      polo: data.products.name.polo,
+      mastHarbour: data.products.name.mastHarbour,
+      headerPolo: data.products.headers.brands.polo,
+      HeaderMastHarbour: data.products.headers.brands.mastHarbour,
+    };
 
     //Act
     await header.openProductsPage();
     await products.leftSidebar.expectLeftSidebar();
-    await home.openBrandMastHarbour();
+    await products.leftSidebar.openBrandByName(brandsData.polo);
+    await products.brands.expectBrandProductsPage(brandsData.polo, brandsData.headerPolo);
+    await products.leftSidebar.openBrandByName(brandsData.mastHarbour);
 
     //Assert
-    await home.openBrandPolo();
+    await products.brands.expectBrandProductsPage(brandsData.mastHarbour, brandsData.HeaderMastHarbour);
 
     // Test Case 19: View & Cart Brand Products
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Click on 'Products' button
     // 4. Verify that Brands are visible on left side bar
@@ -827,7 +837,7 @@ test.describe('Test for test cases', () => {
 
     for (const addToCart of addToCarts) {
       await addToCart.click();
-      await products.bContinueShopping.click();
+      await products.buttonContinueShopping.click();
     }
     //* -----------------------------
 
@@ -877,22 +887,22 @@ test.describe('Test for test cases', () => {
     // 12. Verify that those products are visible in cart after login as well
   });
 
-  test('Test Case 21: Add review on product', async ({ header, products }) => {
+  test('✅ Test Case 21: Add review on product', async ({ header, products }) => {
     //Arrange
-    const username = faker.internet.userName();
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    const review = faker.lorem.text();
+    const reviewData: ProductReviewModel = createProductReview();
 
     //Act
     await header.openProductsPage();
     await products.expectProductsPage();
-    await products.addProductReview(username, email, review);
+    await products.openFirstViewProduct();
+    await expect(products.details.linkWriteReview).toBeVisible();
+    await products.details.addProductReview(reviewData);
 
     //Assert
-    await products.expectSuccessReviewMessage();
+    await products.details.expectSuccessReviewMessage();
 
     // Test Case 21: Add review on product
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Click on 'Products' button
     // 4. Verify user is navigated to ALL PRODUCTS page successfully
@@ -903,9 +913,7 @@ test.describe('Test for test cases', () => {
     // 9. Verify success message 'Thank you for your review.'
   });
 
-  test('Test Case 22: Add to cart from Recommended items', async ({ home, cart }) => {
-    //Arrange
-
+  test('✅ Test Case 22: Add to cart from Recommended items', async ({ home, cart }) => {
     //Act
     await home.scrollDownPage();
     await expect.soft(home.headerRecommendedItems).toBeVisible();
@@ -915,7 +923,7 @@ test.describe('Test for test cases', () => {
     await expect(cart.rowForProduct).toBeVisible();
 
     // Test Case 22: Add to cart from Recommended items
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Scroll to bottom of page
     // 4. Verify 'RECOMMENDED ITEMS' are visible
@@ -924,103 +932,45 @@ test.describe('Test for test cases', () => {
     // 7. Verify that product is displayed in cart page
   });
 
-  test('Test Case 23: Verify address details in checkout page', async ({ header, page, home, user, products, cart, checkout, signup }) => {
-    //TODO:
-    //! NOW
+  test('✅ Test Case 23: Verify address details in checkout page', async ({ header, signup, home, cart, checkout }) => {
     //Arrange
-    const username = faker.internet.userName();
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    const password = faker.internet.password();
-    const days = userData.days;
-    const months = userData.months;
-    const years = userData.years;
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-    const company = faker.company.name();
-    const address1 = faker.location.streetAddress({ useFullAddress: true });
-    const address2 = faker.location.secondaryAddress();
-    // const country = userData.country;
-    const state = faker.location.state();
-    const city = faker.location.city();
-    const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number();
-
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
-    // const userBasicInfoData: UserSignupBasicInfoModel = {
-    //   password: faker.internet.password(),
-    //   day: faker.number.int({ min: 1, max: 31 }).toString(),
-    //   month: faker.date.month(),
-    //   year: faker.number.int({ min: 1900, max: 2021 }).toString(),
-    // };
     const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
-    // const userAddressInfoData: UserSignupAddressInfoModel = {
-    //   firstName: faker.person.firstName(),
-    //   lastName: faker.person.lastName(),
-    //   company: faker.company.name(),
-    //   address: faker.location.streetAddress({ useFullAddress: true }),
-    //   address2: faker.location.secondaryAddress(),
-    //   country: userData.country,
-    //   state: faker.location.state(),
-    //   city: faker.location.city(),
-    //   zipCode: faker.location.zipCode(),
-    //   phoneNumber: faker.phone.number(),
-    // };
-
-    // const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
-
-    // const yourDeliveryAddress = cartData.yourDeliveryAddress;
-    // const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
-
-    // const deliveryAddress = `
-    //   ${yourDeliveryAddress}
-    //   Mrs. ${firstName} ${lastName}
-    //   ${company}
-    //   ${address1}
-    //   ${address2}
-    //   ${city} ${state}
-    //   ${zipCode}
-    //   ${userAddressInfoData.country}
-    //   ${phoneNumber}`;
-
-    // const deliveryInvoice = `
-    //   ${yourDeliveryInvoice}
-    //   Mrs. ${firstName} ${lastName}
-    //   ${company}
-    //   ${address1}
-    //   ${address2}
-    //   ${city} ${state}
-    //   ${zipCode}
-    //   ${userAddressInfoData.country}
-    //   ${phoneNumber}`;
+    const productData: number = 0;
 
     // Act
+    // 4. Click 'Signup / Login' button
     await header.openSignupLoginPage();
+    // 5. Fill all details in Signup and create account
     await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
-
-    // await expect(loggedUser).toBeVisible();
-    await header.expectLoggedUser(username);
-
-    await products.bAddToCart.first().click();
-    await products.bContinueShopping.click();
-
-    //?
+    // 6. Verify 'ACCOUNT CREATED!' and click 'Continue' button
+    await expect(signup.create.headerAccountCreated).toContainText('Account Created!');
+    await signup.create.clickContinue();
+    // 7. Verify 'Logged in as username' at top
+    await header.expectLoggedUser(userBaseData.name);
+    // 8. Add products to cart
+    await home.products.addProductNumberAndContinue(productData);
+    // 9. Click 'Cart' button
     await header.openCartPage();
+    // 10. Verify that cart page is displayed
     await cart.expectCartPage();
+    // 11. Click Proceed To Checkout
     await cart.clickProceedToCheckout();
-
-    // await cart.proceedToCheckoutWithAddressVerification(deliveryAddress, deliveryInvoice);
+    // 12. Verify that the delivery address is same address filled at the time registration of account
     await checkout.checkDeliveryAddress(userAddressInfoData);
+    // 13. Verify that the billing address is same address filled at the time registration of account
     await checkout.checkDeliveryInvoice(userAddressInfoData);
+    // 14. Click 'Delete Account' button
+    await header.clickDeleteAccount();
 
     //Assert
-    // await user.deleteUser();
-    await header.clickDeleteAccount();
+    // 15. Verify 'ACCOUNT DELETED!' and click 'Continue' button
     await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
     await signup.delete.clickContinue();
 
     // Test Case 23: Verify address details in checkout page
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click 'Signup / Login' button
@@ -1037,131 +987,62 @@ test.describe('Test for test cases', () => {
     // 15. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 24: Download Invoice after purchase order', async ({ home, page, products, cart, checkout, payment, user, header, signup }) => {
-    //TODO:
-    //! NOW
+  test('✅ Test Case 24: Download Invoice after purchase order', async ({ home, header, cart, signup, checkout, payment }) => {
     //Arrange
-    const username = faker.internet.userName();
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    const password = faker.internet.password();
-    const days = userData.days;
-    const months = userData.months;
-    const years = userData.years;
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-    const company = faker.company.name();
-    const address1 = faker.location.streetAddress({ useFullAddress: true });
-    const address2 = faker.location.secondaryAddress();
-    // const country = userData.country;
-    const state = faker.location.state();
-    const city = faker.location.city();
-    const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number();
-
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
-    // const userBasicInfoData: UserSignupBasicInfoModel = {
-    //   password: faker.internet.password(),
-    //   day: faker.number.int({ min: 1, max: 31 }).toString(),
-    //   month: faker.date.month(),
-    //   year: faker.number.int({ min: 1900, max: 2021 }).toString(),
-    // };
     const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
-    // const userAddressInfoData: UserSignupAddressInfoModel = {
-    //   firstName: faker.person.firstName(),
-    //   lastName: faker.person.lastName(),
-    //   company: faker.company.name(),
-    //   address: faker.location.streetAddress({ useFullAddress: true }),
-    //   address2: faker.location.secondaryAddress(),
-    //   country: userData.country,
-    //   state: faker.location.state(),
-    //   city: faker.location.city(),
-    //   zipCode: faker.location.zipCode(),
-    //   phoneNumber: faker.phone.number(),
-    // };
-
-    // const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
-
-    // const yourDeliveryAddress = cartData.yourDeliveryAddress;
-    // const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
-
-    // const deliveryAddress = `
-    //   ${yourDeliveryAddress}
-    //   Mrs. ${firstName} ${lastName}
-    //   ${company}
-    //   ${address1}
-    //   ${address2}
-    //   ${city} ${state}
-    //   ${zipCode}
-    //   ${userAddressInfoData.country}
-    //   ${phoneNumber}`;
-
-    // const deliveryInvoice = `
-    //   ${yourDeliveryInvoice}
-    //   Mrs. ${firstName} ${lastName}
-    //   ${company}
-    //   ${address1}
-    //   ${address2}
-    //   ${city} ${state}
-    //   ${zipCode}
-    //   ${userAddressInfoData.country}
-    //   ${phoneNumber}`;
-
     const description: string = faker.lorem.text();
     const cardData: CardInfoModel = createCardInfoForm();
+    const productData: number = 0;
 
     // Act
-    // await products.addProductGoCartPage();  //TODO:
     // 4. Add products to cart
-    await home.products.addProductNumberAndContinue(0);
-    // async addProductGoCartPage(): Promise<void> {
-    //   await this.headerComponent.products.click();
-    //   await this.bAddToCart.first().click();
-    //   await this.bContinueShopping.click();
-    //   await this.headerComponent.cart.click();
-    //   await this.homePage.expectCartPage();
-    // }
-    await cart.buttonProceedToCheckout.click();
-    await cart.buttonRegisterLogin.click(); //? method?
-
-    await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
-
-    await header.expectLoggedUser(username);
-
-    //TODO:
+    await home.products.addProductNumberAndContinue(productData);
+    // 5. Click 'Cart' button
     await header.openCartPage();
+    // 6. Verify that cart page is displayed
     await cart.expectCartPage();
+    // 7. Click Proceed To Checkout
     await cart.clickProceedToCheckout();
+    // 8. Click 'Register / Login' button
+    await cart.clickRegisterLogin();
+    // 9. Fill all details in Signup and create account
+    await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
+    // 10. Verify 'ACCOUNT CREATED!' and click 'Continue' button
+    await expect(signup.create.headerAccountCreated).toContainText('Account Created!');
+    await signup.create.clickContinue();
+    // 11. Verify 'Logged in as username' at top
+    await header.expectLoggedUser(userBaseData.name);
+    // 12. Click 'Cart' button
+    await header.openCartPage();
+    // 13. Click 'Proceed To Checkout' button
+    await cart.clickProceedToCheckout();
+    // 14. Verify Address Details and Review Your Order
     await checkout.checkDeliveryAddress(userAddressInfoData);
     await checkout.checkDeliveryInvoice(userAddressInfoData);
+    // 15. Enter description in comment text area and click 'Place Order'
     await checkout.fillDescription(description);
     await checkout.clickPlaceOrder();
-
+    // 16. Enter payment details: Name on Card, Card Number, CVC, Expiration date
     await payment.fillCardInformation(cardData);
+    // 17. Click 'Pay and Confirm Order' button
+    // 18. Verify success message 'Your order has been placed successfully!'
     await payment.clickPayAndConfirm();
-
-    //* Download method
-    const downloadPromise = page.waitForEvent('download');
-    await cart.buttonDownloadInvoice.click();
-    const download = await downloadPromise;
-    if (download) {
-      console.log('File downloaded successfully.');
-      await download.saveAs('./test-download/e2e/cart/Invoice.txt');
-    } else {
-      console.log('File download failed.');
-    }
-    //*--------------
-
-    await cart.buttonContinue.click();
+    // 19. Click 'Download Invoice' button and verify invoice is downloaded successfully.
+    await payment.done.downloadInvoice();
+    // 20. Click 'Continue' button
+    await payment.done.clickContinue();
+    // 21. Click 'Delete Account' button
+    await header.clickDeleteAccount();
 
     //Assert
-    // await user.deleteUser();
-    await header.clickDeleteAccount();
+    // 22. Verify 'ACCOUNT DELETED!' and click 'Continue' button
     await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
     await signup.delete.clickContinue();
 
     // Test Case 24: Download Invoice after purchase order
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Add products to cart
@@ -1185,18 +1066,22 @@ test.describe('Test for test cases', () => {
     // 22. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 25: Verify Scroll Up using "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
-    //Assert
+  test('✅ Test Case 25: Verify Scroll Up using "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
     //Act
-    await home.scrollUpConfirmByScreen();
+    await home.scrollDownPage();
+    await expect(home.footer.headerSubscription).toBeInViewport();
+    await home.takeScreenShot('footer');
+    await home.clickScrollUpArrow();
+    await expect(home.headerFullFledged).toBeInViewport();
+    await home.takeScreenShot('header');
 
     //Assert
-    //* Check files in ./test-download/e2e/home/
-    // first assertion: hSubscription.png
-    // second assertion: hAutomationExercise.png
+    //* Check files in ./e2e/download/ui/home/
+    // first assertion: footer.png
+    // second assertion: header.png
 
     // Test Case 25: Verify Scroll Up using 'Arrow' button and Scroll Down functionality
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Scroll down page to bottom
@@ -1205,18 +1090,23 @@ test.describe('Test for test cases', () => {
     // 7. Verify that page is scrolled up and 'Full-Fledged practice website for Automation Engineers' text is visible on screen
   });
 
-  test('Test Case 26: Verify Scroll Up without "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
-    //Assert
+  test('✅ Test Case 26: Verify Scroll Up without "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
     //Act
-    await home.noScrollUpConfirmByScreen();
+    await home.scrollDownPage();
+    await expect(home.footer.headerSubscription).toBeInViewport();
+    await home.takeScreenShot('up-arrow');
+    await home.scrollUpPage();
+    await expect(home.headerFullFledged).toBeInViewport();
+    await home.giveMeSmallSecond();
+    await home.takeScreenShot('no-arrow');
 
     //Assert
-    //* Check files in ./test-download/e2e/home/
-    // first assertion: noScrollUpHSubscription.png
-    // second assertion: noScrollUpHAutomationExercise.png
+    //* Check files in ./e2e/download/ui/home/
+    // first assertion: up-arrow.png
+    // second assertion: no-arrow.png
 
     // Test Case 26: Verify Scroll Up without 'Arrow' button and Scroll Down functionality
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Scroll down page to bottom
