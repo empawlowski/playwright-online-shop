@@ -1066,18 +1066,22 @@ test.describe('Test for test cases', () => {
     // 22. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 25: Verify Scroll Up using "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
-    //Assert
+  test('✅ Test Case 25: Verify Scroll Up using "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
     //Act
-    await home.scrollUpConfirmByScreen();
+    await home.scrollDownPage();
+    await expect(home.footer.headerSubscription).toBeInViewport();
+    await home.takeScreenShot('footer');
+    await home.clickScrollUpArrow();
+    await expect(home.headerFullFledged).toBeInViewport();
+    await home.takeScreenShot('header');
 
     //Assert
-    //* Check files in ./test-download/e2e/home/
-    // first assertion: hSubscription.png
-    // second assertion: hAutomationExercise.png
+    //* Check files in ./e2e/download/ui/home/
+    // first assertion: footer.png
+    // second assertion: header.png
 
     // Test Case 25: Verify Scroll Up using 'Arrow' button and Scroll Down functionality
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Scroll down page to bottom
@@ -1086,18 +1090,23 @@ test.describe('Test for test cases', () => {
     // 7. Verify that page is scrolled up and 'Full-Fledged practice website for Automation Engineers' text is visible on screen
   });
 
-  test('Test Case 26: Verify Scroll Up without "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
-    //Assert
+  test('✅ Test Case 26: Verify Scroll Up without "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
     //Act
-    await home.noScrollUpConfirmByScreen();
+    await home.scrollDownPage();
+    await expect(home.footer.headerSubscription).toBeInViewport();
+    await home.takeScreenShot('up-arrow');
+    await home.scrollUpPage();
+    await expect(home.headerFullFledged).toBeInViewport();
+    await home.giveMeSmallSecond();
+    await home.takeScreenShot('no-arrow');
 
     //Assert
-    //* Check files in ./test-download/e2e/home/
-    // first assertion: noScrollUpHSubscription.png
-    // second assertion: noScrollUpHAutomationExercise.png
+    //* Check files in ./e2e/download/ui/home/
+    // first assertion: up-arrow.png
+    // second assertion: no-arrow.png
 
     // Test Case 26: Verify Scroll Up without 'Arrow' button and Scroll Down functionality
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Scroll down page to bottom

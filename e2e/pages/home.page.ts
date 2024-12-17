@@ -6,9 +6,9 @@ import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { CartPage } from './cart.page';
 import { FooterComponent } from '../components/footer.component';
 import { ProductsPage } from './product.page';
-import * as data from '../assets/data/e2e/app.data.json';
 
 export class HomePage extends BasePage {
+  readonly headerFullFledged: Locator;
   readonly linkViewCart: Locator;
   readonly headerRecommendedItems: Locator;
   readonly linkAddToCartFromRecommendedItems: Locator;
@@ -20,6 +20,7 @@ export class HomePage extends BasePage {
 
   constructor(page: Page) {
     super(page);
+    this.headerFullFledged = page.getByRole('heading', { name: 'Full-Fledged practice website for Automation Engineers' });
     this.linkViewCart = page.getByRole('link', { name: 'View Cart' });
     this.headerRecommendedItems = page.getByRole('heading', { name: 'Recommended items' });
     this.linkAddToCartFromRecommendedItems = page.locator('#recommended-item-carousel').locator('.add-to-cart');
@@ -39,28 +40,5 @@ export class HomePage extends BasePage {
     await this.linkAddToCartFromRecommendedItems.last().click();
     await this.linkViewCart.click();
     return new CartPage(this.page);
-  }
-
-  //TODO:
-  async scrollUpConfirmByScreen() {
-    await this.page.evaluate(() => {
-      window.scrollTo(0, document.body.scrollHeight);
-    });
-    await this.page.screenshot({ path: './test-download/e2e/home/hSubscription.png' });
-    await this.page.locator('#scrollUp').click();
-    await this.page.waitForTimeout(1000);
-    await this.page.screenshot({ path: './test-download/e2e/home/hAutomationExercise.png' });
-  }
-
-  //TODO:
-  async noScrollUpConfirmByScreen() {
-    await this.page.evaluate(() => {
-      window.scrollTo(0, document.body.scrollHeight);
-    });
-    await this.page.screenshot({ path: './test-download/e2e/home/noScrollUpHSubscription.png' });
-    await this.page.evaluate(() => {
-      window.scrollTo(0, 0);
-    });
-    await this.page.screenshot({ path: './test-download/e2e/home/noScrollUpHAutomationExercise.png' });
   }
 }
