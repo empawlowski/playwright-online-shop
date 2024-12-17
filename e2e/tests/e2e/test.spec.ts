@@ -734,7 +734,7 @@ test.describe('Test for test cases', () => {
     const womenProductData = {
       category: 'Women',
       products: 'Dress',
-      header: data.category_products.headers.women.dress,
+      header: data.products.headers.women.dress,
       url: urlTitleData.urlWomenDress,
       title: urlTitleData.productWomenDress,
     };
@@ -742,7 +742,7 @@ test.describe('Test for test cases', () => {
     const menProductData = {
       category: 'Men',
       products: 'Jeans',
-      header: data.category_products.headers.men.jeans,
+      header: data.products.headers.men.jeans,
       url: urlTitleData.urlMenJeans,
       title: urlTitleData.productMenJeans,
     };
@@ -774,20 +774,27 @@ test.describe('Test for test cases', () => {
     // 8. Verify that user is navigated to that category page
   });
 
-  test('Test Case 19: View & Cart Brand Products @smoke', async ({ header, home, products }) => {
-    //TODO:
+  test('✅ Test Case 19: View & Cart Brand Products @smoke', async ({ header, products }) => {
     //Arrange
+    const brandsData = {
+      polo: data.products.name.polo,
+      mastHarbour: data.products.name.mastHarbour,
+      headerPolo: data.products.headers.brands.polo,
+      HeaderMastHarbour: data.products.headers.brands.mastHarbour,
+    };
 
     //Act
     await header.openProductsPage();
     await products.leftSidebar.expectLeftSidebar();
-    await home.openBrandMastHarbour();
+    await products.leftSidebar.openBrandByName(brandsData.polo);
+    await products.brands.expectBrandProductsPage(brandsData.polo, brandsData.headerPolo);
+    await products.leftSidebar.openBrandByName(brandsData.mastHarbour);
 
     //Assert
-    await home.openBrandPolo();
+    await products.brands.expectBrandProductsPage(brandsData.mastHarbour, brandsData.HeaderMastHarbour);
 
     // Test Case 19: View & Cart Brand Products
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Click on 'Products' button
     // 4. Verify that Brands are visible on left side bar

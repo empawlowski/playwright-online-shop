@@ -22,6 +22,10 @@ export class LeftSidebarComponent extends BasePage {
     return this.page.getByRole('link', { name: products });
   }
 
+  getBrandName(brand: string): Locator {
+    return this.page.getByRole('link', { name: brand });
+  }
+
   async expectLeftSidebar() {
     await expect(this.sidebarLocator).toBeVisible();
     await expect(this.headerSidebarCategory).toBeVisible();
@@ -31,8 +35,14 @@ export class LeftSidebarComponent extends BasePage {
   async openCategoryByName(category: string): Promise<void> {
     await this.getCategory(category).click();
   }
+
   async openCategoryProductsByName(products: string): Promise<void> {
     await this.getCategoryProducts(products).click();
+    //? open page category_products/1
+  }
+
+  async openBrandByName(brand: string): Promise<void> {
+    await this.getBrandName(brand).click();
     //? open page category_products/1
   }
 }

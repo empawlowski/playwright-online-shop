@@ -31,8 +31,8 @@ export class HomePage extends BasePage {
     this.brandPolo = page.locator('[href*="/brand_products/Polo"]', { hasText: 'Polo' });
     this.brandMastHarbour = page.locator('[href*="/brand_products/Mast & Harbour"]', { hasText: 'Mast & Harbour' });
 
-    this.hBrandMastHarbour = page.getByRole('heading', { name: data.category_products.headers.brands.mastHarbour });
-    this.hBrandPolo = page.getByRole('heading', { name: data.category_products.headers.brands.polo });
+    this.hBrandMastHarbour = page.getByRole('heading', { name: data.products.headers.brands.mastHarbour });
+    this.hBrandPolo = page.getByRole('heading', { name: data.products.headers.brands.polo });
 
     //* POM for Recommended items - page bottom ()
     //Test Case 22: Add to cart from Recommended items

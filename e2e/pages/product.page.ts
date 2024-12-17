@@ -7,10 +7,12 @@ import { LeftSidebarComponent } from '../components/left-sidebar.component';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { ProductDetailsPage } from './product-details.page';
 import { CartPage } from './cart.page';
+import { BrandProducts } from './e2e/brand-products.page';
 
 export class ProductsPage extends BasePage {
   readonly headerComponent: HeaderComponent;
   readonly details: ProductDetailsPage;
+  readonly brands: BrandProducts;
 
   readonly header: Locator;
 
@@ -41,6 +43,7 @@ export class ProductsPage extends BasePage {
     super(page);
     this.headerComponent = new HeaderComponent(page);
     this.details = new ProductDetailsPage(page);
+    this.brands = new BrandProducts(page);
 
     this.header = page.getByRole('heading', { name: 'All Products', exact: true });
 

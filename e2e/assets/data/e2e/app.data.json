@@ -1,6 +1,6 @@
 {
-  "products": {},
-  "category_products": {
+  "products": {
+    "name": { "polo": "Polo", "mastHarbour": "Mast & Harbour" },
     "headers": {
       "women": {
         "dress": "Women - Dress Products"
@@ -10,13 +10,14 @@
       },
 
       "brands": {
-        "polo": "Brand - Polo",
-        "mastHarbour": "Brand - Mast & Harbour Products"
+        "polo": "Polo Products",
+        "mastHarbour": "Mast & Harbour Products"
       }
     }
   },
   "checkout": { "yourDeliveryAddress": "Your delivery address", "yourDeliveryInvoice": "Your billing address" },
   "payment": {
     "alert": "Your order has been placed successfully!"
-  }
+  },
+  "title": { "main": "Automation Exercise" }
 }
