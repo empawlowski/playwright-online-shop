@@ -1,5 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { BasePage } from './base.page';
+import { BasePage } from './e2e/base.page';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { productDetailsData } from '../assets/data/e2e/product-details.data';
 import { ProductDetailsModel, ProductReviewModel } from '../models/product-details.model';

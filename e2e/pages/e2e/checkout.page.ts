@@ -1,5 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { BasePage } from './base.page';
 import * as data from '../../assets/data/e2e/app.data.json';
 import { UserSignupAddressInfoModel } from '../../models/signup.model';
 import { PaymentPage } from './payment.page';

@@ -1,5 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { BasePage } from './base.page';
 import { CardInfoModel } from '../../models/payment.model';
 import { PaymentDonePage } from './payment-done.page';
 

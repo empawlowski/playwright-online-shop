@@ -1,11 +1,11 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { BasePage } from '../pages/base.page';
+import { BasePage } from '../pages/e2e/base.page';
 import { ProductsPage } from '../pages/product.page';
 import { ContactUsPage } from '../pages/contact-us.page';
 import { CartPage } from '../pages/cart.page';
 import { SignupLoginPage } from '../pages/signLogin.page';
 import { TestCasesPage } from '../pages/test-cases.page';
-import { HomePage } from '../pages/home.page';
+import { HomePage } from '../pages/e2e/home.page';
 import { DeleteAccountPage } from '../pages/delete-account.page';
 import { LoginPage } from '../pages/login.page';
 

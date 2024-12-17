@@ -1,5 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { BasePage } from './base.page';
+import { BasePage } from './e2e/base.page';
 import { HeaderComponent } from '../components/header.component';
 import { LeftSidebarComponent } from '../components/left-sidebar.component';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';

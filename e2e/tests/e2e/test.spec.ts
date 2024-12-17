@@ -16,6 +16,7 @@ import { createCardInfoForm } from '../../factories/payment.factory';
 import { CardInfoModel } from '../../models/payment.model';
 import * as data from '../../assets/data/e2e/app.data.json';
 import { createProductReview } from '../../factories/product-details.factory';
+import { CartProductModel } from '../../models/cart.model';
 
 test.describe('Test for test cases', () => {
   test.beforeEach(async ({ page, home }, testInfo) => {
@@ -428,21 +429,33 @@ test.describe('Test for test cases', () => {
     // 8. Verify success message 'You have been successfully subscribed!' is visible
   });
 
-  test('😒 Test Case 12: Add Products in Cart', async ({ header, products, cart }) => {
+  test('✅ Test Case 12: Add Products in Cart', async ({ header, products, cart }) => {
     //Arrange
-    //TODO: update expectAddProducts()
-    const productNumber = {
-      first: 0,
-      second: 1,
-    };
+    const productsData: CartProductModel[] = [
+      {
+        id: 0,
+        name: 'Blue Top',
+        price: 500,
+        quantity: '1',
+      },
+      {
+        id: 2,
+        name: 'Sleeveless Dress',
+        price: 1000,
+        quantity: '1',
+      },
+    ];
+
     //Act
     await header.openProductsPage();
-    await products.addProductNumberAndContinue(productNumber.first);
-    await products.addProductNumberAndViewCart(productNumber.second);
-    //Assert
+    await products.addProductNumberAndContinue(productsData[0].id!);
+    await products.addProductNumberAndViewCart(productsData[1].id!);
     const rows = await cart.rowForProduct.count();
     expect(rows).toBe(2);
-    await cart.expectAddedProducts();
+
+    //Assert
+    // 10. Verify their prices, quantity and total price
+    await cart.expectAddedProducts(productsData);
 
     // Test Case 12: Add Products in Cart
     // 1. Launch browser
@@ -692,7 +705,7 @@ test.describe('Test for test cases', () => {
 
   test('🐱‍💻 ✅ Test Case 17: Remove Products From Cart', async ({ home, header, cart, products }) => {
     //Arrange
-
+    //!
     const productsData = [0, 1];
     const productsNameData = ['Blue Top', 'Men Tshirt'];
 

@@ -1,5 +1,5 @@
 import { Locator, Page } from '@playwright/test';
-import { BasePage } from '../pages/base.page';
+import { BasePage } from '../pages/e2e/base.page';
 
 export class FooterComponent extends BasePage {
   readonly headerSubscription: Locator;

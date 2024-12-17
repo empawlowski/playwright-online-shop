@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { BasePage } from './base.page';
+import { BasePage } from './e2e/base.page';
 import { UserLoginModel, UserSignupModel } from '../models/login.model';
-import { HomePage } from './home.page';
+import { HomePage } from './e2e/home.page';
 import { SignupPage } from './signup.page';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import * as data from '../assets/data/e2e/app.data.json';

@@ -1,5 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BasePage } from './base.page';
+import { BasePage } from './e2e/base.page';
 import { contactUsData } from '../assets/data/e2e/contact-us.data';
 import { ContactUsModel } from '../models/contact-us.model';
 

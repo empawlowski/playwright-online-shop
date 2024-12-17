@@ -1,9 +1,9 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { BasePage } from './base.page';
+import { BasePage } from './e2e/base.page';
 import { UserSignupModel } from '../models/login.model';
 import { UserSignupAddressInfoModel, UserSignupBasicInfoModel } from '../models/signup.model';
 import { DeleteAccountPage } from './delete-account.page';
-import { AccountCreatedPage } from './account-created.page';
+import { AccountCreatedPage } from './e2e/account-created.page';
 import { LoginPage } from './login.page';
 
 export class SignupPage extends BasePage {
