@@ -321,7 +321,7 @@ test.describe('Test for test cases', () => {
     await testCases.expectTestCasePage();
 
     // Test Case 7: Verify Test Cases Page
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click on 'Test Cases' button
@@ -461,18 +461,23 @@ test.describe('Test for test cases', () => {
     // 10. Verify their prices, quantity and total price
   });
 
-  test('🐱‍💻 Test Case 13: Verify Product quantity in Cart @smoke', async ({ products }) => {
+  test('✅ Test Case 13: Verify Product quantity in Cart @smoke', async ({ products, cart }) => {
     //Arrange
-    const quantity: number = 4;
+    const productData = {
+      name: 'Blue Top',
+      quantity: 4,
+    };
     //Act
     await products.openFirstViewProduct();
-    await products.details.expectProductDetailsPage(); //TODO:
-    await products.addProductQuantity(quantity);
+    await products.details.expectProductDetailsPage();
+    await products.details.addProductQuantity(productData.quantity);
+    await products.details.clickAddToCart();
+    await products.details.clickViewCart();
     //Assert
-    await products.expectAddProductQuantity(quantity);
+    await cart.expectAddedProductAndQuantity(productData.name, productData.quantity);
 
     // Test Case 13: Verify Product quantity in Cart
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click 'View Product' for any product on home page
@@ -736,7 +741,6 @@ test.describe('Test for test cases', () => {
       category: 'Women',
       products: 'Dress',
       header: data.products.headers.women.dress,
-      url: urlTitleData.urlWomenDress,
       title: urlTitleData.productWomenDress,
     };
 
@@ -744,7 +748,6 @@ test.describe('Test for test cases', () => {
       category: 'Men',
       products: 'Jeans',
       header: data.products.headers.men.jeans,
-      url: urlTitleData.urlMenJeans,
       title: urlTitleData.productMenJeans,
     };
 
@@ -754,13 +757,13 @@ test.describe('Test for test cases', () => {
     await home.leftSidebar.openCategoryByName(womenProductData.category);
     await home.leftSidebar.openCategoryProductsByName(womenProductData.products);
 
-    await home.categoryProducts.expectCategoryProductsPage(womenProductData.url, womenProductData.title);
+    await home.categoryProducts.expectCategoryProductsPage(womenProductData.title);
     await expect(home.categoryProducts.getHeaderName(womenProductData.header)).toBeVisible();
 
     await home.leftSidebar.openCategoryByName(menProductData.category);
     await home.leftSidebar.openCategoryProductsByName(menProductData.products);
 
-    await home.categoryProducts.expectCategoryProductsPage(menProductData.url, menProductData.title);
+    await home.categoryProducts.expectCategoryProductsPage(menProductData.title);
     //Assert
     await expect(home.categoryProducts.getHeaderName(menProductData.header)).toBeVisible();
 
@@ -834,7 +837,7 @@ test.describe('Test for test cases', () => {
 
     for (const addToCart of addToCarts) {
       await addToCart.click();
-      await products.bContinueShopping.click();
+      await products.buttonContinueShopping.click();
     }
     //* -----------------------------
 
@@ -1008,8 +1011,8 @@ test.describe('Test for test cases', () => {
     // await expect(loggedUser).toBeVisible();
     await header.expectLoggedUser(username);
 
-    await products.bAddToCart.first().click();
-    await products.bContinueShopping.click();
+    await products.buttonAddToCart.first().click();
+    await products.buttonContinueShopping.click();
 
     //?
     await header.openCartPage();

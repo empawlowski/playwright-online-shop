@@ -19,6 +19,9 @@ export class CartPage extends BasePage {
   readonly cartTotalPriceP2: Locator;
   //?
 
+  readonly cellDescription: Locator;
+  readonly cellQuantity: Locator;
+
   readonly buttonDeleteQuantity: Locator;
   readonly sectionCartEmpty: Locator;
 
@@ -30,6 +33,8 @@ export class CartPage extends BasePage {
     this.buttonProceedToCheckout = page.locator('.check_out', { hasText: 'Proceed To Checkout' });
     this.buttonRegisterLogin = page.getByRole('link', { name: 'Register / Login' });
     this.rowForProduct = page.locator('#cart_info_table').getByRole('row', { name: 'Product Image' });
+    this.cellDescription = page.locator('.cart_description');
+    this.cellQuantity = page.locator('.cart_quantity');
     this.buttonDeleteQuantity = page.locator('.cart_quantity_delete');
     this.sectionCartEmpty = page.locator('#empty_cart');
 
@@ -56,7 +61,7 @@ export class CartPage extends BasePage {
   }
 
   async expectCartPage(): Promise<void> {
-    await expect(this.page).toHaveURL(urlTitleData.urlCart);
+    await expect(this.page).toHaveURL('/view_cart');
     await expect(this.page).toHaveTitle(urlTitleData.cart);
   }
 
@@ -85,5 +90,10 @@ export class CartPage extends BasePage {
   async clickRegisterLogin(): Promise<LoginPage> {
     await this.buttonRegisterLogin.click();
     return new LoginPage(this.page);
+  }
+
+  async expectAddedProductAndQuantity(productName: string, quantity: number): Promise<void> {
+    await expect(this.cellDescription).toContainText(productName);
+    await expect(this.cellQuantity).toHaveText(quantity.toString());
   }
 }
