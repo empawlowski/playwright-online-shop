@@ -3,7 +3,6 @@ import { BasePage } from '../pages/e2e/base.page';
 import { ProductsPage } from '../pages/product.page';
 import { ContactUsPage } from '../pages/contact-us.page';
 import { CartPage } from '../pages/cart.page';
-import { SignupLoginPage } from '../pages/signLogin.page';
 import { TestCasesPage } from '../pages/test-cases.page';
 import { HomePage } from '../pages/e2e/home.page';
 import { DeleteAccountPage } from '../pages/delete-account.page';
@@ -55,9 +54,9 @@ export class HeaderComponent extends BasePage {
     return new CartPage(this.page);
   }
 
-  async openSignupLoginPage(): Promise<SignupLoginPage> {
+  async openSignupLoginPage(): Promise<LoginPage> {
     await this.signLogin.click();
-    return new SignupLoginPage(this.page);
+    return new LoginPage(this.page);
   }
 
   async clickDeleteAccount(): Promise<DeleteAccountPage> {

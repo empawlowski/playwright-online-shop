@@ -1,7 +1,6 @@
 import { test as base } from '@playwright/test';
 import { CartPage } from '../pages/cart.page';
 import { HomePage } from '../pages/e2e/home.page';
-import { SignupLoginPage } from '../pages/signLogin.page';
 import { ProductsPage } from '../pages/product.page';
 import { HeaderComponent } from '../components/header.component';
 import { ContactUsPage } from '../pages/contact-us.page';
@@ -18,7 +17,6 @@ interface Pages {
   contactUs: ContactUsPage;
   checkout: CheckoutPage;
   home: HomePage;
-  user: SignupLoginPage;
   login: LoginPage;
   signup: SignupPage;
   payment: PaymentPage;
@@ -43,10 +41,6 @@ export const test = base.extend<Pages>({
   home: async ({ page }, use) => {
     await use(new HomePage(page));
   },
-  user: async ({ page }, use) => {
-    await use(new SignupLoginPage(page));
-  },
-
   login: async ({ page }, use) => {
     await use(new LoginPage(page));
   },

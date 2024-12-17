@@ -703,34 +703,38 @@ test.describe('Test for test cases', () => {
     // 17. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('🐱‍💻 ✅ Test Case 17: Remove Products From Cart', async ({ home, header, cart, products }) => {
+  test('✅ Test Case 17: Remove Products From Cart', async ({ home, header, cart }) => {
     //Arrange
-    //!
-    const productsData = [0, 1];
-    const productsNameData = ['Blue Top', 'Men Tshirt'];
-
-    type Product = {
-      id: number;
-      name: string;
-    };
-    const combinedProductsData: Record<string, { id: number; name: string }> = { 0: { id: 0, name: 'Blue Top' }, 1: { id: 1, name: 'Men Tshirt' } };
-
-    const quantity: number = 4;
+    const productsData: CartProductModel[] = [
+      {
+        id: 0,
+        name: 'Blue Top',
+        price: 500,
+        quantity: '1',
+      },
+      {
+        id: 2,
+        name: 'Sleeveless Dress',
+        price: 1000,
+        quantity: '1',
+      },
+    ];
 
     //Act
     // 4. Add products to cart
-    await home.products.addProductNumberAndContinue(combinedProductsData[0].id);
-    // await home.products.addProductNumberAndContinue(combinedProductsData[1].id);
+    await home.products.addProductNumberAndContinue(productsData[0].id!);
+    await home.products.addProductNumberAndContinue(productsData[1].id!);
     // 5. Click 'Cart' button
     await header.openCartPage();
     // 6. Verify that cart page is displayed
     await cart.expectCartPage();
-    // await cart.expectAddedProductsName(productsNameData, productData); //TODO:
+    await cart.expectAddedProducts(productsData);
     // 7. Click 'X' button corresponding to particular product
-    await cart.clickDeleteQuantity();
-    //?
+    await cart.clickDeleteQuantityByName(productsData[0].name);
     //Assert
     // 8. Verify that product is removed from the cart
+    await cart.expectAddedOneProduct(productsData[1]);
+    await cart.clickDeleteQuantityByName(productsData[1].name);
     await expect(cart.sectionCartEmpty).toBeVisible();
 
     // Test Case 17: Remove Products From Cart

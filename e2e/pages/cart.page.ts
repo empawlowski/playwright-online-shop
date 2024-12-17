@@ -32,8 +32,8 @@ export class CartPage extends BasePage {
     return this.page.getByRole('row', { name: productName });
   }
 
-  async clickDeleteQuantity(): Promise<void> {
-    await this.buttonDeleteQuantity.click();
+  async clickDeleteQuantityByName(productName: string): Promise<void> {
+    await this.getProductName(productName).locator(this.buttonDeleteQuantity).click();
   }
 
   async expectCartPage(): Promise<void> {
@@ -41,12 +41,11 @@ export class CartPage extends BasePage {
     await expect(this.page).toHaveTitle(urlTitleData.cart);
   }
 
-  //TODO:
-  //!
-  async expectAddedProductsName(productName: string[], products: string[]): Promise<void> {
-    for (let i = 0; i < products.length; i++) {
-      await expect.soft(this.getProductName(productName[i])).toBeVisible();
-    }
+  async expectAddedOneProduct(product: CartProductModel): Promise<void> {
+    const totalPrice: number = product.price * Number(product.quantity);
+    await expect(this.getProductName(product.name).locator(this.cellPrice)).toHaveText(`Rs. ${product.price}`);
+    await expect(this.getProductName(product.name).locator(this.cellQuantity)).toHaveText(product.quantity);
+    await expect(this.getProductName(product.name).locator(this.cellTotalPrice)).toHaveText(`Rs. ${totalPrice}`);
   }
 
   async expectAddedProducts(products: CartProductModel[]): Promise<void> {
