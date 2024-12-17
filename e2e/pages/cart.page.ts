@@ -25,8 +25,8 @@ export class CartPage extends BasePage {
   readonly buttonDeleteQuantity: Locator;
   readonly sectionCartEmpty: Locator;
 
-  readonly buttonDownloadInvoice: Locator;
-  readonly buttonContinue: Locator;
+  // readonly buttonDownloadInvoice: Locator;
+  // readonly buttonContinue: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -46,10 +46,6 @@ export class CartPage extends BasePage {
     this.cartQuantityP2 = this.page.locator('#product-2').locator('.cart_quantity');
     this.cartTotalPriceP2 = this.page.locator('#product-2').locator('.cart_total_price');
     //TODO:
-
-    //Test Case 24: Download Invoice after purchase order
-    this.buttonDownloadInvoice = page.locator('.check_out');
-    this.buttonContinue = page.locator('.btn-primary');
   }
 
   getProductName(productName: string): Locator {
