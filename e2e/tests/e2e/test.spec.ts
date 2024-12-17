@@ -11,10 +11,11 @@ import { testCasesData } from '../../assets/data/test-cases/test-cases.data';
 import { createSignupUserAddressInfo, createSignupUserBasicInfo } from '../../factories/signup.factory';
 import { urlTitleData } from '../../assets/data/e2e/url-title.data';
 import { createContactUsForm } from '../../factories/contact-us.factory';
-import { ProductDetailsModel } from '../../models/product-details.model';
+import { ProductDetailsModel, ProductReviewModel } from '../../models/product-details.model';
 import { createCardInfoForm } from '../../factories/payment.factory';
 import { CardInfoModel } from '../../models/payment.model';
 import * as data from '../../assets/data/e2e/app.data.json';
+import { createProductReview } from '../../factories/product-details.factory';
 
 test.describe('Test for test cases', () => {
   test.beforeEach(async ({ page, home }, testInfo) => {
@@ -883,22 +884,22 @@ test.describe('Test for test cases', () => {
     // 12. Verify that those products are visible in cart after login as well
   });
 
-  test('Test Case 21: Add review on product', async ({ header, products }) => {
+  test('✅ Test Case 21: Add review on product', async ({ header, products }) => {
     //Arrange
-    const username = faker.internet.userName();
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    const review = faker.lorem.text();
+    const reviewData: ProductReviewModel = createProductReview();
 
     //Act
     await header.openProductsPage();
     await products.expectProductsPage();
-    await products.addProductReview(username, email, review);
+    await products.openFirstViewProduct();
+    await expect(products.details.linkWriteReview).toBeVisible();
+    await products.details.addProductReview(reviewData);
 
     //Assert
-    await products.expectSuccessReviewMessage();
+    await products.details.expectSuccessReviewMessage();
 
     // Test Case 21: Add review on product
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Click on 'Products' button
     // 4. Verify user is navigated to ALL PRODUCTS page successfully

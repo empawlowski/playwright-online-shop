@@ -9,16 +9,9 @@ import { ProductsPage } from './product.page';
 import * as data from '../assets/data/e2e/app.data.json';
 
 export class HomePage extends BasePage {
-  readonly brandPolo: Locator;
-  readonly brandMastHarbour: Locator;
-
-  readonly hBrandMastHarbour: Locator;
-  readonly hBrandPolo: Locator;
-
-  readonly headerRecommendedItems: Locator;
-
-  readonly linkAddToCartFromRecommendedItems: Locator;
   readonly linkViewCart: Locator;
+  readonly headerRecommendedItems: Locator;
+  readonly linkAddToCartFromRecommendedItems: Locator;
 
   readonly leftSidebar: LeftSidebarComponent;
   readonly products: ProductsPage;
@@ -27,18 +20,9 @@ export class HomePage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    //* POM for open page and expect page
-    this.brandPolo = page.locator('[href*="/brand_products/Polo"]', { hasText: 'Polo' });
-    this.brandMastHarbour = page.locator('[href*="/brand_products/Mast & Harbour"]', { hasText: 'Mast & Harbour' });
-
-    this.hBrandMastHarbour = page.getByRole('heading', { name: data.products.headers.brands.mastHarbour });
-    this.hBrandPolo = page.getByRole('heading', { name: data.products.headers.brands.polo });
-
-    //* POM for Recommended items - page bottom ()
-    //Test Case 22: Add to cart from Recommended items
+    this.linkViewCart = page.getByRole('link', { name: 'View Cart' });
     this.headerRecommendedItems = page.getByRole('heading', { name: 'Recommended items' });
     this.linkAddToCartFromRecommendedItems = page.locator('#recommended-item-carousel').locator('.add-to-cart');
-    this.linkViewCart = page.getByRole('link', { name: 'View Cart' });
 
     this.leftSidebar = new LeftSidebarComponent(page);
     this.products = new ProductsPage(page);
@@ -49,32 +33,6 @@ export class HomePage extends BasePage {
   async expectHomePage(): Promise<void> {
     await expect.soft(this.page).toHaveURL('/');
     await expect(this.page).toHaveTitle(urlTitleData.home);
-  }
-
-  //TODO:
-  async expectBrandPolo(): Promise<void> {
-    await expect(this.page).toHaveURL('/brand_products/Polo');
-    await expect(this.page).toHaveTitle(urlTitleData.brandPolo);
-    await expect(this.hBrandPolo).toBeVisible();
-  }
-
-  //TODO:
-  async expectBrandMastHarbourPage(): Promise<void> {
-    await expect(this.page).toHaveURL('/brand_products/Mast & Harbour');
-    await expect(this.page).toHaveTitle(urlTitleData.brandMastHarbour);
-    await expect(this.hBrandMastHarbour).toBeVisible();
-  }
-
-  //TODO:
-  async openBrandMastHarbour(): Promise<void> {
-    await this.brandMastHarbour.click();
-    await this.expectBrandMastHarbourPage();
-  }
-
-  //TODO:
-  async openBrandPolo(): Promise<void> {
-    await this.brandPolo.click();
-    await this.expectBrandPolo();
   }
 
   async addFromRecommendedItemsAndViewCart(): Promise<CartPage> {

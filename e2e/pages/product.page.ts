@@ -1,5 +1,4 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { HomePage } from './home.page';
 import { productData } from '../assets/data/e2e/product.data';
 import { BasePage } from './base.page';
 import { HeaderComponent } from '../components/header.component';
@@ -13,6 +12,7 @@ export class ProductsPage extends BasePage {
   readonly headerComponent: HeaderComponent;
   readonly details: ProductDetailsPage;
   readonly brands: BrandProducts;
+  readonly leftSidebar: LeftSidebarComponent;
 
   readonly header: Locator;
 
@@ -37,13 +37,12 @@ export class ProductsPage extends BasePage {
   readonly hSuccessSubmittedLocator: Locator;
   readonly bContactUsHome: Locator;
 
-  readonly leftSidebar: LeftSidebarComponent;
-
   constructor(page: Page) {
     super(page);
     this.headerComponent = new HeaderComponent(page);
     this.details = new ProductDetailsPage(page);
     this.brands = new BrandProducts(page);
+    this.leftSidebar = new LeftSidebarComponent(page);
 
     this.header = page.getByRole('heading', { name: 'All Products', exact: true });
 
@@ -60,8 +59,6 @@ export class ProductsPage extends BasePage {
     this.hSuccessSubmitted = page.locator('#contact-page').getByText('Success! Your details have been submitted successfully.');
     this.hSuccessSubmittedLocator = page.locator('.alert-success');
     this.bContactUsHome = page.locator('#form-section').getByRole('link', { name: ' Home' });
-
-    this.leftSidebar = new LeftSidebarComponent(page);
   }
 
   //* POM for page Products (#sendSubscribe)
@@ -128,7 +125,6 @@ export class ProductsPage extends BasePage {
   }
 
   //TODO: below
-
   async addProductQuantity(quantity: number): Promise<void> {
     await this.fillQuantity.fill(quantity.toString()); //? fix
     await this.bProductViewAddToCart.click();

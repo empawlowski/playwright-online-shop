@@ -42,8 +42,6 @@ export class CartPage extends BasePage {
     this.cartTotalPriceP2 = this.page.locator('#product-2').locator('.cart_total_price');
     //TODO:
 
-    //Test Case 14: Place Order: Register while Checkout
-
     //Test Case 24: Download Invoice after purchase order
     this.buttonDownloadInvoice = page.locator('.check_out');
     this.buttonContinue = page.locator('.btn-primary');

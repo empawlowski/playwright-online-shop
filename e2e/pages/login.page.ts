@@ -4,7 +4,7 @@ import { UserLoginModel, UserSignupModel } from '../models/login.model';
 import { HomePage } from './home.page';
 import { SignupPage } from './signup.page';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';
-import { loginData } from '../assets/data/e2e/login.data';
+import * as data from '../assets/data/e2e/app.data.json';
 
 export class LoginPage extends BasePage {
   readonly headerLogin: Locator;
@@ -24,13 +24,13 @@ export class LoginPage extends BasePage {
     this.headerLogin = page.getByRole('heading', { name: 'Login to your account' });
     this.fieldLoginEmail = page.getByTestId('login-email');
     this.fieldLoginPassword = page.getByTestId('login-password');
-    this.paragraphLoginIncorrectData = page.locator('.login-form', { hasText: loginData.incorrectData });
+    this.paragraphLoginIncorrectData = page.locator('.login-form', { hasText: data.login.incorrectData });
     this.buttonLogin = page.getByTestId('login-button');
 
     this.headerSignup = page.getByRole('heading', { name: 'New User Signup!' });
     this.fieldSignupName = page.getByTestId('signup-name');
     this.fieldSignupEmail = page.getByTestId('signup-email');
-    this.paragraphSignupIncorrectData = page.locator('.signup-form', { hasText: loginData.emailExist });
+    this.paragraphSignupIncorrectData = page.locator('.signup-form', { hasText: data.login.emailExist });
     this.buttonSignup = page.getByTestId('signup-button');
   }
 

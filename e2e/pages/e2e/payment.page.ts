@@ -37,6 +37,6 @@ export class PaymentPage extends BasePage {
   async clickPayAndConfirm(): Promise<PaymentPage> {
     await this.buttonPayAndConfirm.click();
     await this.isAlertVisible();
-    return new PaymentPage(this.page);
+    return new PaymentPage(this.page); //?
   }
 }

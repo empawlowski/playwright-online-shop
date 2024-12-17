@@ -15,6 +15,11 @@
       }
     }
   },
+  "cart": {},
+  "login": {
+    "incorrectData": "Your email or password is incorrect!",
+    "emailExist": "Email Address already exist!"
+  },
   "checkout": { "yourDeliveryAddress": "Your delivery address", "yourDeliveryInvoice": "Your billing address" },
   "payment": {
     "alert": "Your order has been placed successfully!"
