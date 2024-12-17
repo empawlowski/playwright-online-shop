@@ -553,7 +553,7 @@ test.describe('Test for test cases', () => {
     // 8. Click 'Register / Login' button
     // 9. Fill all details in Signup and create account
     // 10. Verify 'ACCOUNT CREATED!' and click 'Continue' button
-    // 11. Verify ' Logged in as username' at top
+    // 11. Verify 'Logged in as username' at top
     // 12. Click 'Cart' button
     // 13. Click 'Proceed To Checkout' button
     // 14. Verify Address Details and Review Your Order
@@ -913,9 +913,7 @@ test.describe('Test for test cases', () => {
     // 9. Verify success message 'Thank you for your review.'
   });
 
-  test('Test Case 22: Add to cart from Recommended items', async ({ home, cart }) => {
-    //Arrange
-
+  test('✅ Test Case 22: Add to cart from Recommended items', async ({ home, cart }) => {
     //Act
     await home.scrollDownPage();
     await expect.soft(home.headerRecommendedItems).toBeVisible();
@@ -925,7 +923,7 @@ test.describe('Test for test cases', () => {
     await expect(cart.rowForProduct).toBeVisible();
 
     // Test Case 22: Add to cart from Recommended items
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Scroll to bottom of page
     // 4. Verify 'RECOMMENDED ITEMS' are visible
@@ -934,103 +932,45 @@ test.describe('Test for test cases', () => {
     // 7. Verify that product is displayed in cart page
   });
 
-  test('Test Case 23: Verify address details in checkout page', async ({ header, page, home, user, products, cart, checkout, signup }) => {
-    //TODO:
-    //! NOW
+  test('✅ Test Case 23: Verify address details in checkout page', async ({ header, signup, home, cart, checkout }) => {
     //Arrange
-    const username = faker.internet.userName();
-    const email = faker.internet.email({ provider: 'fakerjs.dev' });
-    const password = faker.internet.password();
-    const days = userData.days;
-    const months = userData.months;
-    const years = userData.years;
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-    const company = faker.company.name();
-    const address1 = faker.location.streetAddress({ useFullAddress: true });
-    const address2 = faker.location.secondaryAddress();
-    // const country = userData.country;
-    const state = faker.location.state();
-    const city = faker.location.city();
-    const zipCode = faker.location.zipCode();
-    const phoneNumber = faker.phone.number();
-
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
-    // const userBasicInfoData: UserSignupBasicInfoModel = {
-    //   password: faker.internet.password(),
-    //   day: faker.number.int({ min: 1, max: 31 }).toString(),
-    //   month: faker.date.month(),
-    //   year: faker.number.int({ min: 1900, max: 2021 }).toString(),
-    // };
     const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
-    // const userAddressInfoData: UserSignupAddressInfoModel = {
-    //   firstName: faker.person.firstName(),
-    //   lastName: faker.person.lastName(),
-    //   company: faker.company.name(),
-    //   address: faker.location.streetAddress({ useFullAddress: true }),
-    //   address2: faker.location.secondaryAddress(),
-    //   country: userData.country,
-    //   state: faker.location.state(),
-    //   city: faker.location.city(),
-    //   zipCode: faker.location.zipCode(),
-    //   phoneNumber: faker.phone.number(),
-    // };
-
-    // const loggedUser = page.getByText(`${homeData.loggedInAs} ${username}`);
-
-    // const yourDeliveryAddress = cartData.yourDeliveryAddress;
-    // const yourDeliveryInvoice = cartData.yourDeliveryInvoice;
-
-    // const deliveryAddress = `
-    //   ${yourDeliveryAddress}
-    //   Mrs. ${firstName} ${lastName}
-    //   ${company}
-    //   ${address1}
-    //   ${address2}
-    //   ${city} ${state}
-    //   ${zipCode}
-    //   ${userAddressInfoData.country}
-    //   ${phoneNumber}`;
-
-    // const deliveryInvoice = `
-    //   ${yourDeliveryInvoice}
-    //   Mrs. ${firstName} ${lastName}
-    //   ${company}
-    //   ${address1}
-    //   ${address2}
-    //   ${city} ${state}
-    //   ${zipCode}
-    //   ${userAddressInfoData.country}
-    //   ${phoneNumber}`;
+    const productData: number = 0;
 
     // Act
+    // 4. Click 'Signup / Login' button
     await header.openSignupLoginPage();
+    // 5. Fill all details in Signup and create account
     await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
-
-    // await expect(loggedUser).toBeVisible();
-    await header.expectLoggedUser(username);
-
-    await products.buttonAddToCart.first().click();
-    await products.buttonContinueShopping.click();
-
-    //?
+    // 6. Verify 'ACCOUNT CREATED!' and click 'Continue' button
+    await expect(signup.create.headerAccountCreated).toContainText('Account Created!');
+    await signup.create.clickContinue();
+    // 7. Verify 'Logged in as username' at top
+    await header.expectLoggedUser(userBaseData.name);
+    // 8. Add products to cart
+    await home.products.addProductNumberAndContinue(productData);
+    // 9. Click 'Cart' button
     await header.openCartPage();
+    // 10. Verify that cart page is displayed
     await cart.expectCartPage();
+    // 11. Click Proceed To Checkout
     await cart.clickProceedToCheckout();
-
-    // await cart.proceedToCheckoutWithAddressVerification(deliveryAddress, deliveryInvoice);
+    // 12. Verify that the delivery address is same address filled at the time registration of account
     await checkout.checkDeliveryAddress(userAddressInfoData);
+    // 13. Verify that the billing address is same address filled at the time registration of account
     await checkout.checkDeliveryInvoice(userAddressInfoData);
+    // 14. Click 'Delete Account' button
+    await header.clickDeleteAccount();
 
     //Assert
-    // await user.deleteUser();
-    await header.clickDeleteAccount();
+    // 15. Verify 'ACCOUNT DELETED!' and click 'Continue' button
     await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
     await signup.delete.clickContinue();
 
     // Test Case 23: Verify address details in checkout page
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Click 'Signup / Login' button
@@ -1047,7 +987,17 @@ test.describe('Test for test cases', () => {
     // 15. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('Test Case 24: Download Invoice after purchase order', async ({ home, page, products, cart, checkout, payment, user, header, signup }) => {
+  test('🐱‍💻 Test Case 24: Download Invoice after purchase order', async ({
+    home,
+    page,
+    products,
+    cart,
+    checkout,
+    payment,
+    user,
+    header,
+    signup,
+  }) => {
     //TODO:
     //! NOW
     //Arrange
@@ -1119,18 +1069,30 @@ test.describe('Test for test cases', () => {
 
     const description: string = faker.lorem.text();
     const cardData: CardInfoModel = createCardInfoForm();
+    const productData: number = 0;
 
     // Act
-    // await products.addProductGoCartPage();  //TODO:
     // 4. Add products to cart
-    await home.products.addProductNumberAndContinue(0);
-    // async addProductGoCartPage(): Promise<void> {
-    //   await this.headerComponent.products.click();
-    //   await this.bAddToCart.first().click();
-    //   await this.bContinueShopping.click();
-    //   await this.headerComponent.cart.click();
-    //   await this.homePage.expectCartPage();
-    // }
+    await home.products.addProductNumberAndContinue(productData);
+    // 5. Click 'Cart' button
+    // 6. Verify that cart page is displayed
+    // 7. Click Proceed To Checkout
+    // 8. Click 'Register / Login' button
+    // 9. Fill all details in Signup and create account
+    // 10. Verify 'ACCOUNT CREATED!' and click 'Continue' button
+    // 11. Verify ' Logged in as username' at top
+    // 12. Click 'Cart' button
+    // 13. Click 'Proceed To Checkout' button
+    // 14. Verify Address Details and Review Your Order
+    // 15. Enter description in comment text area and click 'Place Order'
+    // 16. Enter payment details: Name on Card, Card Number, CVC, Expiration date
+    // 17. Click 'Pay and Confirm Order' button
+    // 18. Verify success message 'Your order has been placed successfully!'
+    // 19. Click 'Download Invoice' button and verify invoice is downloaded successfully.
+    // 20. Click 'Continue' button
+    // 21. Click 'Delete Account' button
+    // 22. Verify 'ACCOUNT DELETED!' and click 'Continue' button
+
     await cart.buttonProceedToCheckout.click();
     await cart.buttonRegisterLogin.click(); //? method?
 
@@ -1171,7 +1133,7 @@ test.describe('Test for test cases', () => {
     await signup.delete.clickContinue();
 
     // Test Case 24: Download Invoice after purchase order
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
     // 4. Add products to cart
