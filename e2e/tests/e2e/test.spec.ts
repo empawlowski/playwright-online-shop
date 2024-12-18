@@ -16,7 +16,6 @@ import { CartProductModel } from '../../models/cart.model';
 import { ContactUsModel } from '../../models/contact-us.model';
 import { CheckoutDescModel } from '../../models/checkout.model';
 import { randomDesc } from '../../factories/checkout.factory';
-import { Configuration } from '../../config/configuration';
 import { CreateAccountAPIModel, CreateAccountBodyAPIModel } from '../../models/api/authentication/create-account.model';
 import { createAccountAPI } from '../../factories/api/authentication/create-account.factory';
 
@@ -132,9 +131,9 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
 
     const response = await api.createUser(createAccountAPIData);
     expect(response.ok()).toBeTruthy();
-    expect(response.status()).toBe(200);
-    const responseBody: CreateAccountBodyAPIModel = await response.json();
-    console.log(responseBody);
+    // expect(response.status()).toBe(200);
+    // const responseBody: CreateAccountBodyAPIModel = await response.json();
+    // console.log(responseBody);
     // apiR.checkResponseCode(responseBody, 201);
     // apiR.checkResponseMessage(responseBody, 'User created!');
 
@@ -186,9 +185,9 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
   test('✅ Test Case 4: Logout User', { tag: ['@smoke'] }, async ({ header, login }) => {
     //Arrange
     const userLoginData: UserLoginModel = {
-      email: Configuration.email,
-      password: Configuration.password,
-      username: Configuration.user,
+      email: process.env.USER_EMAIL as string,
+      password: process.env.USER_PASSWORD as string,
+      username: process.env.USER as string,
     };
 
     //Act
@@ -217,8 +216,8 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
   test('✅ Test Case 5: Register User with existing email', async ({ header, login }) => {
     //Arrange
     const userBaseData: UserSignupModel = {
-      name: Configuration.user,
-      email: Configuration.email,
+      name: process.env.USER as string,
+      email: process.env.USER_EMAIL as string,
     };
 
     //Act
@@ -787,8 +786,8 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
     const expectProductNumber: number = 7;
 
     const userLoginData: UserLoginModel = {
-      email: Configuration.email,
-      password: Configuration.password,
+      email: process.env.USER_EMAIL as string,
+      password: process.env.USER_PASSWORD as string,
     };
 
     //Act

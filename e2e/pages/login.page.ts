@@ -40,8 +40,8 @@ export class LoginPage extends BasePage {
   }
 
   async loginToAccount(user: UserLoginModel): Promise<HomePage> {
-    await this.fieldLoginEmail.fill(user.email);
-    await this.fieldLoginPassword.fill(user.password);
+    await this.fieldLoginEmail.fill(user.email as string);
+    await this.fieldLoginPassword.fill(user.password as string);
     await this.buttonLogin.click();
     return new HomePage(this.page);
   }

@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { Configuration } from '../../config/configuration';
 
 test.describe('APIs List for practice', () => {
   test('API 0: 404 Page', async ({ request }) => {
@@ -391,9 +390,9 @@ test.describe('APIs List for practice', () => {
     //Arrange
     const response = await request.put('api/updateAccount', {
       form: {
-        name: Configuration.user, // 'fakeUserName'
-        email: Configuration.email, //'fake@email.cc',
-        password: Configuration.password, //'fake!Password00',
+        name: process.env.USER as string, // 'fakeUserName'
+        email: process.env.USER_EMAIL as string, //'fake@email.cc',
+        password: process.env.USER_PASSWORD as string, //'fake!Password00',
         title: 'Mr',
         birth_date: '23',
         birth_month: 'May',
