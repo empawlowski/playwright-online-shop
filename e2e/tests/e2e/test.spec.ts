@@ -132,9 +132,9 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
 
     const response = await api.createUser(createAccountAPIData);
     expect(response.ok()).toBeTruthy();
-    // expect(response.status()).toBe(200);
-    // const responseBody: CreateAccountBodyAPIModel = await response.json();
-    // console.log(responseBody);
+    expect(response.status()).toBe(200);
+    const responseBody: CreateAccountBodyAPIModel = await response.json();
+    console.log(responseBody);
     // apiR.checkResponseCode(responseBody, 201);
     // apiR.checkResponseMessage(responseBody, 'User created!');
 
