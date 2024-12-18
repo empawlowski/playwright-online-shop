@@ -1,12 +1,11 @@
 import { faker } from '@faker-js/faker';
-import { Configuration } from '../../../config/configuration';
 import { CreateAccountAPIModel } from '../../../models/api/authentication/create-account.model';
 
 export function createAccountAPI(): CreateAccountAPIModel {
   const createAccount: CreateAccountAPIModel = {
-    name: Configuration.userAPI,
-    email: Configuration.emailAPI,
-    password: Configuration.password,
+    name: process.env.USER_API as string,
+    email: process.env.USER_API_EMAIL as string,
+    password: process.env.USER_PASSWORD as string,
     title: 'Mr',
     birth_date: faker.number.int({ min: 1, max: 31 }).toString(),
     birth_month: faker.date.month(),

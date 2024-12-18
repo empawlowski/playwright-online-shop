@@ -80,6 +80,6 @@ export class HeaderComponent extends BasePage {
   }
 
   async expectLoggedUser(username: string): Promise<void> {
-    await expect.soft(this.getLoggedUser(username)).toBeVisible();
+    await expect.soft(this.getLoggedUser(username!)).toBeVisible();
   }
 }
