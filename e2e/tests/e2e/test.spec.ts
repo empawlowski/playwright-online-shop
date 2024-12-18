@@ -122,7 +122,7 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
     // 19. Verify that home page is visible successfully
   });
 
-  test('✅ Test Case 2: Login User with correct data', { tag: ['@smoke'] }, async ({ header, login, api, signup, home }) => {
+  test('✅ Test Case 2: Login User with correct data', async ({ header, login, api, signup, home }) => {
     //Arrange
     const createAccountAPIData: CreateAccountAPIModel = createAccountAPI();
 
@@ -183,7 +183,7 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
     // 8. Verify error 'Your email or password is incorrect!' is visible
   });
 
-  test('✅ Test Case 4: Logout User', async ({ header, login }) => {
+  test('✅ Test Case 4: Logout User', { tag: ['@smoke'] }, async ({ header, login }) => {
     //Arrange
     const userLoginData: UserLoginModel = {
       email: Configuration.email,
