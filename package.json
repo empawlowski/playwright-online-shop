@@ -1,7 +1,7 @@
 {
   "name": "automation-exercise-playwright",
   "version": "2.0.0",
-  "description": "Automation tests for online shop by using framework Playwright.",
+  "description": "Automation tests for online shop by using Playwright framework.",
   "main": "index.js",
   "scripts": {
     "tsc:check": "npx tsc --noEmit --pretty --strict",
@@ -21,6 +21,7 @@
     "@playwright/test": "^1.49.0",
     "@types/node": "^22.10.1",
     "dotenv": "^16.4.7",
-    "prettier": "^3.4.1"
+    "prettier": "^3.4.1",
+    "typescript": "^5.7.2"
   }
 }
