@@ -20,7 +20,7 @@ import { Configuration } from '../../config/configuration';
 import { CreateAccountAPIModel, CreateAccountBodyAPIModel } from '../../models/api/authentication/create-account.model';
 import { createAccountAPI } from '../../factories/api/authentication/create-account.factory';
 
-test.describe('Test for test cases', () => {
+test.describe('Test for test cases', { tag: ['@reg'] }, () => {
   test.beforeEach(async ({ page, home }, testInfo) => {
     //Arrange
     console.log(`Running ${testInfo.title}`);
@@ -59,7 +59,7 @@ test.describe('Test for test cases', () => {
     await page.close();
   });
 
-  test('✅ Test Case 1: Register User', async ({ header, login, signup, home }) => {
+  test('✅ Test Case 1: Register User', { tag: ['@smoke'] }, async ({ header, login, signup, home }) => {
     //Arrange
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
@@ -122,7 +122,7 @@ test.describe('Test for test cases', () => {
     // 19. Verify that home page is visible successfully
   });
 
-  test('✅ Test Case 2: Login User with correct data', async ({ header, login, api, signup, home }) => {
+  test('✅ Test Case 2: Login User with correct data', { tag: ['@smoke'] }, async ({ header, login, api, signup, home }) => {
     //Arrange
     const createAccountAPIData: CreateAccountAPIModel = createAccountAPI();
 
@@ -432,7 +432,7 @@ test.describe('Test for test cases', () => {
     // 10. Verify their prices, quantity and total price
   });
 
-  test('✅ Test Case 13: Verify Product quantity in Cart @smoke', async ({ products, cart }) => {
+  test('✅ Test Case 13: Verify Product quantity in Cart', { tag: ['@smoke'] }, async ({ products, cart }) => {
     //Arrange
     const productData: CartProductModel = {
       name: 'Blue Top',
@@ -751,7 +751,7 @@ test.describe('Test for test cases', () => {
     // 8. Verify that user is navigated to that category page
   });
 
-  test('✅ Test Case 19: View & Cart Brand Products @smoke', async ({ header, products }) => {
+  test('✅ Test Case 19: View & Cart Brand Products', { tag: ['@smoke'] }, async ({ header, products }) => {
     //Arrange
     const brandsData = {
       polo: data.products.name.polo,
@@ -1042,7 +1042,7 @@ test.describe('Test for test cases', () => {
     // 22. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('✅ Test Case 25: Verify Scroll Up using "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
+  test('✅ Test Case 25: Verify Scroll Up using "Arrow" button and Scroll Down functionality', async ({ home }) => {
     //Act
     await home.scrollDownPage();
     await expect(home.footer.headerSubscription).toBeInViewport();
@@ -1066,7 +1066,7 @@ test.describe('Test for test cases', () => {
     // 7. Verify that page is scrolled up and 'Full-Fledged practice website for Automation Engineers' text is visible on screen
   });
 
-  test('✅ Test Case 26: Verify Scroll Up without "Arrow" button and Scroll Down functionality @smoke', async ({ home }) => {
+  test('✅ Test Case 26: Verify Scroll Up without "Arrow" button and Scroll Down functionality', async ({ home }) => {
     //Act
     await home.scrollDownPage();
     await expect(home.footer.headerSubscription).toBeInViewport();
