@@ -161,7 +161,7 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
     // 11. Verify that home page is visible successfully
   });
 
-  test('✅ Test Case 3: Login User with incorrect data', async ({ header, login }) => {
+  test('✅ Test Case 3: Login User with incorrect data', { tag: ['@smoke'] }, async ({ header, login }) => {
     //Arrange
     const userLoginData: UserLoginModel = createFakeLoginUser();
 
