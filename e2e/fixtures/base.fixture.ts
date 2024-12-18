@@ -11,6 +11,8 @@ import { SignupPage } from '../pages/signup.page';
 import { CheckoutPage } from '../pages/e2e/checkout.page';
 import { PaymentPage } from '../pages/e2e/payment.page';
 import { FooterComponent } from '../components/footer.component';
+import { CreateAccountAPIPage } from '../pages/api/authentication/create-account.page';
+import { ResponseAPIPage } from '../pages/api/response/response.page';
 
 interface Pages {
   cart: CartPage;
@@ -26,6 +28,9 @@ interface Pages {
   header: HeaderComponent;
   slider: SliderComponent;
   footer: FooterComponent;
+
+  api: CreateAccountAPIPage;
+  apiR: ResponseAPIPage;
 }
 
 export const test = base.extend<Pages>({
@@ -47,7 +52,6 @@ export const test = base.extend<Pages>({
   signup: async ({ page }, use) => {
     await use(new SignupPage(page));
   },
-
   products: async ({ page }, use) => {
     await use(new ProductsPage(page));
   },
@@ -66,5 +70,12 @@ export const test = base.extend<Pages>({
   },
   footer: async ({ page }, use) => {
     await use(new FooterComponent(page));
+  },
+
+  api: async ({ request }, use) => {
+    await use(new CreateAccountAPIPage(request));
+  },
+  apiR: async ({}, use) => {
+    await use(new ResponseAPIPage());
   },
 });

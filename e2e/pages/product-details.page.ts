@@ -61,8 +61,8 @@ export class ProductDetailsPage extends BasePage {
     await expect.soft(this.getProductDetail(productDetailsData.brand)).toContainText(detail.brand);
   }
 
-  async addProductQuantity(quantity: number): Promise<void> {
-    await this.fieldQuantity.fill(quantity.toString());
+  async addProductQuantity(quantity: string): Promise<void> {
+    await this.fieldQuantity.fill(quantity);
   }
 
   async clickAddToCart(): Promise<void> {

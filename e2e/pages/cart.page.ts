@@ -42,7 +42,7 @@ export class CartPage extends BasePage {
   }
 
   async expectAddedOneProduct(product: CartProductModel): Promise<void> {
-    const totalPrice: number = product.price * Number(product.quantity);
+    const totalPrice: number = product.price! * Number(product.quantity);
     await expect(this.getProductName(product.name).locator(this.cellPrice)).toHaveText(`Rs. ${product.price}`);
     await expect(this.getProductName(product.name).locator(this.cellQuantity)).toHaveText(product.quantity);
     await expect(this.getProductName(product.name).locator(this.cellTotalPrice)).toHaveText(`Rs. ${totalPrice}`);
@@ -50,7 +50,7 @@ export class CartPage extends BasePage {
 
   async expectAddedProducts(products: CartProductModel[]): Promise<void> {
     for (const product of products) {
-      const totalPrice: number = product.price * Number(product.quantity);
+      const totalPrice: number = product.price! * Number(product.quantity);
       await expect(this.getProductName(product.name).locator(this.cellPrice)).toHaveText(`Rs. ${product.price}`);
       await expect(this.getProductName(product.name).locator(this.cellQuantity)).toHaveText(product.quantity);
       await expect(this.getProductName(product.name).locator(this.cellTotalPrice)).toHaveText(`Rs. ${totalPrice}`);
@@ -66,8 +66,8 @@ export class CartPage extends BasePage {
     return new LoginPage(this.page);
   }
 
-  async expectAddedProductAndQuantity(productName: string, quantity: number): Promise<void> {
-    await expect(this.cellDescription).toContainText(productName);
-    await expect(this.cellQuantity).toHaveText(quantity.toString());
+  async expectAddedProductAndQuantity(product: CartProductModel): Promise<void> {
+    await expect(this.cellDescription).toContainText(product.name);
+    await expect(this.cellQuantity).toHaveText(product.quantity);
   }
 }

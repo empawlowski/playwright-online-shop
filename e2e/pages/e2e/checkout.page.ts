@@ -3,6 +3,7 @@ import { BasePage } from './base.page';
 import * as data from '../../assets/data/e2e/app.data.json';
 import { UserSignupAddressInfoModel } from '../../models/signup.model';
 import { PaymentPage } from './payment.page';
+import { CheckoutDescModel } from '../../models/checkout.model';
 
 export class CheckoutPage extends BasePage {
   readonly deliveryAddressLocator: Locator;
@@ -34,8 +35,8 @@ export class CheckoutPage extends BasePage {
     await expect.soft(this.invoiceAddressLocator).toContainText(strAddress);
   }
 
-  async fillDescription(description: string): Promise<void> {
-    await this.fieldDescription.fill(description);
+  async fillDescription(desc: CheckoutDescModel): Promise<void> {
+    await this.fieldDescription.fill(desc.description);
   }
 
   async clickPlaceOrder(): Promise<PaymentPage> {
