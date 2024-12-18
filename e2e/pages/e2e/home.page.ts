@@ -1,11 +1,11 @@
 import { type Locator, type Page, expect } from '@playwright/test';
 import { BasePage } from './base.page';
-import { LeftSidebarComponent } from '../components/left-sidebar.component';
-import { CategoryProductsPage } from './category-products.page';
-import { urlTitleData } from '../assets/data/e2e/url-title.data';
-import { CartPage } from './cart.page';
-import { FooterComponent } from '../components/footer.component';
-import { ProductsPage } from './product.page';
+import { LeftSidebarComponent } from '../../components/left-sidebar.component';
+import { CategoryProductsPage } from '../category-products.page';
+import { urlTitleData } from '../../assets/data/e2e/url-title.data';
+import { CartPage } from '../cart.page';
+import { FooterComponent } from '../../components/footer.component';
+import { ProductsPage } from '../product.page';
 
 export class HomePage extends BasePage {
   readonly headerFullFledged: Locator;

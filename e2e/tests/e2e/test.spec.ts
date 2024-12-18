@@ -1,13 +1,9 @@
-import { faker } from '@faker-js/faker';
-import { userData } from '../../assets/data/e2e/user.data';
-import { homeData } from '../../assets/data/e2e/home.data';
 import { test } from '../../fixtures/base.fixture';
 import { expect } from '@playwright/test';
 import { contactUsData } from '../../assets/data/e2e/contact-us.data';
 import { createFakeLoginUser, createSignupUser } from '../../factories/login.factory';
 import { UserLoginModel, UserSignupModel } from '../../models/login.model';
 import { UserSignupAddressInfoModel, UserSignupBasicInfoModel } from '../../models/signup.model';
-import { testCasesData } from '../../assets/data/test-cases/test-cases.data';
 import { createSignupUserAddressInfo, createSignupUserBasicInfo } from '../../factories/signup.factory';
 import { urlTitleData } from '../../assets/data/e2e/url-title.data';
 import { createContactUsForm } from '../../factories/contact-us.factory';
@@ -16,6 +12,13 @@ import { createCardInfoForm } from '../../factories/payment.factory';
 import { CardInfoModel } from '../../models/payment.model';
 import * as data from '../../assets/data/e2e/app.data.json';
 import { createProductReview } from '../../factories/product-details.factory';
+import { CartProductModel } from '../../models/cart.model';
+import { ContactUsModel } from '../../models/contact-us.model';
+import { CheckoutDescModel } from '../../models/checkout.model';
+import { randomDesc } from '../../factories/checkout.factory';
+import { Configuration } from '../../config/configuration';
+import { CreateAccountAPIModel, CreateAccountBodyAPIModel } from '../../models/api/authentication/create-account.model';
+import { createAccountAPI } from '../../factories/api/authentication/create-account.factory';
 
 test.describe('Test for test cases', () => {
   test.beforeEach(async ({ page, home }, testInfo) => {
@@ -23,8 +26,6 @@ test.describe('Test for test cases', () => {
     console.log(`Running ${testInfo.title}`);
 
     //Act
-    // await chromium.launch(); //* Commented because using all browsers for tests
-
     //* Advertisements blocker
     // await page.route('**/*', (route) => {
     //   if (route.request().url().startsWith('https://googleads.')) {
@@ -39,7 +40,7 @@ test.describe('Test for test cases', () => {
     // });
 
     //* Another method
-    //* Setup the handler.
+    //* Setup the handler
     await page.addLocatorHandler(page.getByText('This site asks for consent to use your data'), async () => {
       await page.getByRole('button', { name: 'Consent' }).click();
     });
@@ -55,12 +56,11 @@ test.describe('Test for test cases', () => {
 
     if (testInfo.status !== testInfo.expectedStatus) console.log(`Did not run as expected, ended up at ${page.url()}`);
 
-    // await page.close();
+    await page.close();
   });
 
-  test('😒 Test Case 1: Register User', async ({ header, login, signup, home }) => {
+  test('✅ Test Case 1: Register User', async ({ header, login, signup, home }) => {
     //Arrange
-
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
     const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
@@ -68,9 +68,6 @@ test.describe('Test for test cases', () => {
     //Act
     await header.openSignupLoginPage();
     await expect(login.headerSignup).toBeVisible();
-    //? steps 6- 13
-    await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
-
     // 6. Enter name and email address
     // 7. Click 'Signup' button
     // await login.fillUserSignup(userBaseData);
@@ -85,7 +82,7 @@ test.describe('Test for test cases', () => {
     // await signup.fillAddressInformation(userAddressInfoData);
     // 13. Click 'Create Account button'
     // await signup.clickCreateAccount();
-    //? new page 'account_created'
+    await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
     // 14. Verify that 'ACCOUNT CREATED!' is visible
     await expect.soft(signup.create.headerAccountCreated).toContainText('Account Created!');
     // 15. Click 'Continue' button
@@ -98,13 +95,12 @@ test.describe('Test for test cases', () => {
     // 18. Verify that 'ACCOUNT DELETED!' is visible and click 'Continue' button
     await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
     await signup.delete.clickContinue();
-    // 19. Verify that home page is visible successfully
 
     //Assert
+    // 19. Verify that home page is visible successfully
     await home.expectHomePage();
 
     // Test Case 1: Register User
-    const TC1: string = testCasesData.test_case_1;
     // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Verify that home page is visible successfully
@@ -126,59 +122,24 @@ test.describe('Test for test cases', () => {
     // 19. Verify that home page is visible successfully
   });
 
-  test('😒 Test Case 2: Login User with correct data', async ({ header, login, request, signup, home }) => {
+  test('✅ Test Case 2: Login User with correct data', async ({ header, login, api, signup, home }) => {
     //Arrange
-    const userLoginData: UserLoginModel = {
-      email: userData.fakeAPIemail,
-      password: userData.fakePassword,
-      username: userData.fakeAPIname,
-    };
-
-    const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
-    const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
+    const createAccountAPIData: CreateAccountAPIModel = createAccountAPI();
 
     //Act
     await header.openSignupLoginPage();
     await expect(login.headerLogin).toBeVisible();
-    //? API
-    const response = await request.post('api/createAccount', {
-      headers: {
-        Accept: '*/*',
-        ContentType: 'application/json',
-      },
-      form: {
-        name: userLoginData.username!,
-        email: userLoginData.email,
-        password: userLoginData.password,
-        title: 'Mr',
-        birth_date: userBasicInfoData.day,
-        birth_month: userBasicInfoData.month,
-        birth_year: userBasicInfoData.year,
-        firstname: userAddressInfoData.firstName,
-        lastname: userAddressInfoData.lastName,
-        company: userAddressInfoData.company,
-        address1: userAddressInfoData.address,
-        address2: userAddressInfoData.address2,
-        country: userAddressInfoData.country,
-        zipcode: userAddressInfoData.zipCode,
-        state: userAddressInfoData.state,
-        city: userAddressInfoData.city,
-        mobile_number: userAddressInfoData.phoneNumber,
-      },
-    });
-    const responseBody = JSON.parse(await response.text());
 
-    //Act
-    expect(response.status()).toBe(200);
-    //Assert
-    console.log(responseBody);
-    expect(responseBody.responseCode).toBe(201);
-    expect(responseBody.message).toBe('User created!');
-    //? Login method
-    await login.loginToAccount(userLoginData);
-    //? END API
+    const response = await api.createUser(createAccountAPIData);
+    expect(response.ok()).toBeTruthy();
+    // expect(response.status()).toBe(200);
+    // const responseBody: CreateAccountBodyAPIModel = await response.json();
+    // console.log(responseBody);
+    // apiR.checkResponseCode(responseBody, 201);
+    // apiR.checkResponseMessage(responseBody, 'User created!');
 
-    await header.expectLoggedUser(userLoginData.username!);
+    await login.loginToAccount(createAccountAPIData);
+    await header.expectLoggedUser(createAccountAPIData.name);
     await header.clickDeleteAccount();
     await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
     await signup.delete.clickContinue();
@@ -222,13 +183,12 @@ test.describe('Test for test cases', () => {
     // 8. Verify error 'Your email or password is incorrect!' is visible
   });
 
-  test('😒 Test Case 4: Logout User', async ({ header, login }) => {
+  test('✅ Test Case 4: Logout User', async ({ header, login }) => {
     //Arrange
-    //TODO: Update userLoginData > .env
     const userLoginData: UserLoginModel = {
-      email: userData.logoutEmail,
-      password: userData.fakePassword,
-      username: userData.logoutUser,
+      email: Configuration.email,
+      password: Configuration.password,
+      username: Configuration.user,
     };
 
     //Act
@@ -254,12 +214,11 @@ test.describe('Test for test cases', () => {
     // 10. Verify that user is navigated to login page
   });
 
-  test('😒 Test Case 5: Register User with existing email', async ({ header, login }) => {
+  test('✅ Test Case 5: Register User with existing email', async ({ header, login }) => {
     //Arrange
-    //TODO: update userBaseData to fakerjs
     const userBaseData: UserSignupModel = {
-      name: userData.logoutUser,
-      email: userData.logoutEmail,
+      name: Configuration.user,
+      email: Configuration.email,
     };
 
     //Act
@@ -283,7 +242,7 @@ test.describe('Test for test cases', () => {
 
   test('✅ Test Case 6: Contact Us Form', async ({ header, contactUs, home }) => {
     //Arrange
-    const contactUsFormData = createContactUsForm();
+    const contactUsFormData: ContactUsModel = createContactUsForm();
 
     //Act
     await header.openContactUsPage();
@@ -328,7 +287,7 @@ test.describe('Test for test cases', () => {
     // 5. Verify user is navigated to test cases page successfully
   });
 
-  test('😒 Test Case 8: Verify All Products and product detail page', async ({ header, products }) => {
+  test('✅ Test Case 8: Verify All Products and product detail page', async ({ header, products }) => {
     //Arrange
     const detailsData: ProductDetailsModel = {
       name: 'Blue Top',
@@ -396,7 +355,7 @@ test.describe('Test for test cases', () => {
     await home.footer.sendSubscribe(emailData.email);
 
     //Assert
-    await expect(home.footer.alertSuccessSubs).toContainText(homeData.confirmationSubscribe);
+    await expect(home.footer.alertSuccessSubs).toContainText(data.footer.confirmationSubscribe);
 
     // Test Case 10: Verify Subscription in home page
     // 1. Launch browser
@@ -419,7 +378,7 @@ test.describe('Test for test cases', () => {
     await footer.sendSubscribe(emailData.email);
 
     //Assert
-    await expect(footer.alertSuccessSubs).toContainText(homeData.confirmationSubscribe);
+    await expect(footer.alertSuccessSubs).toContainText(data.footer.confirmationSubscribe);
 
     // Test Case 11: Verify Subscription in Cart page
     // 1. Launch browser
@@ -432,21 +391,33 @@ test.describe('Test for test cases', () => {
     // 8. Verify success message 'You have been successfully subscribed!' is visible
   });
 
-  test('😒 Test Case 12: Add Products in Cart', async ({ header, products, cart }) => {
+  test('✅ Test Case 12: Add Products in Cart', async ({ header, products, cart }) => {
     //Arrange
-    //TODO: update expectAddProducts()
-    const productNumber = {
-      first: 0,
-      second: 1,
-    };
+    const productsData: CartProductModel[] = [
+      {
+        id: 0,
+        name: 'Blue Top',
+        price: 500,
+        quantity: '1',
+      },
+      {
+        id: 2,
+        name: 'Sleeveless Dress',
+        price: 1000,
+        quantity: '1',
+      },
+    ];
+
     //Act
     await header.openProductsPage();
-    await products.addProductNumberAndContinue(productNumber.first);
-    await products.addProductNumberAndViewCart(productNumber.second);
+    await products.addProductNumberAndContinue(productsData[0].id!);
+    await products.addProductNumberAndViewCart(productsData[1].id!);
+    const rows = await cart.rowForProduct.count();
+    expect(rows).toBe(2);
+
     //Assert
-    const rowCount = await cart.rowForProduct.count();
-    expect(rowCount).toBe(2);
-    await cart.expectAddedProducts();
+    // 10. Verify their prices, quantity and total price
+    await cart.expectAddedProducts(productsData);
 
     // Test Case 12: Add Products in Cart
     // 1. Launch browser
@@ -463,9 +434,9 @@ test.describe('Test for test cases', () => {
 
   test('✅ Test Case 13: Verify Product quantity in Cart @smoke', async ({ products, cart }) => {
     //Arrange
-    const productData = {
+    const productData: CartProductModel = {
       name: 'Blue Top',
-      quantity: 4,
+      quantity: '4',
     };
     //Act
     await products.openFirstViewProduct();
@@ -474,7 +445,7 @@ test.describe('Test for test cases', () => {
     await products.details.clickAddToCart();
     await products.details.clickViewCart();
     //Assert
-    await cart.expectAddedProductAndQuantity(productData.name, productData.quantity);
+    await cart.expectAddedProductAndQuantity(productData);
 
     // Test Case 13: Verify Product quantity in Cart
     // 1. Launch browser
@@ -488,12 +459,12 @@ test.describe('Test for test cases', () => {
     // 9. Verify that product is displayed in cart page with exact quantity
   });
 
-  test('🐱‍💻 😒 Test Case 14: Place Order: Register while Checkout', async ({ header, home, cart, signup, checkout, payment }) => {
+  test('✅ Test Case 14: Place Order: Register while Checkout', async ({ header, home, cart, signup, checkout, payment }) => {
     //Arrange
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
     const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
-    const description: string = faker.lorem.text();
+    const description: CheckoutDescModel = randomDesc();
     const cardData: CardInfoModel = createCardInfoForm();
 
     //Act
@@ -531,14 +502,12 @@ test.describe('Test for test cases', () => {
     // await cart.fillCartInformation(firstName, lastName, cardNumber, cvc, expiryMonth, expiryYear);
     await payment.fillCardInformation(cardData);
     // 17. Click 'Pay and Confirm Order' button
-    await payment.clickPayAndConfirm();
-    // await payment.catchAlert();
     // 18. Verify success message 'Your order has been placed successfully!'
-    // await payment.catchAlert();
+    await payment.clickPayAndConfirm();
     // 19. Click 'Delete Account' button
     await header.clickDeleteAccount();
-    // 20. Verify 'ACCOUNT DELETED!' and click 'Continue' button
     //Assert
+    // 20. Verify 'ACCOUNT DELETED!' and click 'Continue' button
     await expect(signup.delete.headerAccountDeleted).toContainText('Account Deleted!');
     await signup.delete.clickContinue();
 
@@ -565,13 +534,13 @@ test.describe('Test for test cases', () => {
     // 20. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('🐱‍💻 ✅ Test Case 15: Place Order: Register before Checkout', async ({ header, signup, home, cart, checkout, payment }) => {
+  test('✅ Test Case 15: Place Order: Register before Checkout', async ({ header, signup, home, cart, checkout, payment }) => {
     //Arrange
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
     const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
     const productListNumber: number = 0;
-    const description: string = faker.lorem.text();
+    const description: CheckoutDescModel = randomDesc();
     const cardData: CardInfoModel = createCardInfoForm();
 
     //Act
@@ -627,7 +596,7 @@ test.describe('Test for test cases', () => {
     // 18. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('🐱‍💻 ✅ Test Case 16: Place Order: Login before Checkout', async ({ header, signup, home, cart, checkout, payment }) => {
+  test('✅ Test Case 16: Place Order: Login before Checkout', async ({ header, signup, home, cart, checkout, payment }) => {
     // Arrange
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
@@ -636,7 +605,7 @@ test.describe('Test for test cases', () => {
       listProductA: 0,
       listProductB: 1,
     };
-    const description: string = faker.lorem.text();
+    const description: CheckoutDescModel = randomDesc();
     const cardData: CardInfoModel = createCardInfoForm();
 
     // Act
@@ -694,34 +663,38 @@ test.describe('Test for test cases', () => {
     // 17. Verify 'ACCOUNT DELETED!' and click 'Continue' button
   });
 
-  test('🐱‍💻 ✅ Test Case 17: Remove Products From Cart', async ({ home, header, cart, products }) => {
+  test('✅ Test Case 17: Remove Products From Cart', async ({ home, header, cart }) => {
     //Arrange
-
-    const productsData = [0, 1];
-    const productsNameData = ['Blue Top', 'Men Tshirt'];
-
-    type Product = {
-      id: number;
-      name: string;
-    };
-    const combinedProductsData: Record<string, { id: number; name: string }> = { 0: { id: 0, name: 'Blue Top' }, 1: { id: 1, name: 'Men Tshirt' } };
-
-    const quantity: number = 4;
+    const productsData: CartProductModel[] = [
+      {
+        id: 0,
+        name: 'Blue Top',
+        price: 500,
+        quantity: '1',
+      },
+      {
+        id: 2,
+        name: 'Sleeveless Dress',
+        price: 1000,
+        quantity: '1',
+      },
+    ];
 
     //Act
     // 4. Add products to cart
-    await home.products.addProductNumberAndContinue(combinedProductsData[0].id);
-    // await home.products.addProductNumberAndContinue(combinedProductsData[1].id);
+    await home.products.addProductNumberAndContinue(productsData[0].id!);
+    await home.products.addProductNumberAndContinue(productsData[1].id!);
     // 5. Click 'Cart' button
     await header.openCartPage();
     // 6. Verify that cart page is displayed
     await cart.expectCartPage();
-    // await cart.expectAddedProductsName(productsNameData, productData); //TODO:
+    await cart.expectAddedProducts(productsData);
     // 7. Click 'X' button corresponding to particular product
-    await cart.clickDeleteQuantity();
-    //?
+    await cart.clickDeleteQuantityByName(productsData[0].name);
     //Assert
     // 8. Verify that product is removed from the cart
+    await cart.expectAddedOneProduct(productsData[1]);
+    await cart.clickDeleteQuantityByName(productsData[1].name);
     await expect(cart.sectionCartEmpty).toBeVisible();
 
     // Test Case 17: Remove Products From Cart
@@ -808,72 +781,75 @@ test.describe('Test for test cases', () => {
     // 8. Verify that user is navigated to that brand page and can see products
   });
 
-  test('Test Case 20: Search Products and Verify Cart After Login', async ({ header, login, page, products, home, user }) => {
+  test('✅ Test Case 20: Search Products and Verify Cart After Login', async ({ header, products, cart, login }) => {
     //Arrange
-    test.slow();
-    // test.setTimeout(120000);
-
-    const search: string = 'Top';
-    const expectProductNumber = Number(14);
+    const search: string = 'Blue';
+    const expectProductNumber: number = 7;
 
     const userLoginData: UserLoginModel = {
-      email: userData.logoutEmail,
-      password: userData.fakePassword,
+      email: Configuration.email,
+      password: Configuration.password,
     };
 
-    const email = userData.logoutEmail; //'fake@email.cc',
-    const password = userData.fakePassword; //'fake!Password00',
-
     //Act
+    // 3. Click on 'Products' button
     await header.openProductsPage();
+    // 4. Verify user is navigated to ALL PRODUCTS page successfully
     await products.expectProductsPage();
+    // 5. Enter product name in search input and click search button
     await products.searchProduct(search);
-    const searchResults = await page.locator('div.single-products').count();
-    await expect(searchResults).toBe(expectProductNumber);
-    console.log('Results on page: ', searchResults);
+    // 6. Verify 'SEARCHED PRODUCTS' is visible
+    await expect(products.singleProduct.first()).toBeVisible();
+    // 7. Verify all the products related to search are visible
+    await products.isFoundProductsHaveSearchText(search);
+    const foundProducts = await products.singleProduct.count();
+    expect(foundProducts).toBe(expectProductNumber);
+    // 8. Add those products to cart
 
     //* Catching by $$ selector
-    const addToCarts = await page.$$('div.productinfo.text-center > a.btn.btn-default.add-to-cart');
+    // const addToCarts = await page.$$('div.text-center > a.btn.btn-default.add-to-cart');
+    // for (const addToCart of addToCarts) {
+    //   await addToCart.click();
+    //   await products.clickContinueShopping();
+    // }
+    //* -----------------------------
+
+    //* Catching by the .all() method
+    const addToCarts = await products.buttonAddToCart.all();
 
     for (const addToCart of addToCarts) {
       await addToCart.click();
-      await products.buttonContinueShopping.click();
+      await products.clickContinueShopping();
     }
     //* -----------------------------
 
-    //* Catching by text and method .all()
-    // for (const addToCart of await page.locator('.productinfo.text-center').getByText('Add to cart').all()) {
-    //   await addToCart.click();
-    //   await products.bContinueShopping.click();
-    // }
-    //* -----------------------------
+    //* Catching by the .count() method
+    // const addToCart = products.buttonAddToCart;
 
-    //* Catching by text and method .count()
-    // const addToCart = page.locator('.productinfo.text-center').getByText('Add to cart');
-    //
     // for (let i = 0; i < (await addToCart.count()); i++) {
     //   await addToCart.nth(i).click();
-    //   await products.bContinueShopping.click();
+    //   await products.clickContinueShopping();
     // }
     //* -----------------------------
 
+    // 9. Click 'Cart' button and verify that products are visible in cart
     await header.openCartPage();
-
-    const cartProductNumber = await page.locator('#cart_info_table').locator('tbody > tr').count();
-    Number(cartProductNumber) == Number(searchResults);
-    console.log('Are the values is correct: ', cartProductNumber === searchResults);
-
+    const cartProductNumber = await cart.rowForProduct.count();
+    expect(cartProductNumber).toBe(foundProducts);
+    // console.log('Are the values is correct: ', cartProductNumber === foundProducts);
+    // 10. Click 'Signup / Login' button and submit login details
     await header.openSignupLoginPage();
     await login.loginToAccount(userLoginData);
-
+    // 11. Again, go to Cart page
     await header.openCartPage();
-    const cartProductNumberAfterLogin = await page.locator('#cart_info_table').locator('tbody > tr').count();
+    // 12. Verify that those products are visible in cart after login as well
+    const cartProductNumberAfterLogin = await cart.rowForProduct.count();
     //Assert
-    Number(cartProductNumberAfterLogin) == Number(searchResults);
-    console.log('Are the values is correct: ', cartProductNumberAfterLogin === searchResults);
+    expect(cartProductNumberAfterLogin).toBe(foundProducts);
+    // console.log('Are the values is correct: ', cartProductNumberAfterLogin === foundProducts);
 
     // Test Case 20: Search Products and Verify Cart After Login
-    // 1. Launch browser (//)
+    // 1. Launch browser
     // 2. Navigate to url 'http://automationexercise.com'
     // 3. Click on 'Products' button
     // 4. Verify user is navigated to ALL PRODUCTS page successfully
@@ -992,7 +968,7 @@ test.describe('Test for test cases', () => {
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
     const userAddressInfoData: UserSignupAddressInfoModel = createSignupUserAddressInfo();
-    const description: string = faker.lorem.text();
+    const description: CheckoutDescModel = randomDesc();
     const cardData: CardInfoModel = createCardInfoForm();
     const productData: number = 0;
 

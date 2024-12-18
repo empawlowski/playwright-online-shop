@@ -1,6 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BasePage } from '../base.page';
-import { HomePage } from '../home.page';
+import { BasePage } from './base.page';
+import { HomePage } from './home.page';
 
 export class PaymentDonePage extends BasePage {
   private readonly buttonDownloadInvoice: Locator;

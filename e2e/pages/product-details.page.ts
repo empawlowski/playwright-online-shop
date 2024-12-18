@@ -1,5 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { BasePage } from './base.page';
+import { BasePage } from './e2e/base.page';
 import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { productDetailsData } from '../assets/data/e2e/product-details.data';
 import { ProductDetailsModel, ProductReviewModel } from '../models/product-details.model';
@@ -61,8 +61,8 @@ export class ProductDetailsPage extends BasePage {
     await expect.soft(this.getProductDetail(productDetailsData.brand)).toContainText(detail.brand);
   }
 
-  async addProductQuantity(quantity: number): Promise<void> {
-    await this.fieldQuantity.fill(quantity.toString());
+  async addProductQuantity(quantity: string): Promise<void> {
+    await this.fieldQuantity.fill(quantity);
   }
 
   async clickAddToCart(): Promise<void> {

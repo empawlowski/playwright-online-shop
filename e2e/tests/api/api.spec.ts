@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { userData } from '../../assets/data/e2e/user.data';
+import { Configuration } from '../../config/configuration';
 
 test.describe('APIs List for practice', () => {
   test('API 0: 404 Page', async ({ request }) => {
@@ -147,7 +147,7 @@ test.describe('APIs List for practice', () => {
     // API 5: POST To Search Product
     // API URL: https://automationexercise.com/api/searchProduct
     // Request Method: POST
-    // Request Parameter: search_product (For example: top, tshirt, jean)
+    // Request Parameter: search_product (For example: top, t-shirt, jean)
     // Response Code: 200
     // Response JSON: Searched products list
   });
@@ -391,9 +391,9 @@ test.describe('APIs List for practice', () => {
     //Arrange
     const response = await request.put('api/updateAccount', {
       form: {
-        name: userData.logoutUser, // 'fakeUserName'
-        email: userData.logoutEmail, //'fake@email.cc',
-        password: userData.fakePassword, //'fake!Password00',
+        name: Configuration.user, // 'fakeUserName'
+        email: Configuration.email, //'fake@email.cc',
+        password: Configuration.password, //'fake!Password00',
         title: 'Mr',
         birth_date: '23',
         birth_month: 'May',

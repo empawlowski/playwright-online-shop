@@ -1,6 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BasePage } from './base.page';
-import { HomePage } from './home.page';
+import { BasePage } from './e2e/base.page';
+import { HomePage } from './e2e/home.page';
 
 export class DeleteAccountPage extends BasePage {
   readonly headerAccountDeleted: Locator;

@@ -24,5 +24,8 @@
   "payment": {
     "alert": "Your order has been placed successfully!"
   },
+  "footer": {
+    "confirmationSubscribe": "You have been successfully subscribed!"
+  },
   "title": { "main": "Automation Exercise" }
 }
