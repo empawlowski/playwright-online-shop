@@ -1,7 +1,7 @@
 import { type Locator, type Page } from '@playwright/test';
 import { BasePage } from './e2e/base.page';
-import { contactUsData } from '../assets/data/e2e/contact-us.data';
 import { ContactUsModel } from '../models/contact-us.model';
+import * as data from '../assets/data/e2e/app.data.json';
 
 export class ContactUsPage extends BasePage {
   readonly header: Locator;
@@ -16,7 +16,7 @@ export class ContactUsPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.header = page.getByRole('heading', { name: contactUsData.header });
+    this.header = page.getByRole('heading', { name: data.contactUs.header });
     this.fieldName = page.getByTestId('name');
     this.fieldEmail = page.getByTestId('email');
     this.fieldSubject = page.getByTestId('subject');

@@ -13,7 +13,7 @@ export class BrandProducts extends BasePage {
 
   async expectBrandProductsPage(brand: string, header: string): Promise<void> {
     await expect(this.page).toHaveURL(`/brand_products/${brand}`);
-    await expect(this.page).toHaveTitle(`${data.title.main} - ${header}`);
+    await expect(this.page).toHaveTitle(`${data.title.home} - ${header}`);
     await expect(this.getHeader(header)).toBeVisible();
   }
 }

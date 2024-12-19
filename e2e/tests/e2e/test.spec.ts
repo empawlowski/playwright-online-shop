@@ -1,11 +1,9 @@
 import { test } from '../../fixtures/base.fixture';
 import { expect } from '@playwright/test';
-import { contactUsData } from '../../assets/data/e2e/contact-us.data';
 import { createFakeLoginUser, createSignupUser } from '../../factories/login.factory';
 import { UserLoginModel, UserSignupModel } from '../../models/login.model';
 import { UserSignupAddressInfoModel, UserSignupBasicInfoModel } from '../../models/signup.model';
 import { createSignupUserAddressInfo, createSignupUserBasicInfo } from '../../factories/signup.factory';
-import { urlTitleData } from '../../assets/data/e2e/url-title.data';
 import { createContactUsForm } from '../../factories/contact-us.factory';
 import { ProductDetailsModel, ProductReviewModel } from '../../models/product-details.model';
 import { createCardInfoForm } from '../../factories/payment.factory';
@@ -251,7 +249,7 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
     await contactUs.catchDialog();
     await contactUs.buttonAcceptDialog.click();
 
-    await expect.soft(contactUs.alertMessage).toContainText(contactUsData.alertSuccess);
+    await expect.soft(contactUs.alertMessage).toContainText(data.contactUs.alertSuccess);
     await contactUs.buttonBackHome.click();
 
     //Assert
@@ -459,6 +457,7 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
   });
 
   test('Test Case 14: Place Order: Register while Checkout', async ({ header, home, cart, signup, checkout, payment }) => {
+    test.slow();
     //Arrange
     const userBaseData: UserSignupModel = createSignupUser();
     const userBasicInfoData: UserSignupBasicInfoModel = createSignupUserBasicInfo();
@@ -713,14 +712,14 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
       category: 'Women',
       products: 'Dress',
       header: data.products.headers.women.dress,
-      title: urlTitleData.productWomenDress,
+      title: data.title.productWomenDress,
     };
 
     const menProductData = {
       category: 'Men',
       products: 'Jeans',
       header: data.products.headers.men.jeans,
-      title: urlTitleData.productMenJeans,
+      title: data.title.productMenJeans,
     };
 
     //Act

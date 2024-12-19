@@ -2,10 +2,10 @@ import { type Locator, type Page, expect } from '@playwright/test';
 import { BasePage } from './e2e/base.page';
 import { HeaderComponent } from '../components/header.component';
 import { LeftSidebarComponent } from '../components/left-sidebar.component';
-import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { ProductDetailsPage } from './product-details.page';
 import { CartPage } from './cart.page';
 import { BrandProducts } from './e2e/brand-products.page';
+import * as data from '../assets/data/e2e/app.data.json';
 
 export class ProductsPage extends BasePage {
   readonly headerComponent: HeaderComponent;
@@ -52,7 +52,7 @@ export class ProductsPage extends BasePage {
 
   async expectProductsPage(): Promise<void> {
     await expect(this.page).toHaveURL('/products');
-    await expect(this.page).toHaveTitle(urlTitleData.products);
+    await expect(this.page).toHaveTitle(data.title.products);
     await expect(this.header).toBeVisible();
   }
 
