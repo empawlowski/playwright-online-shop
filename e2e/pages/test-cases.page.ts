@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { BasePage } from './e2e/base.page';
-import { urlTitleData } from '../assets/data/e2e/url-title.data';
+import * as data from '../assets/data/e2e/app.data.json';
 
 export class TestCasesPage extends BasePage {
   readonly header: Locator;
@@ -12,7 +12,7 @@ export class TestCasesPage extends BasePage {
 
   async expectTestCasePage(): Promise<void> {
     await expect(this.page).toHaveURL('/test_cases');
-    await expect(this.page).toHaveTitle(urlTitleData.testCase);
+    await expect(this.page).toHaveTitle(data.title.testCase);
     await expect(this.header).toBeVisible();
   }
 }

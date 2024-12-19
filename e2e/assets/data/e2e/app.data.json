@@ -1,5 +1,12 @@
 {
   "products": {
+    "details": {
+      "category": "Category:",
+      "price": "Rs.",
+      "availability": "Availability:",
+      "condition": "Condition:",
+      "brand": "Brand:"
+    },
     "name": { "polo": "Polo", "mastHarbour": "Mast & Harbour" },
     "headers": {
       "women": {
@@ -24,8 +31,23 @@
   "payment": {
     "alert": "Your order has been placed successfully!"
   },
+  "contactUs": {
+    "header": "Get In Touch",
+    "alertSuccess": "Success! Your details have been submitted successfully."
+  },
   "footer": {
     "confirmationSubscribe": "You have been successfully subscribed!"
   },
-  "title": { "main": "Automation Exercise" }
+  "title": {
+    "home": "Automation Exercise",
+    "products": "Automation Exercise - All Products",
+    "productDetails": "Automation Exercise - Product Details",
+    "productWomenDress": "Automation Exercise - Dress Products",
+    "productMenJeans": "Automation Exercise - Jeans Products",
+    "brandMastHarbour": "Automation Exercise - Mast & Harbour Products",
+    "brandPolo": "Automation Exercise - Polo Products",
+    "cart": "Automation Exercise - Checkout",
+    "login": "Automation Exercise - Signup / Login",
+    "testCase": "Automation Practice Website for UI Testing - Test Cases"
+  }
 }

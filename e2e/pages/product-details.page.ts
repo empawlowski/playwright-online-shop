@@ -1,9 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { BasePage } from './e2e/base.page';
-import { urlTitleData } from '../assets/data/e2e/url-title.data';
-import { productDetailsData } from '../assets/data/e2e/product-details.data';
 import { ProductDetailsModel, ProductReviewModel } from '../models/product-details.model';
 import { CartPage } from './cart.page';
+import * as data from '../assets/data/e2e/app.data.json';
 
 export class ProductDetailsPage extends BasePage {
   readonly productDetailsLocator: Locator;
@@ -49,16 +48,16 @@ export class ProductDetailsPage extends BasePage {
 
   async expectProductDetailsPage(): Promise<void> {
     await expect(this.page).toHaveURL(/product_details/);
-    await expect(this.page).toHaveTitle(urlTitleData.productDetails);
+    await expect(this.page).toHaveTitle(data.title.productDetails);
   }
 
   async expectProductDetails(detail: ProductDetailsModel): Promise<void> {
     await expect.soft(this.headerProductName).toHaveText(detail.name);
-    await expect.soft(this.getProductDetail(productDetailsData.category)).toContainText(detail.category);
-    await expect.soft(this.productDetailsLocator.filter({ hasText: productDetailsData.price })).toContainText(detail.price);
-    await expect.soft(this.getProductDetail(productDetailsData.availability)).toContainText(detail.availability);
-    await expect.soft(this.getProductDetail(productDetailsData.condition)).toContainText(detail.condition);
-    await expect.soft(this.getProductDetail(productDetailsData.brand)).toContainText(detail.brand);
+    await expect.soft(this.getProductDetail(data.products.details.category)).toContainText(detail.category);
+    await expect.soft(this.productDetailsLocator.filter({ hasText: data.products.details.price })).toContainText(detail.price);
+    await expect.soft(this.getProductDetail(data.products.details.availability)).toContainText(detail.availability);
+    await expect.soft(this.getProductDetail(data.products.details.condition)).toContainText(detail.condition);
+    await expect.soft(this.getProductDetail(data.products.details.brand)).toContainText(detail.brand);
   }
 
   async addProductQuantity(quantity: string): Promise<void> {

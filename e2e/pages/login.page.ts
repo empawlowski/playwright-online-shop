@@ -3,7 +3,6 @@ import { BasePage } from './e2e/base.page';
 import { UserLoginModel, UserSignupModel } from '../models/login.model';
 import { HomePage } from './e2e/home.page';
 import { SignupPage } from './signup.page';
-import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import * as data from '../assets/data/e2e/app.data.json';
 
 export class LoginPage extends BasePage {
@@ -36,7 +35,7 @@ export class LoginPage extends BasePage {
 
   async expectLoginPage(): Promise<void> {
     await expect(this.page).toHaveURL('/login');
-    await expect(this.page).toHaveTitle(urlTitleData.login);
+    await expect(this.page).toHaveTitle(data.title.login);
   }
 
   async loginToAccount(user: UserLoginModel): Promise<HomePage> {

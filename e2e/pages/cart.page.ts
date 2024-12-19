@@ -1,8 +1,8 @@
 import { type Locator, type Page, expect } from '@playwright/test';
 import { BasePage } from './e2e/base.page';
-import { urlTitleData } from '../assets/data/e2e/url-title.data';
 import { LoginPage } from './login.page';
 import { CartProductModel } from '../models/cart.model';
+import * as data from '../assets/data/e2e/app.data.json';
 
 export class CartPage extends BasePage {
   readonly buttonProceedToCheckout: Locator;
@@ -38,7 +38,7 @@ export class CartPage extends BasePage {
 
   async expectCartPage(): Promise<void> {
     await expect(this.page).toHaveURL('/view_cart');
-    await expect(this.page).toHaveTitle(urlTitleData.cart);
+    await expect(this.page).toHaveTitle(data.title.cart);
   }
 
   async expectAddedOneProduct(product: CartProductModel): Promise<void> {

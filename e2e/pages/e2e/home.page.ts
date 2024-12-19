@@ -2,10 +2,10 @@ import { type Locator, type Page, expect } from '@playwright/test';
 import { BasePage } from './base.page';
 import { LeftSidebarComponent } from '../../components/left-sidebar.component';
 import { CategoryProductsPage } from '../category-products.page';
-import { urlTitleData } from '../../assets/data/e2e/url-title.data';
 import { CartPage } from '../cart.page';
 import { FooterComponent } from '../../components/footer.component';
 import { ProductsPage } from '../product.page';
+import * as data from '../../assets/data/e2e/app.data.json';
 
 export class HomePage extends BasePage {
   readonly headerFullFledged: Locator;
@@ -33,7 +33,7 @@ export class HomePage extends BasePage {
 
   async expectHomePage(): Promise<void> {
     await expect.soft(this.page).toHaveURL('/');
-    await expect(this.page).toHaveTitle(urlTitleData.home);
+    await expect(this.page).toHaveTitle(data.title.home);
   }
 
   async addFromRecommendedItemsAndViewCart(): Promise<CartPage> {
