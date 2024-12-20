@@ -18,7 +18,7 @@ import { CreateAccountAPIModel, CreateAccountBodyAPIModel } from '../../models/a
 import { createAccountAPI } from '../../factories/api/authentication/create-account.factory';
 
 test.describe('Test for test cases', { tag: ['@reg'] }, () => {
-  test.beforeEach(async ({ page, home }, testInfo) => {
+  test.beforeEach(async ({ home }, testInfo) => {
     //Arrange
     console.log(`Running ${testInfo.title}`);
 
@@ -37,10 +37,7 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
     // });
 
     //* Another method
-    //* Setup the handler
-    await page.addLocatorHandler(page.getByText('This site asks for consent to use your data'), async () => {
-      await page.getByRole('button', { name: 'Consent' }).click();
-    });
+    await home.catchHandler();
 
     await home.goTo();
 
@@ -477,7 +474,6 @@ test.describe('Test for test cases', { tag: ['@reg'] }, () => {
     // 8. Click 'Register / Login' button
     await cart.clickRegisterLogin();
     // 9. Fill all details in Signup and create account
-    // await login.fillUserSignup(userBaseData);
     await signup.registerUser(userBaseData, userBasicInfoData, userAddressInfoData);
     // 10. Verify 'ACCOUNT CREATED!' and click 'Continue' button
     await expect(signup.create.headerAccountCreated).toContainText('Account Created!');

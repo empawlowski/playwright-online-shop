@@ -8,12 +8,6 @@ export class ProductDetailsPage extends BasePage {
   readonly productDetailsLocator: Locator;
   readonly headerProductName: Locator;
 
-  readonly productCategory: Locator;
-  readonly productPrice: Locator;
-  readonly productAvailability: Locator;
-  readonly productCondition: Locator;
-  readonly productBrand: Locator;
-
   readonly fieldQuantity: Locator;
   readonly buttonAddToCart: Locator;
   readonly linkViewCart: Locator;

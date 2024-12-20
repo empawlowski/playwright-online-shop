@@ -19,7 +19,6 @@ export class HeaderComponent extends BasePage {
   readonly videoTutorials: Locator;
   readonly contactUs: Locator;
   readonly logout: Locator;
-  readonly loggedUser: Locator;
 
   constructor(page: Page) {
     super(page);

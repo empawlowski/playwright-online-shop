@@ -1,4 +1,8 @@
 {
+  "cookies": {
+    "title": "This site asks for consent to use your data",
+    "consent": "Consent"
+  },
   "products": {
     "details": {
       "category": "Category:",

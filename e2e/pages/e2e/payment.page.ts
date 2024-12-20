@@ -35,7 +35,7 @@ export class PaymentPage extends BasePage {
     await this.fieldExpiryYear.fill(card.expiryYear);
   }
 
-  async isAlertVisible(): Promise<void> {
+  private async isAlertVisible(): Promise<void> {
     await this.alert.isVisible();
   }
 

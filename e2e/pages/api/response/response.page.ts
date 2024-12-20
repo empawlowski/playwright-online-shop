@@ -4,11 +4,11 @@ import { CreateAccountBodyAPIModel } from '../../../models/api/authentication/cr
 export class ResponseAPIPage {
   constructor() {}
 
-  checkResponseCode(responseBody: CreateAccountBodyAPIModel, code: number) {
+  checkResponseCode(responseBody: CreateAccountBodyAPIModel, code: number): void {
     expect.soft(responseBody.responseCode).toBe(code);
   }
 
-  checkResponseMessage(responseBody: CreateAccountBodyAPIModel, message: string) {
+  checkResponseMessage(responseBody: CreateAccountBodyAPIModel, message: string): void {
     expect.soft(responseBody.message).toBe(message);
   }
 }
