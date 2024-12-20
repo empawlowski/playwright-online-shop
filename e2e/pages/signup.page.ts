@@ -72,12 +72,12 @@ export class SignupPage extends BasePage {
     this.login = new LoginPage(page);
   }
 
-  async expectAccountInformation(user: UserSignupModel): Promise<void> {
+  private async expectAccountInformation(user: UserSignupModel): Promise<void> {
     await expect(this.fieldName).toHaveValue(user.name);
     await expect(this.fieldEmail).toHaveValue(user.email);
   }
 
-  async fillBasicInformation(user: UserSignupBasicInfoModel): Promise<void> {
+  private async fillBasicInformation(user: UserSignupBasicInfoModel): Promise<void> {
     await this.checkboxGenderMrs.click();
     await this.fieldPassword.fill(user.password);
     await this.selectDays.selectOption(user.day);
@@ -85,12 +85,12 @@ export class SignupPage extends BasePage {
     await this.selectYears.selectOption(user.year);
   }
 
-  async selectNewsletterAndOffers(): Promise<void> {
+  private async selectNewsletterAndOffers(): Promise<void> {
     await this.checkboxNewsletter.click();
     await this.checkboxOffers.click();
   }
 
-  async fillAddressInformation(user: UserSignupAddressInfoModel): Promise<void> {
+  private async fillAddressInformation(user: UserSignupAddressInfoModel): Promise<void> {
     await this.fieldFirstName.fill(user.firstName);
     await this.fieldLastName.fill(user.lastName);
     await this.fieldCompany.fill(user.company);
@@ -103,7 +103,7 @@ export class SignupPage extends BasePage {
     await this.fieldMobileNumber.fill(user.phoneNumber);
   }
 
-  async clickCreateAccount(): Promise<AccountCreatedPage> {
+  private async clickCreateAccount(): Promise<AccountCreatedPage> {
     await this.buttonCreateAccount.click();
     return new AccountCreatedPage(this.page);
   }
@@ -116,6 +116,7 @@ export class SignupPage extends BasePage {
     await this.login.fillUserSignup(userBaseData);
     await this.expectAccountInformation(userBaseData);
     await this.fillBasicInformation(userBasicInfoData);
+    await this.selectNewsletterAndOffers();
     await this.fillAddressInformation(userAddressInfoData);
     await this.clickCreateAccount();
   }

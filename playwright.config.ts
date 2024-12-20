@@ -15,6 +15,8 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
  */
 export default defineConfig({
   testDir: './e2e/tests',
+  outputDir: './e2e/output/test-results',
+  tsconfig: './tsconfig.json',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
@@ -33,7 +35,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [['html', { open: 'on-failure', outputFolder: 'e2e/output/test-reports' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */

@@ -4,7 +4,7 @@
   "description": "Automation tests for online shop by using Playwright framework.",
   "main": "index.js",
   "scripts": {
-    "tsc:check": "npx tsc --noEmit --pretty --strict",
+    "tsc:check": "tsc --noEmit --pretty --strict",
     "test": "npx playwright test",
     "test:ui": "npx playwright test --ui",
     "test:smoke": "npx playwright test -g @smoke",

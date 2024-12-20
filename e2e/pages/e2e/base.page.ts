@@ -1,18 +1,29 @@
 import { type Locator, type Page } from '@playwright/test';
+import * as data from '../../assets/data/e2e/app.data.json';
 
 export class BasePage {
   readonly page: Page;
+  private readonly titleHandler: Locator;
+  private readonly buttonConsent: Locator;
   readonly buttonAcceptDialog: Locator;
-  readonly buttonScrollUp: Locator;
+  private readonly buttonScrollUp: Locator;
 
   protected constructor(page: Page) {
     this.page = page;
+    this.titleHandler = page.getByText(data.cookies.title);
+    this.buttonConsent = page.getByRole('button', { name: data.cookies.consent });
     this.buttonAcceptDialog = page.getByRole('button', { name: 'Submit' });
     this.buttonScrollUp = page.locator('#scrollUp');
   }
 
   async goTo(url: string = '/'): Promise<void> {
     await this.page.goto(url);
+  }
+
+  async catchHandler(): Promise<void> {
+    await this.page.addLocatorHandler(this.titleHandler, async () => {
+      await this.buttonConsent.click();
+    });
   }
 
   async catchDialog(): Promise<void> {
